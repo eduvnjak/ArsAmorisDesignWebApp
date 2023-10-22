@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\Models",
-    "\\obj"
+    "\\obj",
+    "\\Services",
+    "\\Services\\UserService"
   ],
-  "SelectedNode": "\\Program.cs",
+  "SelectedNode": "\\Services\\UserService\\UserService.cs",
   "PreviewInSolutionExplorer": false
 }

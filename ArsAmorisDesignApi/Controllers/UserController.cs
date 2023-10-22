@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ArsAmorisDesignApi.Models;
+using ArsAmorisDesignApi.Services.UserService;
 
 namespace ArsAmorisDesignApi.Controllers;
 
@@ -7,22 +8,22 @@ namespace ArsAmorisDesignApi.Controllers;
 [ApiController]
 public class UserController : ControllerBase
 {
-    private readonly UserDbContext _dbContext;
-    public UserController(UserDbContext userDbContext)
+    private readonly IUserService _userService;
+
+    public UserController(IUserService userService)
     {
-        _dbContext = userDbContext;
+        _userService = userService;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<User>> getUsers()
+    public async Task<ActionResult<IEnumerable<User>>> getUsers()
     {
-        return _dbContext.Users;
+        return await _userService.GetUsers();
     }
     [HttpPost]
     public async Task<ActionResult> Create(User user)
     {
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
-        return Ok();
+        var result = await _userService.AddUser(user);
+        return Ok(result);
     }
 }
