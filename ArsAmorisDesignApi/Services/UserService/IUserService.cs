@@ -11,5 +11,7 @@ namespace ArsAmorisDesignApi.Services.UserService
         Task<List<User>> AddUser(User user);
 
         Task<List<User>> DeleteUser(long id);
+
+        Task<User> GetUserByUsername(string username);
     }
 }

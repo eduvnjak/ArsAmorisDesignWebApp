@@ -5,12 +5,17 @@ namespace ArsAmorisDesignApi.Models;
 [Table("users")]
 public class User
 {
+    //public User(string username, string passwordHash)
+    //{
+    //    Username = username;
+    //    PasswordHash = passwordHash;
+    //}
+
     [Key]
     [Column("id")]
     public long Id { get; set; }
     [Column("username")]
     public string Username { get; set; }
-    // password sredi
-    [Column("password")]
-    public string Password { get; set; }
+    [Column("password_hash")]
+    public string PasswordHash { get; set; }
 }

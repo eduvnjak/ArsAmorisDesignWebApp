@@ -48,5 +48,13 @@ namespace ArsAmorisDesignApi.Services.UserService
             var users = await _context.Users.ToListAsync();
             return users;
         }
+
+        public async Task<User> GetUserByUsername(string username)
+        {
+            var user = await _context.Users.Where(user => user.Username == username).FirstOrDefaultAsync();
+            //zasto je ispod ovo falilo?
+            if (user is null) { return null; }
+            return user;
+        }
     }
 }
