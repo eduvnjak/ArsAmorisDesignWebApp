@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ArsAmorisDesignApi.Models;
 using ArsAmorisDesignApi.Services.UserService;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ArsAmorisDesignApi.Controllers;
 
@@ -9,24 +14,28 @@ namespace ArsAmorisDesignApi.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IConfiguration configuration)
     {
         _userService = userService;
+        _configuration = configuration;
     }
-
-    [HttpGet]
+    
+    [HttpGet, Authorize]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
         return await _userService.GetUsers();
     }
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> Create(User user)
     {
         var result = await _userService.AddUser(user);
         return Ok(result);
     }
-    // za sada neka bude ovdje 
+    // za sada neka bude ovdje
+    // skloni u login ccontroller ili u auth controller
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(UserDTO request)
     {
@@ -52,11 +61,30 @@ public class UserController : ControllerBase
         {
             return BadRequest("User not found");
         }
-        if(!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             // izmijeniti ovo
             return BadRequest("Invalid password");
         }
-        return Ok(user);
+
+        string token = CreateToken(user);
+        return Ok(token); // ovo u ({token: token})
+    }
+    private string CreateToken(User user)
+    {
+        List<Claim> claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Username)
+        };
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Token:Secret").Value!));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature); // koji algoritam ovdje
+        var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddMinutes(30), //vrati na addminutes 30
+            signingCredentials: creds);
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return jwt;
     }
 }

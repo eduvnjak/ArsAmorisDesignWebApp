@@ -53,7 +53,7 @@ namespace ArsAmorisDesignApi.Services.UserService
         {
             var user = await _context.Users.Where(user => user.Username == username).FirstOrDefaultAsync();
             //zasto je ispod ovo falilo?
-            if (user is null) { return null; }
+            // if (user is null) { return null; }
             return user;
         }
     }
