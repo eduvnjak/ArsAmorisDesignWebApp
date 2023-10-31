@@ -21,7 +21,7 @@ public class UserController : ControllerBase
         _userService = userService;
         _configuration = configuration;
     }
-    
+
     [HttpGet, Authorize]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
@@ -68,17 +68,19 @@ public class UserController : ControllerBase
         }
 
         string token = CreateToken(user);
-        return Ok(token); // ovo u ({token: token})
+        var response = new LoginResponse { Token = token };
+
+        return Ok(response);
     }
     private string CreateToken(User user)
     {
         List<Claim> claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Username)
+            new Claim("name", user.Username)
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Token:Secret").Value!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature); // koji algoritam ovdje
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512); // koji algoritam ovdje
         var token = new JwtSecurityToken(
             claims: claims,
             expires: DateTime.Now.AddMinutes(30), //vrati na addminutes 30
