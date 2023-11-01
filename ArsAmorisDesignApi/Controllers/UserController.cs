@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         newUser.Username = request.Username;
         newUser.PasswordHash = passwordHash;
         await _userService.AddUser(newUser);
-        return Ok(newUser);
+        return Ok();
     }
     [HttpPost("login")]
     public async Task<ActionResult<User>> Login(UserDTO request)
