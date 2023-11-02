@@ -4,6 +4,8 @@ using ArsAmorisDesignApi.Services.UserService;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using ArsAmorisDesignApi.Services.ProductService;
+using Microsoft.Extensions.FileProviders;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,7 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 opt.UseMySQL("server=localhost;database=ars_amoris_design_db;user=root;password=password"));
 //skloni ovo u appsettings
@@ -72,6 +75,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 });
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 // sta je scoped sta singleton a sta transient ?????
 var app = builder.Build();
 
@@ -88,6 +92,12 @@ app.UseCors(MyAllowSpecificOrigins);
 
 //app.UseAuthentication(); //treba li ovo ovdje
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+    RequestPath = "/Images"
+});
 
 app.MapControllers();
 
