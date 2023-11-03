@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
-import './Root.css';
+//import './Root.css';
 import { Link, Outlet } from 'react-router-dom';
 import NavigationMenu from './components/NavigationMenu';
 import AuthenticationMenu from './components/AuthenticationMenu';
