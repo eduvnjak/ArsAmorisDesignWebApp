@@ -10,8 +10,10 @@ function Root() {
 	//provjeri login
 	return (
 		<>
-			<NavigationMenu />
-			<AuthenticationMenu />
+			<div className='flex justify-between bg-gradient-to-r from-red-800 to-red-900 overflow-auto'>
+				<NavigationMenu />
+				<AuthenticationMenu />
+			</div>
 			<Outlet />
 		</>
 	);

@@ -15,21 +15,23 @@ export default function AuthenticationMenu() {
 		text = 'Pozdrav ' + username + '!';
 	}
 
+	// za ovo bolje mozda posebna stilizovana komponenta 
+	const divClassName = 'hover:text-red-600 hover:bg-gradient-to-r from-gray-50  to-gray-100 m-5 p-3 rounded-md';
 	return (
-		<nav>
+		<nav className='text-white font-medium p-2 flex justify-end w-fit'>
 			{token === null ? (
 				<>
-					<div>
+					<div className={divClassName}>
 						<Link to='/login'>Log in</Link>
 					</div>
-					<div>
+					<div className={divClassName}>   
 						<Link to='/createaccount'>Create account</Link>
 					</div>
 				</>
 			) : (
 				<>
-					<div>{text}</div>
-					<div>
+					<div className={divClassName}>{text}</div>
+					<div className={divClassName}>
 						<button
 							onClick={() => {
 								localStorage.removeItem('token');
