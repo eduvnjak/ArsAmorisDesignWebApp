@@ -10,6 +10,7 @@ import CreateAccount from './components/CreateAccount.jsx';
 import FeaturedProducts  from './components/FeaturedProducts.jsx';
 import Products from './components/Products.jsx';
 import About from './components/About.jsx';
+import ProductDetails from './components/ProductDetails.jsx'
 
 const router = createBrowserRouter([
 	{
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
 			{ index: true, element: <FeaturedProducts /> },
 			{ path: 'about', element: <About /> },
 			{ path: 'products', element: <Products /> },
+			{ path: 'products/:productId', element: <ProductDetails /> },
 		],
 	},
 	{ path: '/login', element: <Login /> },
