@@ -37,7 +37,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             return await _dbContext.Products.ToListAsync();
         }
         // da li ovdje treba Product ? upitnik da označui nullable 
-        public async Task<Product> GetProduct(Guid id)
+        public async Task<Product?> GetProduct(Guid id)
         {
             var product = await _dbContext.Products.FindAsync(id);
 

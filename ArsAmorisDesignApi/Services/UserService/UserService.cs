@@ -34,12 +34,10 @@ namespace ArsAmorisDesignApi.Services.UserService
             return await _context.Users.ToListAsync();
         }
 
-        public async Task<User> GetUser(long id)
+        public async Task<User?> GetUser(long id)
         {
             var user = await _context.Users.FindAsync(id);
-            if(user == null) {
-                return null;
-            }
+
             return user;
         }
 
@@ -49,7 +47,7 @@ namespace ArsAmorisDesignApi.Services.UserService
             return users;
         }
 
-        public async Task<User> GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsername(string username)
         {
             var user = await _context.Users.Where(user => user.Username == username).FirstOrDefaultAsync();
             //zasto je ispod ovo falilo?
