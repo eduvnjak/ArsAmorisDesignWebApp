@@ -43,5 +43,23 @@ namespace ArsAmorisDesignApi.Services.ProductService
 
             return product;
         }
+        // da li je prihvatljivo bool vratiti
+        public async Task<bool> DeleteProduct(Guid id)
+        {
+            var product = await _dbContext.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return false;
+            }
+            _dbContext.Products.Remove(product);
+            await _dbContext.SaveChangesAsync();
+            // obrisi sliku
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageName}{product.ImageExtension}");
+            // kakvi ovdje izuzeci se mogu dogoditi?
+            File.Delete(localFilePath);
+
+            return true;
+        }
     }
 }

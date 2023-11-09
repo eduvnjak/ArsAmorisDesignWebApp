@@ -7,7 +7,7 @@ namespace ArsAmorisDesignApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // authorize samo adminu
+    // authorize ostavi za kasnije, sada svima dostupno sve
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -40,6 +40,19 @@ namespace ArsAmorisDesignApi.Controllers
             }
             return BadRequest(ModelState);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            bool deleted = await _productService.DeleteProduct(id);
+            if (deleted)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
@@ -51,7 +64,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             var product = await _productService.GetProduct(id);
             if (product == null) return NotFound();
-            return product;
+            return product; // treba li ovo umotati u Ok ???
         }
         private void ValidateImageUpload(ProductDTO productDTO)
         {
