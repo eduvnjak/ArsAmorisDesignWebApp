@@ -85,5 +85,40 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 throw new Exception("Image too large");
             }
         }
+        public async Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO)
+        {
+            var product = await _dbContext.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return null;
+            }
+            if (productEditDTO.Image != null)
+            {
+                ValidateImageUpload(productEditDTO.Image);
+                // obrisi sliku
+                var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{Path.GetFileName(product.ImageUrl)}");
+                // kakvi ovdje izuzeci se mogu dogoditi?
+                File.Delete(oldLocalFilePath); // ne provjerava da li file postoji
+                // ovaj upload je ponavljanje koda
+                string imageExtension = Path.GetExtension(productEditDTO.Image.FileName);
+                string imageName = Path.GetRandomFileName().Replace(".", "-");
+                // provjeriti da li ima neka vec slika sa istim imenom
+                var newLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
+                using var stream = new FileStream(newLocalFilePath, FileMode.Create);
+                await productEditDTO.Image.CopyToAsync(stream);
+
+                var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
+                product.ImageUrl = urlImagePath;
+            }
+            // ovdje bi dobro dosao mapper
+            product.Name = productEditDTO.Name;
+            product.Description = productEditDTO.Description;
+            product.Price = productEditDTO.Price;
+
+
+            await _dbContext.SaveChangesAsync();
+            return product;
+        }
     }
 }

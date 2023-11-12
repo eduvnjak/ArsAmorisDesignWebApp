@@ -56,5 +56,19 @@ namespace ArsAmorisDesignApi.Controllers
             if (product == null) return NotFound();
             return product; // treba li ovo umotati u Ok ???
         }
+        [HttpPut("{id}")] // ovaj put odstupa od HTTP standarda 
+        public async Task<ActionResult<Product>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
+        {
+            try
+            {
+                var product = await _productService.EditProduct(id, productEditDTO);
+                if(product == null) return NotFound();
+                return Ok(product); // da li ovo ili no content;
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }
