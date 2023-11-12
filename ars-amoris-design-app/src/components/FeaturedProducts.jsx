@@ -25,7 +25,7 @@ export default function FeaturedProducts() {
 						key={product.id}
 						name={product.name}
 						price={product.price}
-						imageUrl={product.filePath}
+						imageUrl={product.imageUrl}
 						showDetails={() => {
 							navigate(`products/${product.id}`);
 						}}

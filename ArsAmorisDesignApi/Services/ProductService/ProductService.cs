@@ -17,14 +17,26 @@ namespace ArsAmorisDesignApi.Services.ProductService
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
         }
-        public async Task<Product> AddProduct(Product product)
+        public async Task<Product> AddProduct(ProductPostDTO productPostDTO)
         {
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageName}{product.ImageExtension}");
-            using var stream = new FileStream(localFilePath, FileMode.Create);
-            await product.Image.CopyToAsync(stream);
-            var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{product.ImageName}{product.ImageExtension}";
+            ValidateImageUpload(productPostDTO.Image);
 
-            product.FilePath = urlImagePath;
+            string imageExtension = Path.GetExtension(productPostDTO.Image.FileName);
+            string imageName = Path.GetRandomFileName().Replace(".", "-");
+            // provjeriti da li ima neka vec slika sa istim imenom
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
+            using var stream = new FileStream(localFilePath, FileMode.Create);
+            await productPostDTO.Image.CopyToAsync(stream);
+
+            var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
+
+            var product = new Product
+            {
+                Name = productPostDTO.Name,
+                Price = productPostDTO.Price,
+                Description = productPostDTO.Description,
+                ImageUrl = urlImagePath
+            };
 
             await _dbContext.Products.AddAsync(product);
             await _dbContext.SaveChangesAsync();
@@ -55,11 +67,23 @@ namespace ArsAmorisDesignApi.Services.ProductService
             _dbContext.Products.Remove(product);
             await _dbContext.SaveChangesAsync();
             // obrisi sliku
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageName}{product.ImageExtension}");
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{Path.GetFileName(product.ImageUrl)}");
             // kakvi ovdje izuzeci se mogu dogoditi?
             File.Delete(localFilePath);
 
             return true;
+        }
+        private static void ValidateImageUpload(IFormFile imageFile)
+        {
+            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            if (!allowedExtensions.Contains(Path.GetExtension(imageFile.FileName)))
+            {
+                throw new Exception("Unsupported image extension");
+            }
+            if (imageFile.Length > 5242880)  // 5MB limit
+            {
+                throw new Exception("Image too large");
+            }
         }
     }
 }

@@ -18,27 +18,17 @@ namespace ArsAmorisDesignApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostProduct([FromForm] ProductDTO productDTO)
+        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
         {
-            ValidateImageUpload(productDTO);
-            if (ModelState.IsValid)
+            try
             {
-                var product = new Product
-                {
-                    Name = productDTO.Name,
-                    Image = productDTO.Image,
-                    Price = productDTO.Price,
-                    ImageName = productDTO.ImageName,
-                    Description = productDTO.Description,
-                    ImageSizeInBytes = productDTO.Image.Length,
-                    ImageExtension = Path.GetExtension(productDTO.Image.FileName)
-                };
-
-                await _productService.AddProduct(product);
-
+                var product = await _productService.AddProduct(productPostDTO);
                 return Ok(product);
             }
-            return BadRequest(ModelState);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
@@ -65,18 +55,6 @@ namespace ArsAmorisDesignApi.Controllers
             var product = await _productService.GetProduct(id);
             if (product == null) return NotFound();
             return product; // treba li ovo umotati u Ok ???
-        }
-        private void ValidateImageUpload(ProductDTO productDTO)
-        {
-            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
-            if (!allowedExtensions.Contains(Path.GetExtension(productDTO.Image.FileName)))
-            {
-                ModelState.AddModelError("image", "Unsupported image extension");
-            }
-            if (productDTO.Image.Length > 5242880)  // 5MB limit
-            {
-                ModelState.AddModelError("image", "Image too large");
-            }
         }
     }
 }

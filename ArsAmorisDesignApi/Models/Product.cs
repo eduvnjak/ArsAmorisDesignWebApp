@@ -9,20 +9,16 @@ public class Product
     [Key]
     [Column("id")]
     public Guid Id { get; set; }
-    [NotMapped]
-    public IFormFile Image { get; set; } //ovdje bi trebalo moci zadati niz slika
     [Column("name")]
     public string Name { get; set; }
     [Column("price")]
     public decimal Price { get; set; }
     [Column("description")]
     public string? Description { get; set; }
-    [Column("image_name")]
-    public string ImageName { get; set; }
-    [Column("image_extension")]
-    public string ImageExtension { get; set; }
-    [Column("image_size")]
-    public long ImageSizeInBytes { get; set; }
-    [Column("file_path")]
-    public string FilePath { get; set; }
+    // [Column("image_name")]
+    // public string ImageName { get; set; } // ovaj i sljedeci atribut potrebni zbog brisanja 
+    // [Column("image_extension")]
+    // public string ImageExtension { get; set; }
+    [Column("image_url")]
+    public string ImageUrl { get; set; } //omoguci vise slika
 }

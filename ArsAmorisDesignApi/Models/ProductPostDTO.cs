@@ -2,7 +2,7 @@
 
 namespace ArsAmorisDesignApi.Models
 {
-    public class ProductDTO
+    public class ProductPostDTO
     {
         [Required]
         public IFormFile Image { get; set; }
@@ -11,7 +11,5 @@ namespace ArsAmorisDesignApi.Models
         [Required]
         public decimal Price { get; set; }
         public string? Description { get; set; }
-        [Required]
-        public string ImageName { get; set; }
     }
 }
