@@ -1,20 +1,16 @@
-import { useEffect, useState } from 'react';
 import ProductCard from './ProductCard';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+
+export async function loader() {
+	let result = await axios.get('https://localhost:7196/api/Products');
+	return result.data;
+}
 
 export default function FeaturedProducts() {
-	const [products, setProducts] = useState([]);
+	const products = useLoaderData();
 
 	const navigate = useNavigate();
-
-	useEffect(() => {
-		const fetchProducts = async () => {
-			let result = await axios.get('https://localhost:7196/api/Products');
-			setProducts(result.data);
-		};
-		fetchProducts();
-	}, []);
 
 	return (
 		<>

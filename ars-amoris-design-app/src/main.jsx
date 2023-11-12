@@ -7,17 +7,17 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Login from './components/Login.jsx';
 import CreateAccount from './components/CreateAccount.jsx';
-import FeaturedProducts  from './components/FeaturedProducts.jsx';
+import FeaturedProducts, { loader as featuredProductsLoader } from './components/FeaturedProducts.jsx';
 import Products from './components/Products.jsx';
 import About from './components/About.jsx';
-import ProductDetails from './components/ProductDetails.jsx'
+import ProductDetails from './components/ProductDetails.jsx';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Root />,
 		children: [
-			{ index: true, element: <FeaturedProducts /> },
+			{ index: true, element: <FeaturedProducts />, loader: featuredProductsLoader },
 			{ path: 'about', element: <About /> },
 			{ path: 'products', element: <Products /> },
 			{ path: 'products/:productId', element: <ProductDetails /> },
