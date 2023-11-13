@@ -11,6 +11,8 @@ import FeaturedProducts, { loader as featuredProductsLoader } from './components
 import Products from './components/Products.jsx';
 import About from './components/About.jsx';
 import ProductDetails from './components/ProductDetails.jsx';
+import ManageProducts, { loader as manageProductsLoader } from './components/ManageProducts.jsx';
+import EditProductDetails from './components/EditProductDetails.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -21,6 +23,8 @@ const router = createBrowserRouter([
 			{ path: 'about', element: <About /> },
 			{ path: 'products', element: <Products /> },
 			{ path: 'products/:productId', element: <ProductDetails /> },
+			{ path: 'manage-products/', element: <ManageProducts />, loader: manageProductsLoader },
+			{ path: 'manage-products/:productId', element: <EditProductDetails /> },
 		],
 	},
 	{ path: '/login', element: <Login /> },
