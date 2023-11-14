@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingIndicator from './LoadingIndicator';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);
@@ -47,7 +48,7 @@ export default function EditProductDetails() {
 	return (
 		<>
 			{isLoading ? (
-				<h1 className='text-white text-2xl text-center'>Loading...</h1> // mozda ovakvu komponentu
+				<LoadingIndicator/>
 			) : (
 				<div className='mx-8 mt-8 min-h-fit rounded-xl bg-white'>
 					<img
