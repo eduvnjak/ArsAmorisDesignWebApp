@@ -33,10 +33,10 @@ export default function EditProductDetails() {
 
 		const data = new FormData();
 		data.append('Name', product.name);
-		data.append('Price', product.price); // pazi na decimalni
+		data.append('Price', product.price.slice().replace('.',',')); // pazi na decimalni
 		data.append('Description', product.description);
 		data.append('Image', newImage);
-
+        
         try {
             let response = await axios.put(`https://localhost:7196/api/Products/${productId}`, data);
             navigate('/manage-products');
@@ -89,6 +89,7 @@ export default function EditProductDetails() {
 								setProduct({ ...product, price: e.target.value });
 							}}
 							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+                            step={0.01}
 						></input>
 					</label>{' '}
 					<br />
