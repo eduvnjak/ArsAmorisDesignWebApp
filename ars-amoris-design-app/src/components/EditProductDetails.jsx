@@ -101,6 +101,9 @@ export default function EditProductDetails() {
 					<div className='p-3'>
 						<Button onClick={handleProductUpdate}>Potvrdi izmjene</Button>
 					</div>
+					<div className='p-3'>
+						<Button onClick={() => navigate('/manage-products')}>Odustani</Button>
+					</div>
 					<div className='clear-both'></div>
 				</div>
 			)}

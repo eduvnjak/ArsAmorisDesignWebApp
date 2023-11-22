@@ -93,6 +93,9 @@ export default function AddNewProduct() {
 					<div className='p-3'>
 						<Button onClick={handleAddProduct}>Dodaj novi proizvod</Button>
 					</div>
+					<div className='p-3'>
+						<Button onClick={() => navigate('/manage-products')}>Odustani</Button>
+					</div>
 					<div className='clear-both'></div>
 				</div>
 			)}
