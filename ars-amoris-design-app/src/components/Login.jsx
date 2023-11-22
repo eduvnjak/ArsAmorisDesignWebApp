@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Button from './Button';
 
 export default function Login() {
 	const [username, setUsername] = useState('');
@@ -56,12 +57,9 @@ export default function Login() {
 					/>
 				</label>
 				<br />
-				<button
-					type='submit'
-					className='transition-colors duration-300 border-0 text-xl hover:border-blue-500 hover:border-4 hover:p-3 mx-auto p-4 font-medium hover:from-white hover:to-white hover:text-blue-500 text-white bg-gradient-to-l from-blue-400 to-blue-500 shadow-md rounded-full'
-				>
-					Login
-				</button>
+				<Button type='submit'>
+					<span className='text-xl'>Login</span>
+				</Button>
 			</form>
 			<div>
 			</div>
