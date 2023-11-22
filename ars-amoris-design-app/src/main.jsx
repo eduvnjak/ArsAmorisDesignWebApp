@@ -13,6 +13,7 @@ import About from './components/About.jsx';
 import ProductDetails from './components/ProductDetails.jsx';
 import ManageProducts, { loader as manageProductsLoader } from './components/ManageProducts.jsx';
 import EditProductDetails from './components/EditProductDetails.jsx';
+import AddNewProduct from './components/AddNewProduct.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
 			{ path: 'products/:productId', element: <ProductDetails /> },
 			{ path: 'manage-products/', element: <ManageProducts />, loader: manageProductsLoader },
 			{ path: 'manage-products/:productId', element: <EditProductDetails /> },
+			{ path: 'manage-products/new', element: <AddNewProduct /> },
 		],
 	},
 	{ path: '/login', element: <Login /> },

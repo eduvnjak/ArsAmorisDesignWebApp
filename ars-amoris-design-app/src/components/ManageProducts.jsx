@@ -12,15 +12,22 @@ export default function ManageProducts() {
 
 	const navigate = useNavigate();
 
-    function deleteHandler(productId) {
-        console.log("delete " + productId);
-        // ovdje ono da li ste sigurni
-    }
+	function deleteHandler(productId) {
+		console.log('delete ' + productId);
+		// ovdje ono da li ste sigurni
+	}
 
 	return (
 		<>
 			<h1 className='text-center text-white py-3 font-medium text-4xl'>Upravljanje proizvodima</h1>
 			<div className='flex flex-row flex-wrap px-2'>
+				<div
+					className='box-content hover:box-content cursor-pointer m-2 hover:border-slate-50 hover:border-8 hover:p-0 bg-slate-50 rounded-xl p-3 shadow-2xl text-9xl flex items-center justify-center hover:bg-gradient-to-r hover:from-blue-300 hover:to-blue-600 border-0 duration-300 transition-all'
+					style={{ width: 364.641, height: 312 }}
+					onClick={()=> navigate('new')}
+				>
+					<div>➕</div>
+				</div>
 				{products.map(product => (
 					<ManageProductCard
 						key={product.id}
@@ -30,7 +37,7 @@ export default function ManageProducts() {
 						editDetailsHandler={() => {
 							navigate(`${product.id}`);
 						}}
-                        deleteHandler={()=>deleteHandler(product.id)}
+						deleteHandler={() => deleteHandler(product.id)}
 					/>
 				))}
 			</div>
