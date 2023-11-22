@@ -24,7 +24,7 @@ export default function ProductDetails() {
 				<LoadingIndicator />
 			) : (
 				<div className='mx-8 mt-8 min-h-fit rounded-xl bg-white'>
-					<h1 className='text-center text-red-500 py-3 font-medium text-4xl'>{product.name}</h1>
+					<h1 className='text-center text-blue-500 py-3 font-medium text-4xl'>{product.name}</h1>
 					<img src={product.imageUrl} alt={product.name + ' image'} className='m-5 float-left w-96' />
 					<p className='top-4 right-4 text-2xl'>
 						{product.description === null || product.description === ''

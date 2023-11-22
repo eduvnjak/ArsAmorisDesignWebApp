@@ -64,7 +64,7 @@ export default function EditProductDetails() {
 							onChange={e => {
 								setProduct({ ...product, name: e.target.value });
 							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						></input>
 					</label>{' '}
 					<br />
@@ -76,7 +76,7 @@ export default function EditProductDetails() {
 							onChange={e => {
 								setProduct({ ...product, description: e.target.value });
 							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						></input>
 					</label>{' '}
 					<br />
@@ -88,7 +88,7 @@ export default function EditProductDetails() {
 							onChange={e => {
 								setProduct({ ...product, price: e.target.value });
 							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
                             step={0.01}
 						></input>
 					</label>{' '}
@@ -99,7 +99,7 @@ export default function EditProductDetails() {
 					</label>{' '}
 					<br />
 					<button
-						className='mt-3 transition-colors duration-300 hover:border-red-500 hover:border-4 hover:p-3 mx-auto p-4 font-medium hover:from-white hover:to-white hover:text-red-500 text-white bg-gradient-to-l from-red-400 to-red-500 shadow-md rounded-full border-0'
+						className='mt-3 transition-colors duration-300 hover:border-blue-500 hover:border-4 hover:p-3 mx-auto p-4 font-medium hover:from-white hover:to-white hover:text-blue-500 text-white bg-gradient-to-l from-blue-400 to-blue-500 shadow-md rounded-full border-0'
 						onClick={handleProductUpdate}
 					>
 						Potvrdi izmjene

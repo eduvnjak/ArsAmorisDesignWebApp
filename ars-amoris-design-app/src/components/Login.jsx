@@ -40,7 +40,7 @@ export default function Login() {
 				<label className='text-lg font-normal'>
 					Username:{' '}
 					<input
-						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						value={username}
 						onChange={e => setUsername(e.target.value)}
 					/>
@@ -49,7 +49,7 @@ export default function Login() {
 				<label className='text-lg'>
 					Password:{' '}
 					<input
-						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-red-600'
+						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						value={password}
 						type='password'
 						onChange={e => setPassword(e.target.value)}
@@ -58,7 +58,7 @@ export default function Login() {
 				<br />
 				<button
 					type='submit'
-					className='transition-colors duration-300 border-0 text-xl hover:border-red-500 hover:border-4 hover:p-3 mx-auto p-4 font-medium hover:from-white hover:to-white hover:text-red-500 text-white bg-gradient-to-l from-red-400 to-red-500 shadow-md rounded-full'
+					className='transition-colors duration-300 border-0 text-xl hover:border-blue-500 hover:border-4 hover:p-3 mx-auto p-4 font-medium hover:from-white hover:to-white hover:text-blue-500 text-white bg-gradient-to-l from-blue-400 to-blue-500 shadow-md rounded-full'
 				>
 					Login
 				</button>

@@ -16,7 +16,7 @@ export default function AuthenticationMenu() {
 	}
 
 	// za ovo bolje mozda posebna stilizovana komponenta 
-	const divClassName = 'hover:text-red-600 hover:bg-gradient-to-r from-gray-50  to-gray-100 m-5 p-3 rounded-md';
+	const divClassName = 'hover:text-blue-600 hover:bg-gradient-to-r from-gray-50  to-gray-100 m-5 p-3 rounded-md';
 	return (
 		<nav className='text-white font-medium p-2 flex justify-end w-fit'>
 			{token === null ? (
