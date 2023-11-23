@@ -77,7 +77,17 @@ export default function AddNewProduct() {
 			<br />
 			<label>
 				Nova slika:{' '}
-				<input type='file' accept='image/png, image/jpeg' onChange={e => setImage(e.target.files[0] ?? null)}></input>
+				<input
+					type='file'
+					accept='image/png, image/jpeg'
+					className='file:transition-colors
+						 file:duration-300 file:hover:border-blue-500 file:hover:border-solid file:hover:border-4
+						  file:hover:p-3 file:p-4 file:font-medium file:hover:from-white
+						   file:hover:to-white file:hover:text-blue-500 file:text-white
+						    file:bg-gradient-to-l file:from-blue-400 file:to-blue-500
+							 file:shadow-md file:rounded-full file:border-0 file:border-blue-500'
+					onChange={e => setImage(e.target.files[0] ?? null)}
+				></input>
 			</label>{' '}
 			<br />
 			<div className='p-3'>
