@@ -2,17 +2,19 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
+import LoadingIndicator from './LoadingIndicator';
 
 export default function Login() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const [isLoading, setLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
 
 	async function handleSubmit() {
 		try {
-			setLoading(true);
+			setIsLoading(true);
+			setError(null);
 			let response = await axios.post('https://localhost:7196/api/User/Login', {
 				username: username,
 				password: password,
@@ -25,7 +27,7 @@ export default function Login() {
 			setError(error.message);
 			console.log(error.message);
 		} finally {
-			setLoading(false);
+			setIsLoading(false);
 		}
 	}
 
@@ -61,9 +63,8 @@ export default function Login() {
 					<span className='text-xl'>Login</span>
 				</Button>
 			</form>
-			<div>
-			</div>
-			{isLoading && <div className='py-3 mx-auto w-fit text-white font-semibold'>Loading</div>}
+			{/* {isLoading && <div className='py-3 mx-auto w-fit text-white font-semibold'>Loading</div>} */}
+			{isLoading && <LoadingIndicator />}
 			{error !== null && <div className='py-3 mx-auto w-fit text-white font-semibold'>{error}</div>}
 		</>
 	);

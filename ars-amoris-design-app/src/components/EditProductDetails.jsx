@@ -8,17 +8,17 @@ import Button from './Button';
 export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);
 	const [newImage, setNewImage] = useState(null);
-	const [isLoading, setLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const { productId } = useParams();
 	const navigate = useNavigate();
 
 	// da li fetch kroz api ili primiti objekat kroz properties
 	useEffect(() => {
 		const fetchProduct = async () => {
-			setLoading(true);
+			setIsLoading(true);
 			let result = await axios.get(`https://localhost:7196/api/Products/${productId}`);
 			setProduct(result.data);
-			setLoading(false);
+			setIsLoading(false);
 		};
 		fetchProduct();
 	}, []); // treba li ovdje neki cleanup

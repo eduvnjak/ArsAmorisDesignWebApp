@@ -5,15 +5,16 @@ import LoadingIndicator from './LoadingIndicator';
 
 export default function ProductDetails() {
 	const [product, setProduct] = useState(null);
-	const [isLoading, setLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(true);
 	const { productId } = useParams();
 
 	// da li fetch kroz api ili primiti objekat kroz properties
 	useEffect(() => {
 		const fetchProduct = async () => {
+			setIsLoading(true);
 			let result = await axios.get(`https://localhost:7196/api/Products/${productId}`);
 			setProduct(result.data);
-			setLoading(false);
+			setIsLoading(false);
 		};
 		fetchProduct();
 	}, []);
