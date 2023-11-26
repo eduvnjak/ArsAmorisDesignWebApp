@@ -44,9 +44,9 @@ namespace ArsAmorisDesignApi.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] string? sortBy) // mozda razdvoji na sort column i sort order
         {
-            var products = await _productService.GetAllProducts();
+            var products = await _productService.GetAllProducts(sortBy);
             return Ok(products);
         }
         [HttpGet("{id}")]
@@ -62,7 +62,7 @@ namespace ArsAmorisDesignApi.Controllers
             try
             {
                 var product = await _productService.EditProduct(id, productEditDTO);
-                if(product == null) return NotFound();
+                if (product == null) return NotFound();
                 return Ok(product); // da li ovo ili no content;
             }
             catch (Exception e)
