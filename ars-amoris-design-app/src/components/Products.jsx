@@ -3,6 +3,7 @@ import axios from 'axios';
 import ProductCard from './ProductCard';
 import { matchSorter } from 'match-sorter';
 import LoadingIndicator from './LoadingIndicator';
+import { useNavigate } from 'react-router-dom';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
@@ -10,14 +11,12 @@ export default function Products() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortValue, setSortValue] = useState('default');
-	const bal = 1;
+	const { navigate } = useNavigate();
 
 	useEffect(() => {
 		async function fetchProducts() {
 			setIsLoading(true);
-			let result = await axios.get(
-				`https://localhost:7196/api/Products`
-			);
+			let result = await axios.get(`https://localhost:7196/api/Products`);
 			setProducts(result.data);
 			setIsLoading(false);
 		}
