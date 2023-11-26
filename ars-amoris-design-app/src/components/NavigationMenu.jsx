@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 export default function NavigationMenu() {
 	const navMenuRoutes = [
@@ -21,13 +21,16 @@ export default function NavigationMenu() {
 			{navMenuRoutes.map((route, i) => {
 				return (
 					<div key={i}>
-						<Link
-							className='transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r from-gray-50  to-gray-100 m-5
-					p-3 rounded-md inline-block'
+						<NavLink
+							className={({ isActive, isPending }) =>
+								isPending || isActive
+									? 'transition-colors duration-500 text-blue-600 bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+									: 'transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+							}
 							to={route.to}
 						>
 							{route.text}
-						</Link>
+						</NavLink>
 					</div>
 				);
 			})}
