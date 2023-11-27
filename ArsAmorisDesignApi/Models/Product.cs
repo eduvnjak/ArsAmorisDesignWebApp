@@ -21,4 +21,7 @@ public class Product
     // public string ImageExtension { get; set; }
     [Column("image_url")]
     public string ImageUrl { get; set; } //omoguci vise slika
+    [Column("category_id")]
+    public Guid? ProductCategoryId { get; set; }
+    public ProductCategory? ProductCategory { get; set; }
 }

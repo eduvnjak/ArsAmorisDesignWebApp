@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
-        try
+/*         try
         {
             var databaseCreator = Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
             if (databaseCreator != null)
@@ -23,9 +23,10 @@ public class AppDbContext : DbContext
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
-        }
+        } */
     }
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
+    public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
 }
