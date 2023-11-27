@@ -11,7 +11,7 @@ export default function Products() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortValue, setSortValue] = useState('default');
-	const { navigate } = useNavigate();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		async function fetchProducts() {
@@ -91,7 +91,7 @@ export default function Products() {
 									price={product.price}
 									imageUrl={product.imageUrl}
 									showDetails={() => {
-										navigate(`products/${product.id}`);
+										navigate(`${product.id}`);
 									}}
 								/>
 						  ))
@@ -102,7 +102,7 @@ export default function Products() {
 									price={product.price}
 									imageUrl={product.imageUrl}
 									showDetails={() => {
-										navigate(`products/${product.id}`);
+										navigate(`${product.id}`);
 									}}
 								/>
 						  ))}
