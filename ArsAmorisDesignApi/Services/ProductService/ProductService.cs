@@ -35,11 +35,13 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 Name = productPostDTO.Name,
                 Price = productPostDTO.Price,
                 Description = productPostDTO.Description,
-                ImageUrl = urlImagePath
+                ImageUrl = urlImagePath,
+                ProductCategoryId = productPostDTO.ProductCategoryId
             };
 
             await _dbContext.Products.AddAsync(product);
             await _dbContext.SaveChangesAsync();
+            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
             return product;
         }
@@ -60,12 +62,12 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 };
             }
 
-            return await products.ToListAsync();
+            return await products.Include(p => p.ProductCategory).ToListAsync();
         }
         // da li ovdje treba Product ? upitnik da označui nullable 
         public async Task<Product?> GetProduct(Guid id)
         {
-            var product = await _dbContext.Products.FindAsync(id);
+            var product = await _dbContext.Products.Include(p => p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id);
 
             return product;
         }
@@ -129,7 +131,8 @@ namespace ArsAmorisDesignApi.Services.ProductService
             product.Name = productEditDTO.Name;
             product.Description = productEditDTO.Description;
             product.Price = productEditDTO.Price;
-
+            product.ProductCategoryId = productEditDTO.ProductCategoryId;
+            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
             await _dbContext.SaveChangesAsync();
             return product;
