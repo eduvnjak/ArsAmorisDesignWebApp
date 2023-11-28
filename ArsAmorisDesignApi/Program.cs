@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using ArsAmorisDesignApi.Services.ProductService;
 using Microsoft.Extensions.FileProviders;
+using ArsAmorisDesignApi.Services.ProductCategoryService;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -76,6 +77,8 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+
 // sta je scoped sta singleton a sta transient ?????
 var app = builder.Build();
 
