@@ -23,7 +23,7 @@ namespace ArsAmorisDesignApi.Controllers
             try
             {
                 var product = await _productService.AddProduct(productPostDTO);
-                return Ok(product);
+                return Ok(MapDomainToDTO(product));
             }
             catch (Exception e)
             {
@@ -44,31 +44,49 @@ namespace ArsAmorisDesignApi.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts([FromQuery] string? sortBy) // mozda razdvoji na sort column i sort order
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts([FromQuery] string? sortBy) // mozda razdvoji na sort column i sort order
         {
             var products = await _productService.GetAllProducts(sortBy);
-            return Ok(products);
+            var productsDTO = new List<ProductDTO>();
+            foreach (var product in products)
+            {
+                productsDTO.Add(MapDomainToDTO(product));
+            }
+            return Ok(productsDTO);
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(Guid id)
+        public async Task<ActionResult<ProductDTO>> GetProduct(Guid id)
         {
             var product = await _productService.GetProduct(id);
             if (product == null) return NotFound();
-            return product; // treba li ovo umotati u Ok ???
+            return MapDomainToDTO(product); // treba li ovo umotati u Ok ???
         }
         [HttpPut("{id}")] // ovaj put odstupa od HTTP standarda 
-        public async Task<ActionResult<Product>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
+        public async Task<ActionResult<ProductDTO>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
         {
             try
             {
                 var product = await _productService.EditProduct(id, productEditDTO);
                 if (product == null) return NotFound();
-                return Ok(product); // da li ovo ili no content;
+                return Ok(MapDomainToDTO(product)); // da li ovo ili no content;
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
+        }
+        private static ProductDTO MapDomainToDTO(Product product)
+        {
+            return new ProductDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.ProductCategoryId,
+                CategoryName = product.ProductCategory?.Name
+            };
         }
     }
 }
