@@ -46,7 +46,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             return product;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy)
+        public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categoryId)
         {
             var products = _dbContext.Products.AsQueryable();
             // sort
@@ -60,6 +60,18 @@ namespace ArsAmorisDesignApi.Services.ProductService
                     "priceDesc" => products.OrderByDescending(product => product.Price),
                     _ => products
                 };
+            }
+            if (categoryId != null)
+            {
+                try
+                {
+                    Guid? guid = categoryId == "null" ? null : new Guid(categoryId);
+                    products = products.Where(p => p.ProductCategoryId == guid);
+                }
+                catch (FormatException)
+                {
+                    return new List<Product>();
+                }
             }
 
             return await products.Include(p => p.ProductCategory).ToListAsync();
@@ -137,7 +149,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             await _dbContext.SaveChangesAsync();
             return product;
         }
-        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId)
+        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId) // na ovo mozda sort query param
         {
             return await _dbContext.Products.Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
         }
