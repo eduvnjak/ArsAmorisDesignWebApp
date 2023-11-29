@@ -137,5 +137,9 @@ namespace ArsAmorisDesignApi.Services.ProductService
             await _dbContext.SaveChangesAsync();
             return product;
         }
+        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId)
+        {
+            return await _dbContext.Products.Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+        }
     }
 }

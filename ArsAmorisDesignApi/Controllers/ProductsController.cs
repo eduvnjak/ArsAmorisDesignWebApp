@@ -75,6 +75,17 @@ namespace ArsAmorisDesignApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [HttpGet("Category/{categoryId?}")] // swagger ne detektuje optional route parameter
+        public async Task<ActionResult<ProductDTO>> GetProductsByCategory(Guid? categoryId = null) // ovo sa null je mozda malo grbavo ali radi
+        {
+            var products = await _productService.GetProductsByCategory(categoryId);
+            var productsDTO = new List<ProductDTO>();
+            foreach (var product in products)
+            {
+                productsDTO.Add(MapDomainToDTO(product));
+            }
+            return Ok(productsDTO);
+        }
         private static ProductDTO MapDomainToDTO(Product product)
         {
             return new ProductDTO
