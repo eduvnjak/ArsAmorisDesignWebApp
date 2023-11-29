@@ -1,7 +1,8 @@
-﻿using ArsAmorisDesignApi.Data;
+﻿using System.Collections.Immutable;
+using ArsAmorisDesignApi.Data;
 using ArsAmorisDesignApi.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using ArsAmorisDesignApi.Extensions;
 
 namespace ArsAmorisDesignApi.Services.ProductService
 {
@@ -48,19 +49,8 @@ namespace ArsAmorisDesignApi.Services.ProductService
 
         public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categoryId)
         {
-            var products = _dbContext.Products.AsQueryable();
-            // sort
-            if (!String.IsNullOrWhiteSpace(sortBy))
-            {
-                products = sortBy switch
-                {
-                    "nameAsc" => products.OrderBy(product => product.Name),
-                    "nameDesc" => products.OrderByDescending(product => product.Name),
-                    "priceAsc" => products.OrderBy(product => product.Price),
-                    "priceDesc" => products.OrderByDescending(product => product.Price),
-                    _ => products
-                };
-            }
+            var products = _dbContext.Products.Sort(sortBy).AsQueryable();
+
             if (categoryId != null)
             {
                 try
@@ -149,9 +139,9 @@ namespace ArsAmorisDesignApi.Services.ProductService
             await _dbContext.SaveChangesAsync();
             return product;
         }
-        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId) // na ovo mozda sort query param
+        public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId, string? sortBy)
         {
-            return await _dbContext.Products.Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+            return await _dbContext.Products.Sort(sortBy).Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
         }
     }
 }
