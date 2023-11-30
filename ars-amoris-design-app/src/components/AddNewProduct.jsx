@@ -1,14 +1,22 @@
-import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 
 export default function AddNewProduct() {
-	const [product, setProduct] = useState({ name: '', description: '', price: '' });
+	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null });
 	const [image, setImage] = useState(null);
+	const [productCategories, setProductCategories] = useState([]);
+
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		const fetchProductCategories = async () => {
+			let result = await axios.get(`https://localhost:7196/api/ProductCategories`);
+			setProductCategories(result.data);
+		};
+		fetchProductCategories();
+	}, []);
 	// effect da revoke object url
 	async function handleAddProduct() {
 		if (product.name == '' || product.price == '' || image === null) {
@@ -22,9 +30,12 @@ export default function AddNewProduct() {
 		data.append('Price', product.price.slice().replace('.', ',')); // pazi na decimalni
 		data.append('Description', product.description);
 		data.append('Image', image);
+		if (product.categoryId !== null && product.categoryId !== 'null') {
+			data.append('ProductCategoryId', product.categoryId);
+		}
 
 		try {
-			let response = await axios.post(`https://localhost:7196/api/Products/`, data);
+			await axios.post(`https://localhost:7196/api/Products/`, data);
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku
@@ -76,11 +87,29 @@ export default function AddNewProduct() {
 			</label>{' '}
 			<br />
 			<label>
+				Kategorija:{' '}
+				<select
+					onChange={e => {
+						setProduct({ ...product, categoryId: e.target.value });
+					}}
+					value={product.categoryId ?? 'null'}
+					className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+				>
+					<option value='null'>Bez kategorije</option>
+					{productCategories.map(pc => (
+						<option key={pc.id} value={pc.id}>
+							{pc.name}
+						</option>
+					))}
+				</select>
+			</label>{' '}
+			<br />
+			<label>
 				Nova slika:{' '}
 				<input
 					type='file'
 					accept='image/png, image/jpeg'
-					className='file:transition-colors
+					className='file:transition-colors file:mt-2 file:cursor-pointer
 						 file:duration-300 file:hover:border-blue-500 file:hover:border-solid file:hover:border-4
 						  file:hover:p-3 file:p-4 file:font-medium file:hover:from-white
 						   file:hover:to-white file:hover:text-blue-500 file:text-white

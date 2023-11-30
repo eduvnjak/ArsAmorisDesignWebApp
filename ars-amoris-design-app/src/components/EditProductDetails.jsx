@@ -9,6 +9,7 @@ export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);
 	const [newImage, setNewImage] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
+	const [productCategories, setProductCategories] = useState([]);
 	const { productId } = useParams();
 	const navigate = useNavigate();
 
@@ -20,8 +21,13 @@ export default function EditProductDetails() {
 			setProduct(result.data);
 			setIsLoading(false);
 		};
+		const fetchProductCategories = async () => {
+			let result = await axios.get(`https://localhost:7196/api/ProductCategories`);
+			setProductCategories(result.data);
+		};
 		fetchProduct();
-	}, []); // treba li ovdje neki cleanup
+		fetchProductCategories();
+	}, [productId]); // treba li ovdje neki cleanup
 
 	// effect da revoke object url
 	async function handleProductUpdate() {
@@ -36,9 +42,12 @@ export default function EditProductDetails() {
 		data.append('Price', product.price.slice().replace('.', ',')); // pazi na decimalni
 		data.append('Description', product.description);
 		data.append('Image', newImage);
+		if (product.categoryId !== null && product.categoryId !== 'null') {
+			data.append('ProductCategoryId', product.categoryId);
+		}
 
 		try {
-			let response = await axios.put(`https://localhost:7196/api/Products/${productId}`, data);
+			await axios.put(`https://localhost:7196/api/Products/${productId}`, data);
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku
@@ -94,12 +103,30 @@ export default function EditProductDetails() {
 					</label>{' '}
 					<br />
 					<label>
+						Kategorija:{' '}
+						<select
+							onChange={e => {
+								setProduct({ ...product, categoryId: e.target.value });
+							}}
+							value={product.categoryId ?? 'null'}
+							className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+						>
+							<option value='null'>Bez kategorije</option>
+							{productCategories.map(pc => (
+								<option key={pc.id} value={pc.id}>
+									{pc.name}
+								</option>
+							))}
+						</select>
+					</label>{' '}
+					<br />
+					<label>
 						Nova slika:{' '}
 						<input
 							type='file'
 							accept='image/png, image/jpeg'
 							onChange={e => setNewImage(e.target.files[0])}
-							className='file:transition-colors
+							className='file:transition-colors file:mt-2 file:cursor-pointer
 						 file:duration-300 file:hover:border-blue-500 file:hover:border-solid file:hover:border-4
 						  file:hover:p-3 file:p-4 file:font-medium file:hover:from-white
 						   file:hover:to-white file:hover:text-blue-500 file:text-white
