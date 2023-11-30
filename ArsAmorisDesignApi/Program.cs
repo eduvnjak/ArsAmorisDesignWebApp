@@ -7,6 +7,7 @@ using System.Text;
 using ArsAmorisDesignApi.Services.ProductService;
 using Microsoft.Extensions.FileProviders;
 using ArsAmorisDesignApi.Services.ProductCategoryService;
+using Microsoft.AspNetCore.Localization;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,6 @@ builder.Services.AddCors(options =>
                       });
 });
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -79,6 +79,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("en");
+});
 // sta je scoped sta singleton a sta transient ?????
 var app = builder.Build();
 
@@ -95,7 +99,7 @@ app.UseCors(MyAllowSpecificOrigins);
 
 //app.UseAuthentication(); //treba li ovo ovdje
 app.UseAuthorization();
-
+app.UseRequestLocalization();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),

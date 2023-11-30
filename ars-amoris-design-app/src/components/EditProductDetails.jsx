@@ -39,7 +39,7 @@ export default function EditProductDetails() {
 
 		const data = new FormData();
 		data.append('Name', product.name);
-		data.append('Price', product.price.slice().replace('.', ',')); // pazi na decimalni
+		data.append('Price', Number(product.price));
 		data.append('Description', product.description);
 		data.append('Image', newImage);
 		if (product.categoryId !== null && product.categoryId !== 'null') {
@@ -95,7 +95,7 @@ export default function EditProductDetails() {
 							type='number'
 							value={product.price}
 							onChange={e => {
-								setProduct({ ...product, price: e.target.value });
+								setProduct({ ...product, price: Number(e.target.value) });
 							}}
 							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 							step={0.01}
