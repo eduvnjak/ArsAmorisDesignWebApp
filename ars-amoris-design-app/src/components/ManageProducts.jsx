@@ -56,6 +56,7 @@ export default function ManageProducts() {
 						name={product.name}
 						price={product.price}
 						imageUrl={product.imageUrl}
+						categoryName={product.categoryName}
 						editDetailsHandler={() => {
 							navigate(`${product.id}`);
 						}}

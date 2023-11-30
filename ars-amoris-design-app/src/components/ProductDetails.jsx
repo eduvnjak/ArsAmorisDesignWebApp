@@ -17,7 +17,7 @@ export default function ProductDetails() {
 			setIsLoading(false);
 		};
 		fetchProduct();
-	}, []);
+	}, [productId]);
 
 	return (
 		<>
@@ -33,6 +33,7 @@ export default function ProductDetails() {
 							: product.description}
 					</p>
 					<div className='font-medium font'>Cijena: {product.price}</div>
+					<div className='font-medium font'>{product.categoryName ?? 'Nekategorisan'}</div>
 					<div className='clear-both'></div>
 				</div>
 			)}

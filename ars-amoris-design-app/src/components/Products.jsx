@@ -90,6 +90,7 @@ export default function Products() {
 									name={product.name}
 									price={product.price}
 									imageUrl={product.imageUrl}
+									categoryName={product.categoryName}
 									showDetails={() => {
 										navigate(`${product.id}`);
 									}}
@@ -101,6 +102,7 @@ export default function Products() {
 									name={product.name}
 									price={product.price}
 									imageUrl={product.imageUrl}
+									categoryName={product.categoryName}
 									showDetails={() => {
 										navigate(`${product.id}`);
 									}}
