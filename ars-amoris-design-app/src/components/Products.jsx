@@ -4,13 +4,17 @@ import ProductCard from './ProductCard';
 import { matchSorter } from 'match-sorter';
 import LoadingIndicator from './LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
+import MultipleSelect from './MultpleSelect';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
+
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortValue, setSortValue] = useState('default');
+	const [selectedCategories, setSelectedCategories] = useState([]);
+	const [categories, setCategories] = useState([]);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -20,7 +24,12 @@ export default function Products() {
 			setProducts(result.data);
 			setIsLoading(false);
 		}
+		async function fetchProductCategories() {
+			let result = await axios.get('https://localhost:7196/api/ProductCategories');
+			setCategories(result.data);
+		}
 		fetchProducts();
+		fetchProductCategories();
 	}, []);
 
 	function handleSearch(newSearchQuery) {
@@ -38,7 +47,34 @@ export default function Products() {
 		setSortValue(newSortValue);
 		setIsLoading(true);
 		let result = await axios.get(
-			`https://localhost:7196/api/Products${newSortValue !== 'default' ? `?sortBy=${newSortValue}` : ''}`
+			`https://localhost:7196/api/Products?categories=${selectedCategories.join(',')}${
+				newSortValue !== 'default' ? `&sortBy=${newSortValue}` : ''
+			}`
+		);
+		setProducts(result.data);
+		setIsLoading(false);
+		if (searchQuery.length === 0) return;
+		setFilteredProducts(
+			matchSorter(result.data, searchQuery, {
+				keys: ['name'],
+				sorter: rankedItems => rankedItems,
+			})
+		);
+	}
+
+	async function handleCategoryFilter(id) {
+		let newCategories;
+		if (selectedCategories.includes(id)) {
+			newCategories = selectedCategories.filter(sid => sid !== id);
+		} else {
+			newCategories = [...selectedCategories, id];
+		}
+		setSelectedCategories(newCategories);
+		setIsLoading(true);
+		let result = await axios.get(
+			`https://localhost:7196/api/Products?categories=${newCategories.join(',')}${
+				sortValue !== 'default' ? `&sortBy=${sortValue}` : ''
+			}`
 		);
 		setProducts(result.data);
 		setIsLoading(false);
@@ -77,7 +113,9 @@ export default function Products() {
 						<option value='priceAsc'>Po cijeni od najmanje</option>
 						<option value='priceDesc'>Po cijeni od najveće</option>
 					</select>
-				</label>
+				</label>{' '}
+				Filtriraj po kategoriji:{' '}
+				<MultipleSelect options={categories} selectedOptions={selectedCategories} onChange={handleCategoryFilter} />
 			</div>
 			{isLoading ? (
 				<LoadingIndicator />
