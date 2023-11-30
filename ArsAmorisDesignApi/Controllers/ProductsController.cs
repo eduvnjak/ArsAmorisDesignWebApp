@@ -44,9 +44,9 @@ namespace ArsAmorisDesignApi.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts([FromQuery] string? sortBy, [FromQuery] string? categoryId) // mozda razdvoji na sort column i sort order
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts([FromQuery] string? sortBy, [FromQuery] string? categories) // mozda razdvoji na sort column i sort order
         {
-            var products = await _productService.GetAllProducts(sortBy, categoryId);
+            var products = await _productService.GetAllProducts(sortBy, categories);
             var productsDTO = new List<ProductDTO>();
             foreach (var product in products)
             {

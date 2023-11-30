@@ -20,5 +20,17 @@ namespace ArsAmorisDesignApi.Extensions
             }
             return query;
         }
+        public static IQueryable<Product> FilterCategories(this IQueryable<Product> query, string? categories)
+        {
+            var categoryList = new List<String>();
+
+            if (!String.IsNullOrEmpty(categories))
+            {
+                categoryList.AddRange(categories.Split(",").ToList());
+                query = query.Where(p => categoryList.Contains(p.ProductCategoryId == null ? "null" : p.ProductCategoryId.ToString()!));
+            }
+            return query;
+
+        }
     }
 }

@@ -47,23 +47,9 @@ namespace ArsAmorisDesignApi.Services.ProductService
             return product;
         }
 
-        public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categoryId)
+        public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categories)
         {
-            var products = _dbContext.Products.Sort(sortBy).AsQueryable();
-
-            if (categoryId != null)
-            {
-                try
-                {
-                    Guid? guid = categoryId == "null" ? null : new Guid(categoryId);
-                    products = products.Where(p => p.ProductCategoryId == guid);
-                }
-                catch (FormatException)
-                {
-                    return new List<Product>();
-                }
-            }
-
+            var products = _dbContext.Products.Sort(sortBy).FilterCategories(categories).AsQueryable();
             return await products.Include(p => p.ProductCategory).ToListAsync();
         }
         // da li ovdje treba Product ? upitnik da označui nullable 
