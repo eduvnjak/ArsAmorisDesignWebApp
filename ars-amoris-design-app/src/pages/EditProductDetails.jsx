@@ -2,8 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import LoadingIndicator from './LoadingIndicator';
-import Button from './Button';
+import LoadingIndicator from '../components/LoadingIndicator';
+import Button from '../components/Button';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);

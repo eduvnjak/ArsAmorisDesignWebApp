@@ -1,4 +1,4 @@
-import ProductCard from './ProductCard';
+import ProductCard from '../components/ProductCard';
 import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Button from './Button';
+import Button from '../components/Button';
 
 export default function AddNewProduct() {
 	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null, featured: false });

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProductCard from './ProductCard';
+import ProductCard from '../components/ProductCard';
 import { matchSorter } from 'match-sorter';
-import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from '../components/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
-import MultipleSelect from './MultpleSelect';
+import MultipleSelect from '../components/MultpleSelect';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);

@@ -1,4 +1,4 @@
-import ManageProductCard from './ManageProductCard.jsx';
+import ManageProductCard from '../components/ManageProductCard.jsx';
 import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { useState } from 'react';

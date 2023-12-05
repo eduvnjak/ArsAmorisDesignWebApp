@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Button from './Button';
-import LoadingIndicator from './LoadingIndicator';
+import Button from '../components/Button';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 export default function Login() {
 	const [username, setUsername] = useState('');

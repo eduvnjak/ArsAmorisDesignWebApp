@@ -5,15 +5,15 @@ import './index.css';
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import Login from './components/Login.jsx';
-import CreateAccount from './components/CreateAccount.jsx';
-import FeaturedProducts, { loader as featuredProductsLoader } from './components/FeaturedProducts.jsx';
-import Products from './components/Products.jsx';
-import About from './components/About.jsx';
-import ProductDetails from './components/ProductDetails.jsx';
-import ManageProducts, { loader as manageProductsLoader } from './components/ManageProducts.jsx';
-import EditProductDetails from './components/EditProductDetails.jsx';
-import AddNewProduct from './components/AddNewProduct.jsx';
+import Login from './pages/Login.jsx';
+import CreateAccount from './pages/CreateAccount.jsx';
+import FeaturedProducts, { loader as featuredProductsLoader } from './pages/FeaturedProducts.jsx';
+import Products from './pages/Products.jsx';
+import About from './pages/About.jsx';
+import ProductDetails from './pages/ProductDetails.jsx';
+import ManageProducts, { loader as manageProductsLoader } from './pages/ManageProducts.jsx';
+import EditProductDetails from './pages/EditProductDetails.jsx';
+import AddNewProduct from './pages/AddNewProduct.jsx';
 
 const router = createBrowserRouter([
 	{

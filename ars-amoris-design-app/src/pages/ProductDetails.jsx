@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import LoadingIndicator from './LoadingIndicator';
+import LoadingIndicator from '../components/LoadingIndicator';
 
 export default function ProductDetails() {
 	const [product, setProduct] = useState(null);
