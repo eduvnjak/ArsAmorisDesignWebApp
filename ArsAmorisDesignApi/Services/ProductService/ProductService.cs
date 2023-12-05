@@ -133,7 +133,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
         }
         public async Task<IEnumerable<Product>> GetFeaturedProducts()
         {
-            return await _dbContext.Products.Where(product => product.Featured).ToListAsync();
+            return await _dbContext.Products.Where(product => product.Featured).Include(product => product.ProductCategory).ToListAsync();
         }
     }
 }
