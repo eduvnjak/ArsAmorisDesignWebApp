@@ -42,7 +42,7 @@ export default function EditProductDetails() {
 		data.append('Price', Number(product.price));
 		data.append('Description', product.description);
 		data.append('Image', newImage);
-		data.append('Featured', product.featured); // osposobi mijenjanje
+		data.append('Featured', product.featured); 
 		if (product.categoryId !== null && product.categoryId !== 'null') {
 			data.append('ProductCategoryId', product.categoryId);
 		}
@@ -100,6 +100,18 @@ export default function EditProductDetails() {
 							}}
 							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 							step={0.01}
+						></input>
+					</label>{' '}
+					<br />
+					<label>
+						Izdvoji proizvod:{' '}
+						<input
+							type='checkbox'
+							checked={product.featured}
+							onChange={e => {
+								setProduct({ ...product, featured: e.target.checked});
+							}}
+							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						></input>
 					</label>{' '}
 					<br />

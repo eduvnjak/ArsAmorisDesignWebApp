@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from './Button';
 
 export default function AddNewProduct() {
-	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null });
+	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null, featured: false });
 	const [image, setImage] = useState(null);
 	const [productCategories, setProductCategories] = useState([]);
 
@@ -84,6 +84,18 @@ export default function AddNewProduct() {
 					}}
 					className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 					step={0.01}
+				></input>
+			</label>{' '}
+			<br />
+			<label>
+				Izdvoji proizvod:{' '}
+				<input
+					type='checkbox'
+					checked={product.featured}
+					onChange={e => {
+						setProduct({ ...product, featured: e.target.checked });
+					}}
+					className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 				></input>
 			</label>{' '}
 			<br />
