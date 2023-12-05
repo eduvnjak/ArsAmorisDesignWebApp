@@ -86,6 +86,17 @@ namespace ArsAmorisDesignApi.Controllers
             }
             return Ok(productsDTO);
         }
+        [HttpGet("Featured")]
+        public async Task<ActionResult<ProductDTO>> GetFeaturedProducts() // za sada ne trebaju nikakvi parametri
+        { 
+            var products = await _productService.GetFeaturedProducts();
+            var productsDTO = new List<ProductDTO>();
+            foreach (var product in products)
+            {
+                productsDTO.Add(MapDomainToDTO(product));
+            }
+            return Ok(productsDTO);
+        }
         private static ProductDTO MapDomainToDTO(Product product)
         {
             return new ProductDTO
@@ -96,7 +107,8 @@ namespace ArsAmorisDesignApi.Controllers
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 CategoryId = product.ProductCategoryId,
-                CategoryName = product.ProductCategory?.Name
+                CategoryName = product.ProductCategory?.Name,
+                Featured = product.Featured
             };
         }
     }

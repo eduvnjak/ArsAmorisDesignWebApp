@@ -24,4 +24,6 @@ public class Product
     [Column("category_id")]
     public Guid? ProductCategoryId { get; set; }
     public ProductCategory? ProductCategory { get; set; }
+    [Column("featured")]
+    public bool Featured { get; set; }
 }

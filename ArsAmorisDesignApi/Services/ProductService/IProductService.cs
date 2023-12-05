@@ -10,5 +10,6 @@ namespace ArsAmorisDesignApi.Services.ProductService
         Task<bool> DeleteProduct(Guid id);
         Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO);
         Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId, string? sortBy);
+        Task<IEnumerable<Product>> GetFeaturedProducts();
     }
 }

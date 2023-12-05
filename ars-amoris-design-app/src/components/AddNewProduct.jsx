@@ -30,6 +30,7 @@ export default function AddNewProduct() {
 		data.append('Price', Number(product.price));
 		data.append('Description', product.description);
 		data.append('Image', image);
+		data.append('Featured', product.featured); // osposobi mijenjanje
 		if (product.categoryId !== null && product.categoryId !== 'null') {
 			data.append('ProductCategoryId', product.categoryId);
 		}

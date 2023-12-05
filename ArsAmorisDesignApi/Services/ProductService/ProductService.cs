@@ -37,7 +37,8 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 Price = productPostDTO.Price,
                 Description = productPostDTO.Description,
                 ImageUrl = urlImagePath,
-                ProductCategoryId = productPostDTO.ProductCategoryId
+                ProductCategoryId = productPostDTO.ProductCategoryId,
+                Featured = productPostDTO.Featured
             };
 
             await _dbContext.Products.AddAsync(product);
@@ -120,6 +121,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             product.Description = productEditDTO.Description;
             product.Price = productEditDTO.Price;
             product.ProductCategoryId = productEditDTO.ProductCategoryId;
+            product.Featured = productEditDTO.Featured;
             await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
             await _dbContext.SaveChangesAsync();
@@ -128,6 +130,10 @@ namespace ArsAmorisDesignApi.Services.ProductService
         public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId, string? sortBy)
         {
             return await _dbContext.Products.Sort(sortBy).Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+        }
+        public async Task<IEnumerable<Product>> GetFeaturedProducts()
+        {
+            return await _dbContext.Products.Where(product => product.Featured).ToListAsync();
         }
     }
 }
