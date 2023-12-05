@@ -7,6 +7,7 @@ export default function AddNewProduct() {
 	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null, featured: false });
 	const [image, setImage] = useState(null);
 	const [productCategories, setProductCategories] = useState([]);
+	const [newCategory, setNewCategory] = useState('');
 
 	const navigate = useNavigate();
 
@@ -24,14 +25,26 @@ export default function AddNewProduct() {
 			console.log('propala validacija');
 			return;
 		}
-
+		// da li je unesena nova kategorija
+		var newCategoryId = null;
+		if (newCategory !== '') {
+			try {
+				let result = await axios.post('https://localhost:7196/api/ProductCategories', { name: newCategory });
+				newCategoryId = result.data.id;
+			} catch (error) {
+				console.log(error.message);
+				return;
+			}
+		}
 		const data = new FormData();
 		data.append('Name', product.name);
 		data.append('Price', Number(product.price));
 		data.append('Description', product.description);
 		data.append('Image', image);
-		data.append('Featured', product.featured); // osposobi mijenjanje
-		if (product.categoryId !== null && product.categoryId !== 'null') {
+		data.append('Featured', product.featured);
+		if (newCategoryId !== null) {
+			data.append('ProductCategoryId', newCategoryId);
+		} else if (product.categoryId !== null && product.categoryId !== 'null') {
 			data.append('ProductCategoryId', product.categoryId);
 		}
 
@@ -100,12 +113,13 @@ export default function AddNewProduct() {
 			</label>{' '}
 			<br />
 			<label>
-				Kategorija:{' '}
+				Odaberi postojeću kategoriju:{' '}
 				<select
 					onChange={e => {
 						setProduct({ ...product, categoryId: e.target.value });
 					}}
 					value={product.categoryId ?? 'null'}
+					disabled={newCategory !== ''}
 					className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 				>
 					<option value='null'>Bez kategorije</option>
@@ -115,6 +129,18 @@ export default function AddNewProduct() {
 						</option>
 					))}
 				</select>
+			</label>{' '}
+			<br />
+			<label>
+				Unesi novu kategoriju:{' '}
+				<input
+					type='text'
+					onChange={e => {
+						setNewCategory(e.target.value);
+					}}
+					value={newCategory}
+					className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+				></input>
 			</label>{' '}
 			<br />
 			<label>
