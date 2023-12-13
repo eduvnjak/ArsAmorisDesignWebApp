@@ -15,10 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
+                      policyBuilder =>
                       {
-                          policy.WithOrigins("http://localhost:5173")
-                          .AllowAnyHeader().AllowAnyMethod();
+                          policyBuilder.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader().AllowAnyMethod(); // allowCredentials ???
                       });
 });
 // Add services to the container.
