@@ -5,7 +5,8 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.AspNetCore.Authorization;
+using ArsAmorisDesignApi.Services.RefreshTokenService;
+using System.Security.Cryptography;
 
 namespace ArsAmorisDesignApi.Controllers;
 
@@ -14,11 +15,13 @@ namespace ArsAmorisDesignApi.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IRefreshTokenService _refreshTokenService;
     private readonly IConfiguration _configuration;
 
-    public AuthController(IUserService userService, IConfiguration configuration)
+    public AuthController(IUserService userService, IRefreshTokenService refreshTokenService, IConfiguration configuration)
     {
         _userService = userService;
+        _refreshTokenService = refreshTokenService;
         _configuration = configuration;
     }
     [HttpPost("register")]
@@ -32,14 +35,16 @@ public class AuthController : ControllerBase
         // da li je password ili username prazan itd
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
         // var newUser = new User(request.Username, passwordHash); jesul konstruktori belaj????
-        var newUser = new User();
-        newUser.Username = request.Username;
-        newUser.PasswordHash = passwordHash;
+        var newUser = new User
+        {
+            Username = request.Username,
+            PasswordHash = passwordHash
+        };
         await _userService.AddUser(newUser);
         return Ok();
     }
     [HttpPost("login")]
-    public async Task<ActionResult<User>> Login(UserDTO request)
+    public async Task<ActionResult<LoginResponse>> Login(UserDTO request)
     {
         var user = await _userService.GetUserByUsername(request.Username);
         if (user == null)
@@ -52,23 +57,100 @@ public class AuthController : ControllerBase
             return BadRequest("Invalid password");
         }
 
-        string token = CreateToken(user);
-        var response = new LoginResponse { Token = token };
+        string accessToken = CreateJwtToken(user);
 
+        RefreshToken refreshToken = new()
+        {
+            Value = Guid.NewGuid(),
+            ExpirationDate = DateTime.Now.AddDays(7),
+            UserId = user.Id
+        };
+        // zapisi u bazu
+        await _refreshTokenService.AddNewRefreshToken(refreshToken);
+
+        var response = new LoginResponse { AccessToken = accessToken };
+        // scopeaj ovaj cookie samo an refresh route
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(7),
+            Path = "/api/Auth/Token"
+        };
+        // postavi refreshToken u cookie
+        Response.Cookies.Append("refreshToken", refreshToken.Value.ToString(), cookieOptions);
         return Ok(response);
     }
-    private string CreateToken(User user)
+    [HttpPost("Token/refresh")]//izmijeni mozda ovaj login response 
+    public async Task<ActionResult<LoginResponse>> GetNewAccessToken()
     {
-        List<Claim> claims = new List<Claim>
+        var refreshToken = Request.Cookies["refreshToken"];
+        // imas li refresh token u cookie-u
+        if (refreshToken == null)
         {
-            new Claim("name", user.Username)
+            return Unauthorized("No refresh token"); // da li ovo vratiti ??
+        }
+        // provjeri jel guid
+        // provjeri u bazi jel dobar token
+        var token = await _refreshTokenService.GetRefreshToken(new Guid(refreshToken));
+        // da li token postoji
+        if (token == null)
+        {
+            return Unauthorized("Invalid token");
+        }
+        // da li je istekao 
+        if (DateTime.Now > token.ExpirationDate)
+        {
+            //obrisi ga iz baze, ovo malo mozda malo traljavo jer svaki sljedeci req vraca invalid
+            await _refreshTokenService.DeleteRefreshToken(new Guid(refreshToken));
+            return Unauthorized("Expired token");
+        }
+        // daj korisnika iz baze  i napravi mu novi JWT
+        var user = await _userService.GetUser(token.UserId);
+        // ondelete cascade je postavljeno, ovo vjerovatno ne treba  
+        if (user == null)
+        {
+            return Unauthorized("No user");
+        }
+        var accessToken = CreateJwtToken(user);
+
+        return Ok(new LoginResponse { AccessToken = accessToken });
+    }
+    // da li treba biti authorized??
+    // ovo token zbog cookie path scopeanja
+    [HttpPost("Token/logout")]
+    public async Task<ActionResult> Logout()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        // imas li refresh token u cookie-u
+        if (refreshToken == null)
+        {
+            return Unauthorized(); // da li ovo vratiti ??
+        }
+        // obrisi token u bazi
+        await _refreshTokenService.DeleteRefreshToken(new Guid(refreshToken));
+        // izbrisi cookie
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.Now.AddDays(-1),
+            Path = "/api/Auth/Token"
+        };
+        Response.Cookies.Append("refreshToken", "", cookieOptions);
+        return Ok();
+    }
+    private string CreateJwtToken(User user)
+    {
+        List<Claim> claims = new()
+        {
+            new Claim("name", user.Username),
+            new Claim("sub", user.Id.ToString())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Token:Secret").Value!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512); // koji algoritam ovdje
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30), //vrati na addminutes 30
+            expires: DateTime.Now.AddMinutes(15),
             signingCredentials: creds);
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 

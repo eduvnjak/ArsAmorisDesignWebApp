@@ -8,6 +8,7 @@ using ArsAmorisDesignApi.Services.ProductService;
 using Microsoft.Extensions.FileProviders;
 using ArsAmorisDesignApi.Services.ProductCategoryService;
 using Microsoft.AspNetCore.Localization;
+using ArsAmorisDesignApi.Services.RefreshTokenService;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
@@ -78,6 +79,7 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
