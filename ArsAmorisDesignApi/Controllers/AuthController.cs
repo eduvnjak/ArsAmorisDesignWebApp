@@ -83,37 +83,46 @@ public class AuthController : ControllerBase
     [HttpPost("Token/refresh")]//izmijeni mozda ovaj login response 
     public async Task<ActionResult<LoginResponse>> GetNewAccessToken()
     {
-        var refreshToken = Request.Cookies["refreshToken"];
+        string? refreshTokenString = Request.Cookies["refreshToken"];
         // imas li refresh token u cookie-u
-        if (refreshToken == null)
+        if (refreshTokenString == null)
         {
             return Unauthorized("No refresh token"); // da li ovo vratiti ??
         }
-        // provjeri jel guid
-        // provjeri u bazi jel dobar token
-        var token = await _refreshTokenService.GetRefreshToken(new Guid(refreshToken));
-        // da li token postoji
-        if (token == null)
+
+        try
+        {
+            // provjeri jel guid
+            Guid refreshTokenValue = Guid.Parse(refreshTokenString);
+            // provjeri u bazi jel dobar token
+            var token = await _refreshTokenService.GetRefreshToken(refreshTokenValue);
+            // da li token postoji
+            if (token == null)
+            {
+                return Unauthorized("Invalid token");
+            }
+            // da li je istekao 
+            if (DateTime.Now > token.ExpirationDate)
+            {
+                //obrisi ga iz baze, ovo malo mozda malo traljavo jer svaki sljedeci req vraca invalid
+                await _refreshTokenService.DeleteRefreshToken(refreshTokenValue);
+                return Unauthorized("Expired token");
+            }
+            // daj korisnika iz baze  i napravi mu novi JWT
+            var user = await _userService.GetUser(token.UserId);
+            // ondelete cascade je postavljeno, ovo vjerovatno ne treba  
+            if (user == null)
+            {
+                return Unauthorized("No user");
+            }
+            var accessToken = CreateJwtToken(user);
+
+            return Ok(new LoginResponse { AccessToken = accessToken });
+        }
+        catch (FormatException)
         {
             return Unauthorized("Invalid token");
         }
-        // da li je istekao 
-        if (DateTime.Now > token.ExpirationDate)
-        {
-            //obrisi ga iz baze, ovo malo mozda malo traljavo jer svaki sljedeci req vraca invalid
-            await _refreshTokenService.DeleteRefreshToken(new Guid(refreshToken));
-            return Unauthorized("Expired token");
-        }
-        // daj korisnika iz baze  i napravi mu novi JWT
-        var user = await _userService.GetUser(token.UserId);
-        // ondelete cascade je postavljeno, ovo vjerovatno ne treba  
-        if (user == null)
-        {
-            return Unauthorized("No user");
-        }
-        var accessToken = CreateJwtToken(user);
-
-        return Ok(new LoginResponse { AccessToken = accessToken });
     }
     // da li treba biti authorized??
     // ovo token zbog cookie path scopeanja
@@ -124,10 +133,17 @@ public class AuthController : ControllerBase
         // imas li refresh token u cookie-u
         if (refreshToken == null)
         {
-            return Unauthorized(); // da li ovo vratiti ??
+            return NoContent(); // da li ovo vratiti ??
         }
-        // obrisi token u bazi
-        await _refreshTokenService.DeleteRefreshToken(new Guid(refreshToken));
+        try
+        {
+            // obrisi token u bazi
+            await _refreshTokenService.DeleteRefreshToken(Guid.Parse(refreshToken));
+        }
+        catch (FormatException)
+        {
+            // u slucaju neuspjeha parsiranja tokena tj nevalidnog tokena
+        }
         // izbrisi cookie
         var cookieOptions = new CookieOptions
         {
@@ -136,7 +152,7 @@ public class AuthController : ControllerBase
             Path = "/api/Auth/Token"
         };
         Response.Cookies.Append("refreshToken", "", cookieOptions);
-        return Ok();
+        return NoContent();
     }
     private string CreateJwtToken(User user)
     {
