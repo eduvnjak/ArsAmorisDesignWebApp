@@ -74,7 +74,9 @@ public class AuthController : ControllerBase
         {
             HttpOnly = true,
             Expires = DateTime.Now.AddDays(7),
-            Path = "/api/Auth/Token"
+            Path = "/api/Auth/Token",
+            SameSite = SameSiteMode.None,
+            Secure = true
         };
         // postavi refreshToken u cookie
         Response.Cookies.Append("refreshToken", refreshToken.Value.ToString(), cookieOptions);
@@ -149,7 +151,9 @@ public class AuthController : ControllerBase
         {
             HttpOnly = true,
             Expires = DateTime.Now.AddDays(-1),
-            Path = "/api/Auth/Token"
+            Path = "/api/Auth/Token",
+            SameSite = SameSiteMode.None,
+            Secure = true
         };
         Response.Cookies.Append("refreshToken", "", cookieOptions);
         return NoContent();
