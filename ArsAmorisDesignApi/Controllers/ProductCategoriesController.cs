@@ -1,5 +1,6 @@
 using ArsAmorisDesignApi.Models;
 using ArsAmorisDesignApi.Services.ProductCategoryService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             _productCategoryService = productCategoryService;
         }
-
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<ProductCategory>> PostProductCategory([FromBody] PostProductCategoryDTO postProductCategoryDTO)
         {
@@ -30,6 +31,7 @@ namespace ArsAmorisDesignApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProductCategory(Guid id)
         {
@@ -57,6 +59,7 @@ namespace ArsAmorisDesignApi.Controllers
             if (productCategory == null) return NotFound();
             return Ok(productCategory);
         }
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductCategory>> EditProductCategory(Guid id, [FromBody] PostProductCategoryDTO postProductCategoryDTO)
         {

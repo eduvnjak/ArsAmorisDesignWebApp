@@ -75,6 +75,11 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
         ClockSkew = TimeSpan.Zero //radi debugginga
     };
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", p =>
+        p.RequireClaim("isAdmin", "true"));
+});
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductService, ProductService>();

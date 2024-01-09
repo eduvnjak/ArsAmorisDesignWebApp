@@ -163,7 +163,8 @@ public class AuthController : ControllerBase
         List<Claim> claims = new()
         {
             new Claim("name", user.Username),
-            new Claim("sub", user.Id.ToString())
+            new Claim("sub", user.Id.ToString()), // ovaj sub je mozda suvisan
+            new Claim("isAdmin", user.IsAdmin.ToString().ToLower())
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Token:Secret").Value!));

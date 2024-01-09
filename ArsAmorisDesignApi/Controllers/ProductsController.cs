@@ -1,5 +1,6 @@
 ﻿using ArsAmorisDesignApi.Models;
 using ArsAmorisDesignApi.Services.ProductService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,6 @@ namespace ArsAmorisDesignApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // authorize ostavi za kasnije, sada svima dostupno sve
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -16,7 +16,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             _productService = productService;
         }
-
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
         {
@@ -30,6 +30,7 @@ namespace ArsAmorisDesignApi.Controllers
                 return BadRequest(e.Message);
             }
         }
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
@@ -61,6 +62,7 @@ namespace ArsAmorisDesignApi.Controllers
             if (product == null) return NotFound();
             return MapDomainToDTO(product); // treba li ovo umotati u Ok ???
         }
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{id}")] // ovaj put odstupa od HTTP standarda 
         public async Task<ActionResult<ProductDTO>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
         {
@@ -88,7 +90,7 @@ namespace ArsAmorisDesignApi.Controllers
         }
         [HttpGet("Featured")]
         public async Task<ActionResult<ProductDTO>> GetFeaturedProducts() // za sada ne trebaju nikakvi parametri
-        { 
+        {
             var products = await _productService.GetFeaturedProducts();
             var productsDTO = new List<ProductDTO>();
             foreach (var product in products)
