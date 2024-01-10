@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import LoadingIndicator from '../components/LoadingIndicator';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
 	const [username, setUsername] = useState('');
@@ -10,22 +10,16 @@ export default function Login() {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const { login } = useAuth();
 
 	async function handleSubmit() {
 		try {
 			setIsLoading(true);
 			setError(null);
-			let response = await axios.post('https://localhost:7196/api/User/Login', {
-				username: username,
-				password: password,
-			});
-			localStorage.setItem('token', response.data.token);
-			console.log(response.data.token);
-			setError(null);
+			await login(username, password);
 			navigate('/');
 		} catch (error) {
 			setError(error.message);
-			console.log(error.message);
 		} finally {
 			setIsLoading(false);
 		}

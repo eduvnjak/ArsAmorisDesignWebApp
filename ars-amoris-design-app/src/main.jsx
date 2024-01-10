@@ -14,6 +14,8 @@ import ProductDetails from './pages/ProductDetails.jsx';
 import ManageProducts, { loader as manageProductsLoader } from './pages/ManageProducts.jsx';
 import EditProductDetails from './pages/EditProductDetails.jsx';
 import AddNewProduct from './pages/AddNewProduct.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 const router = createBrowserRouter([
 	{
@@ -24,9 +26,31 @@ const router = createBrowserRouter([
 			{ path: 'about', element: <About /> },
 			{ path: 'products', element: <Products /> },
 			{ path: 'products/:productId', element: <ProductDetails /> },
-			{ path: 'manage-products/', element: <ManageProducts />, loader: manageProductsLoader },
-			{ path: 'manage-products/:productId', element: <EditProductDetails /> },
-			{ path: 'manage-products/new', element: <AddNewProduct /> },
+			{
+				path: 'manage-products/',
+				element: (
+					<ProtectedRoute adminRoute={true}>
+						<ManageProducts />
+					</ProtectedRoute>
+				),
+				loader: manageProductsLoader,
+			},
+			{
+				path: 'manage-products/:productId',
+				element: (
+					<ProtectedRoute adminRoute={true}>
+						<EditProductDetails />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: 'manage-products/new',
+				element: (
+					<ProtectedRoute adminRoute={true}>
+						<AddNewProduct />
+					</ProtectedRoute>
+				),
+			},
 		],
 	},
 	{ path: '/login', element: <Login /> },
@@ -34,6 +58,8 @@ const router = createBrowserRouter([
 ]);
 ReactDOM.createRoot(document.getElementById('root')).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+		<AuthProvider>
+			<RouterProvider router={router} />
+		</AuthProvider>
 	</React.StrictMode>
 );
