@@ -6,7 +6,7 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 	return (
 		<div className='cursor-default m-2 text-left inline-block '>
 			<span className='p-2 bg-white shadow-md' onClick={() => setIsExpanded(!isExpanded)}>
-				Odaberi kategoriju
+				Odaberi kategorije
 				<svg
 					className='inline-block'
 					width='16px'

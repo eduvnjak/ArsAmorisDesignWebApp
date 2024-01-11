@@ -114,7 +114,7 @@ export default function Products() {
 						<option value='priceDesc'>Po cijeni od najveće</option>
 					</select>
 				</label>{' '}
-				Filtriraj po kategoriji:{' '}
+				Filtriraj po kategorijama:{' '}
 				<MultipleSelect options={categories} selectedOptions={selectedCategories} onChange={handleCategoryFilter} />
 			</div>
 			{isLoading ? (
