@@ -75,6 +75,9 @@ function AuthProvider({ children }) {
 				const decoded = jwtDecode(response.data.accessToken);
 				dispatch({ type: 'login', accessToken: response.data.accessToken, isAdmin: decoded.isAdmin === 'true' });
 			}
+		} catch (error) {
+			// ignorisi 401
+			if(error.response.status !== 401) throw error;
 		} finally {
 			dispatch({ type: 'finished' });
 		}
