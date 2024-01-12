@@ -1,59 +1,80 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function MultipleSelect({ options, selectedOptions, onChange }) {
+	const spanRef = useRef(null);
 	const [isExpanded, setIsExpanded] = useState(false);
 
+	function handleLabelClick() {
+		spanRef.current.focus();
+	}
+
 	return (
-		<div className='cursor-default m-2 text-left inline-block '>
-			<span className='p-2 bg-white shadow-md' onClick={() => setIsExpanded(!isExpanded)}>
-				Odaberi kategorije
-				<svg
-					className='inline-block'
-					width='16px'
-					height='16px'
-					viewBox='0 0 24 24'
-					fill='none'
-					xmlns='http://www.w3.org/2000/svg'
-				>
-					<g id='SVGRepo_iconCarrier'>
-						<path
-							d='M6 9L12 15L18 9'
-							stroke='#000000'
-							strokeWidth='3'
-							strokeLinecap='round'
-							strokeLinejoin='round'
-						></path>{' '}
-					</g>
-				</svg>
+		<>
+			<span className='cursor-default' onClick={handleLabelClick}>
+				Filtriraj po kategorijama:{' '}
 			</span>
-			{isExpanded && (
-				<div className='absolute z-0'>
-					{options.map(option => (
-						<div key={option.id} className='bg-white p-2 hover:text-white hover:bg-blue-600 '>
+			<div className='cursor-default m-2 text-left inline-block'>
+				<span
+					tabIndex={0}
+					className='transition-all duration-300 p-2 bg-white shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+					onClick={() => setIsExpanded(!isExpanded)}
+					onBlur={() => setIsExpanded(false)}
+					onKeyDown={e => {
+						e.preventDefault();
+						if (e.code === 'Space') setIsExpanded(true);
+						else if (e.key === 'Enter') setIsExpanded(!isExpanded);
+					}}
+					ref={spanRef}
+				>
+					Odaberi kategorije
+					<svg
+						className='inline-block'
+						width='16px'
+						height='16px'
+						viewBox='0 0 24 24'
+						fill='none'
+						xmlns='http://www.w3.org/2000/svg'
+					>
+						<g id='SVGRepo_iconCarrier'>
+							<path
+								d='M6 9L12 15L18 9'
+								stroke='#000000'
+								strokeWidth='3'
+								strokeLinecap='round'
+								strokeLinejoin='round'
+							></path>{' '}
+						</g>
+					</svg>
+				</span>
+				{isExpanded && (
+					<div className='absolute z-0'>
+						{options.map(option => (
+							<div key={option.id} className='bg-white p-2 hover:text-white hover:bg-blue-600'>
+								<label className='hover:cursor-pointer'>
+									{option.name}{' '}
+									<input
+										className='hover:cursor-pointer'
+										type='checkbox'
+										checked={selectedOptions.includes(option.id)}
+										onChange={() => onChange(option.id)}
+									></input>
+								</label>
+							</div>
+						))}
+						<div className='bg-white p-2 hover:text-white hover:bg-blue-600'>
 							<label className='hover:cursor-pointer'>
-								{option.name}{' '}
+								Bez kategorije{' '}
 								<input
 									className='hover:cursor-pointer'
 									type='checkbox'
-									checked={selectedOptions.includes(option.id)}
-									onChange={() => onChange(option.id)}
+									onChange={() => onChange('null')}
+									checked={selectedOptions.includes('null')}
 								></input>
 							</label>
 						</div>
-					))}
-					<div className='bg-white p-2 hover:text-white hover:bg-blue-600'>
-						<label className='hover:cursor-pointer'>
-							Bez kategorije{' '}
-							<input
-								className='hover:cursor-pointer'
-								type='checkbox'
-								onChange={() => onChange('null')}
-								checked={selectedOptions.includes('null')}
-							></input>
-						</label>
 					</div>
-				</div>
-			)}
-		</div>
+				)}
+			</div>
+		</>
 	);
 }
