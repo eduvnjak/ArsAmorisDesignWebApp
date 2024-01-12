@@ -11,12 +11,12 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 	return (
 		<>
 			<span className='cursor-default' onClick={handleLabelClick}>
-				Filtriraj po kategorijama:{' '}
+				Filtriraj po kategorijama:
 			</span>
-			<div className='cursor-default m-2 text-left inline-block'>
+			<div className='cursor-default my-2 mx-1 text-left inline-block'>
 				<span
 					tabIndex={0}
-					className='transition-all duration-300 p-2 bg-white shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+					className='transition-all duration-300 pl-2 pr-1 py-1 bg-white shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 					onClick={() => setIsExpanded(!isExpanded)}
 					onBlur={() => setIsExpanded(false)}
 					onKeyDown={e => {
@@ -26,12 +26,12 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 					}}
 					ref={spanRef}
 				>
-					Odaberi kategorije
+					Odaberi kategorije &nbsp;&nbsp;
 					<svg
 						className='inline-block'
-						width='16px'
-						height='16px'
-						viewBox='0 0 24 24'
+						width='20px'
+						height='20px'
+						viewBox='-12 0 32 32'
 						fill='none'
 						xmlns='http://www.w3.org/2000/svg'
 					>
@@ -40,9 +40,9 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 								d='M6 9L12 15L18 9'
 								stroke='#000000'
 								strokeWidth='3'
-								strokeLinecap='round'
-								strokeLinejoin='round'
-							></path>{' '}
+								strokeLinecap='square'
+								strokeLinejoin='miter'
+							></path>
 						</g>
 					</svg>
 				</span>

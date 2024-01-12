@@ -119,7 +119,7 @@ export default function Products() {
 			{isLoading ? (
 				<LoadingIndicator />
 			) : (
-				<div className='flex flex-row flex-wrap px-2'>
+				<div className='flex flex-row flex-wrap p-2'>
 					{searchQuery.trim().length === 0
 						? products.map(product => (
 								<ProductCard
