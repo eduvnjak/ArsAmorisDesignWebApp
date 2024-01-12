@@ -34,9 +34,9 @@ export default function Products() {
 
 	function handleSearch(newSearchQuery) {
 		setSearchQuery(newSearchQuery);
-		if (newSearchQuery.length === 0) return;
+		if (newSearchQuery.trim().length === 0) return;
 		setFilteredProducts(
-			matchSorter(products, newSearchQuery, {
+			matchSorter(products, newSearchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
 			})
@@ -53,9 +53,9 @@ export default function Products() {
 		);
 		setProducts(result.data);
 		setIsLoading(false);
-		if (searchQuery.length === 0) return;
+		if (searchQuery.trim().length === 0) return;
 		setFilteredProducts(
-			matchSorter(result.data, searchQuery, {
+			matchSorter(result.data, searchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
 			})
@@ -78,9 +78,9 @@ export default function Products() {
 		);
 		setProducts(result.data);
 		setIsLoading(false);
-		if (searchQuery.length === 0) return;
+		if (searchQuery.trim().length === 0) return;
 		setFilteredProducts(
-			matchSorter(result.data, searchQuery, {
+			matchSorter(result.data, searchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
 			})
@@ -114,17 +114,13 @@ export default function Products() {
 						<option value='priceDesc'>Po cijeni od najveće</option>
 					</select>
 				</label>{' '}
-				<MultipleSelect
-					options={categories}
-					selectedOptions={selectedCategories}
-					onChange={handleCategoryFilter}
-				/>
+				<MultipleSelect options={categories} selectedOptions={selectedCategories} onChange={handleCategoryFilter} />
 			</div>
 			{isLoading ? (
 				<LoadingIndicator />
 			) : (
 				<div className='flex flex-row flex-wrap px-2'>
-					{searchQuery.length === 0
+					{searchQuery.trim().length === 0
 						? products.map(product => (
 								<ProductCard
 									key={product.id}
