@@ -1,41 +1,51 @@
 import { jwtDecode } from 'jwt-decode';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 // import { memo } from 'react';
+import { Link } from 'react-router-dom';
+
+// ova komponenta se nigdje drugo ne koristi stoga je ostavljena u ovom fajlu; izdvojena radi preglednosti
+function AuthenticationMenuElement({ children, to }) {
+	return (
+		<div>
+			<Link
+				to={to}
+				className={
+					'transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+				}
+			>
+				{children}
+			</Link>
+		</div>
+	);
+}
 
 export default function AuthenticationMenu() {
 	const { accessToken, isAuthenticated, logout } = useAuth();
 	let text = 'Nisi ulogovan';
-	
+
 	if (accessToken !== null) {
 		let decodedToken = jwtDecode(accessToken);
 		text = 'Pozdrav ' + decodedToken.name + '!';
 	}
 	// console.log('auth menu render'); memo?
-	// za ovo bolje mozda posebna stilizovana komponenta
-	const divClassName = 'hover:text-blue-600 hover:bg-gradient-to-r from-gray-50  to-gray-100 m-5 p-3 rounded-md';
+
 	return (
 		<nav className='text-white font-medium p-2 flex justify-end w-fit'>
 			{!isAuthenticated ? (
 				<>
-					<div className={divClassName}>
-						<Link to='/login'>Log in</Link>
-					</div>
-					<div className={divClassName}>
-						<Link to='/createaccount'>Create account</Link>
-					</div>
+					<AuthenticationMenuElement to='/login'>Log in</AuthenticationMenuElement>
+					<AuthenticationMenuElement to='/createaccount'>Create account</AuthenticationMenuElement>
 				</>
 			) : (
 				<>
-					<div className={divClassName}>{text}</div>
-					<div className={divClassName}>
-						<button
-							onClick={() => {
-								logout();
-							}}
-						>
-							Log out
-						</button>
+					<div className='from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'>{text}</div>
+					<div
+						className='transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r hover:cursor-pointer from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+						onClick={() => {
+							logout();
+						}}
+					>
+						Log out
 					</div>
 				</>
 			)}
