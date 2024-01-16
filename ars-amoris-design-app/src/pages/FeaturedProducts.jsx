@@ -1,4 +1,5 @@
 import ProductCard from '../components/ProductCard';
+import Button from '../components/Button';
 import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
@@ -23,10 +24,15 @@ export default function FeaturedProducts() {
 						price={product.price}
 						imageUrl={product.imageUrl}
 						categoryName={product.categoryName}
-						showDetails={() => {
-							navigate(`products/${product.id}`);
-						}}
-					/>
+					>
+						<Button
+							onClick={() => {
+								navigate(`products/${product.id}`);
+							}}
+						>
+							Pogledaj detalje
+						</Button>
+					</ProductCard>
 				))}
 			</div>
 		</>

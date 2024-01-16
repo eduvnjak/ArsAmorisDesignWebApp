@@ -1,6 +1,7 @@
-import ManageProductCard from '../components/ManageProductCard.jsx';
+import ProductCard from '../components/ProductCard.jsx';
 import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import Button from '../components/Button.jsx';
 
 export async function loader() {
 	let result = await axios.get('https://localhost:7196/api/Products');
@@ -51,17 +52,16 @@ export default function ManageProducts() {
 					<PlusIcon />
 				</div>
 				{products.map(product => (
-					<ManageProductCard
+					<ProductCard
 						key={product.id}
 						name={product.name}
 						price={product.price}
 						imageUrl={product.imageUrl}
 						categoryName={product.categoryName}
-						editDetailsHandler={() => {
-							navigate(`${product.id}`);
-						}}
-						deleteHandler={() => deleteHandler(product.id)}
-					/>
+					>
+						<Button onClick={() => navigate(`${product.id}`)}>Izmijeni proizvod ✏️</Button>
+						<Button onClick={() => deleteHandler(product.id)}>Obriši proizvod ❌ </Button>
+					</ProductCard>
 				))}
 			</div>
 		</>

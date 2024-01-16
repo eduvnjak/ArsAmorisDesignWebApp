@@ -5,6 +5,7 @@ import { matchSorter } from 'match-sorter';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import MultipleSelect from '../components/MultpleSelect';
+import Button from '../components/Button';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
@@ -128,10 +129,15 @@ export default function Products() {
 									price={product.price}
 									imageUrl={product.imageUrl}
 									categoryName={product.categoryName}
-									showDetails={() => {
-										navigate(`${product.id}`);
-									}}
-								/>
+								>
+									<Button
+										onClick={() => {
+											navigate(`${product.id}`);
+										}}
+									>
+										Pogledaj detalje
+									</Button>
+								</ProductCard>
 						  ))
 						: filteredProducts.map(product => (
 								<ProductCard
@@ -140,10 +146,15 @@ export default function Products() {
 									price={product.price}
 									imageUrl={product.imageUrl}
 									categoryName={product.categoryName}
-									showDetails={() => {
-										navigate(`${product.id}`);
-									}}
-								/>
+								>
+									<Button
+										onClick={() => {
+											navigate(`${product.id}`);
+										}}
+									>
+										Pogledaj detalje
+									</Button>
+								</ProductCard>
 						  ))}
 				</div>
 			)}
