@@ -2,12 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AddNewProduct() {
 	const [product, setProduct] = useState({ name: '', description: '', price: '', categoryId: null, featured: false });
+	const { name, description, price, categoryId, featured } = product;
 	const [image, setImage] = useState(null);
 	const [productCategories, setProductCategories] = useState([]);
 	const [newCategory, setNewCategory] = useState('');
+
+	const { accessToken } = useAuth();
 
 	const navigate = useNavigate();
 
@@ -20,7 +24,7 @@ export default function AddNewProduct() {
 	}, []);
 	// effect da revoke object url
 	async function handleAddProduct() {
-		if (product.name == '' || product.price == '' || image === null) {
+		if (name == '' || price == '' || image === null) {
 			//ovo sredi
 			console.log('propala validacija');
 			return;
@@ -29,7 +33,15 @@ export default function AddNewProduct() {
 		var newCategoryId = null;
 		if (newCategory !== '') {
 			try {
-				let result = await axios.post('https://localhost:7196/api/ProductCategories', { name: newCategory });
+				let result = await axios.post(
+					'https://localhost:7196/api/ProductCategories',
+					{ name: newCategory },
+					{
+						headers: {
+							Authorization: `Bearer ${accessToken}`,
+						},
+					}
+				);
 				newCategoryId = result.data.id;
 			} catch (error) {
 				console.log(error.message);
@@ -37,19 +49,23 @@ export default function AddNewProduct() {
 			}
 		}
 		const data = new FormData();
-		data.append('Name', product.name);
-		data.append('Price', Number(product.price));
-		data.append('Description', product.description);
+		data.append('Name', name);
+		data.append('Price', Number(price));
+		data.append('Description', description);
 		data.append('Image', image);
-		data.append('Featured', product.featured);
+		data.append('Featured', featured);
 		if (newCategoryId !== null) {
 			data.append('ProductCategoryId', newCategoryId);
-		} else if (product.categoryId !== null && product.categoryId !== 'null') {
-			data.append('ProductCategoryId', product.categoryId);
+		} else if (categoryId !== null && categoryId !== 'null') {
+			data.append('ProductCategoryId', categoryId);
 		}
 
 		try {
-			await axios.post(`https://localhost:7196/api/Products/`, data);
+			await axios.post(`https://localhost:7196/api/Products/`, data, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku
@@ -60,14 +76,14 @@ export default function AddNewProduct() {
 		<div className='mx-8 mt-8 min-h-fit rounded-xl bg-white'>
 			<img
 				src={image ? URL.createObjectURL(image) : 'https://fakeimg.pl/800x450?text=Image+preview&font=noto'}
-				alt={product.name + ' image'}
+				alt={name + ' image'}
 				className='m-5 float-left w-96'
 			/>
 			<label>
 				Naziv proizvoda:{' '}
 				<input
 					type='text'
-					value={product.name}
+					value={name}
 					onChange={e => {
 						setProduct({ ...product, name: e.target.value });
 					}}
@@ -79,7 +95,7 @@ export default function AddNewProduct() {
 				Opis proizvoda:{' '}
 				<input
 					type='text'
-					value={product.description}
+					value={description}
 					onChange={e => {
 						setProduct({ ...product, description: e.target.value });
 					}}
@@ -91,7 +107,7 @@ export default function AddNewProduct() {
 				Cijena:{' '}
 				<input
 					type='number'
-					value={product.price}
+					value={price}
 					onChange={e => {
 						setProduct({ ...product, price: Number(e.target.value) });
 					}}
@@ -104,7 +120,7 @@ export default function AddNewProduct() {
 				Izdvoji proizvod:{' '}
 				<input
 					type='checkbox'
-					checked={product.featured}
+					checked={featured}
 					onChange={e => {
 						setProduct({ ...product, featured: e.target.checked });
 					}}
@@ -118,7 +134,7 @@ export default function AddNewProduct() {
 					onChange={e => {
 						setProduct({ ...product, categoryId: e.target.value });
 					}}
-					value={product.categoryId ?? 'null'}
+					value={categoryId ?? 'null'}
 					disabled={newCategory !== ''}
 					className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 				>

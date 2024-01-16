@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Button from '../components/Button';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);
@@ -13,6 +14,7 @@ export default function EditProductDetails() {
 	const [newCategory, setNewCategory] = useState('');
 	const { productId } = useParams();
 	const navigate = useNavigate();
+	const { accessToken } = useAuth();
 
 	// da li fetch kroz api ili primiti objekat kroz properties
 	useEffect(() => {
@@ -41,7 +43,15 @@ export default function EditProductDetails() {
 		var newCategoryId = null;
 		if (newCategory !== '') {
 			try {
-				let result = await axios.post('https://localhost:7196/api/ProductCategories', { name: newCategory });
+				let result = await axios.post(
+					'https://localhost:7196/api/ProductCategories',
+					{ name: newCategory },
+					{
+						headers: {
+							Authorization: `Bearer ${accessToken}`,
+						},
+					}
+				);
 				newCategoryId = result.data.id;
 			} catch (error) {
 				console.log(error.message);
@@ -61,7 +71,11 @@ export default function EditProductDetails() {
 		}
 
 		try {
-			await axios.put(`https://localhost:7196/api/Products/${productId}`, data);
+			await axios.put(`https://localhost:7196/api/Products/${productId}`, data, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku
