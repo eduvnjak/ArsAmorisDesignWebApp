@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import LoadingIndicator from '../components/LoadingIndicator';
 import { useAuth } from '../contexts/AuthContext';
+import StyledInput from '../components/StyledInput';
 
 export default function Login() {
 	const [username, setUsername] = useState('');
@@ -32,26 +33,15 @@ export default function Login() {
 					e.preventDefault();
 					handleSubmit();
 				}}
-				className='shadow-md text-center w-fit mx-auto mt-52 p-5 bg-slate-50 rounded-3xl'
+				className='shadow-md text-center w-fit mx-auto mt-52 p-5 bg-slate-50 rounded-3xl text-lg'
 			>
-				<label className='text-lg font-normal'>
-					Username:{' '}
-					<input
-						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						value={username}
-						onChange={e => setUsername(e.target.value)}
-					/>
-				</label>
+				<StyledInput value={username} onChange={e => setUsername(e.target.value)}>
+					Username:
+				</StyledInput>
 				<br />
-				<label className='text-lg'>
-					Password:{' '}
-					<input
-						className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						value={password}
-						type='password'
-						onChange={e => setPassword(e.target.value)}
-					/>
-				</label>
+				<StyledInput value={password} onChange={e => setPassword(e.target.value)} type='password'>
+					Password:
+				</StyledInput>
 				<br />
 				<Button type='submit'>
 					<span className='text-xl'>Login</span>

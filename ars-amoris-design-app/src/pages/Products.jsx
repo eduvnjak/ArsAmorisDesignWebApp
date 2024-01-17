@@ -6,6 +6,7 @@ import LoadingIndicator from '../components/LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import MultipleSelect from '../components/MultpleSelect';
 import Button from '../components/Button';
+import StyledInput from '../components/StyledInput';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
@@ -91,22 +92,15 @@ export default function Products() {
 		<>
 			<h1 className='text-center text-white py-3 font-medium text-4xl'>Proizvodi</h1>
 			<div className='bg-slate-50 mx-auto w-fit rounded-xl shadow-2xl text-center p-3 font-medium'>
+				<StyledInput type='text' value={searchQuery} onChange={e => handleSearch(e.target.value)}>
+					Pretraži proizvode:
+				</StyledInput>
 				<label>
-					Pretraži proizvode:{' '}
-					<input
-						className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						type='text'
-						value={searchQuery}
-						onChange={e => handleSearch(e.target.value)}
-					></input>
-				</label>
-				<label>
-					{' '}
-					Sortiraj proizvode:{' '}
+					Sortiraj proizvode:
 					<select
 						value={sortValue}
 						onChange={e => handleSort(e.target.value)}
-						className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+						className='transition-all duration-300 m-2 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 					>
 						<option value='default'>Zadano</option>
 						<option value='nameAsc'>Po nazivu abecedno</option>
@@ -114,7 +108,7 @@ export default function Products() {
 						<option value='priceAsc'>Po cijeni od najmanje</option>
 						<option value='priceDesc'>Po cijeni od najveće</option>
 					</select>
-				</label>{' '}
+				</label>
 				<MultipleSelect options={categories} selectedOptions={selectedCategories} onChange={handleCategoryFilter} />
 			</div>
 			{isLoading ? (

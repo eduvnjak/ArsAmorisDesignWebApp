@@ -19,7 +19,7 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 				Filtriraj po kategorijama:
 			</span>
 			<div
-				className='cursor-default my-2 mx-1 text-left inline-block'
+				className='cursor-default m-2 text-left inline-block'
 				onMouseEnter={() => {
 					hoveredRef.current = true;
 				}}
@@ -31,7 +31,7 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 				}}
 			>
 				<span
-					tabIndex={0}
+					tabIndex={0} // ovaj span srediti
 					className='transition-all duration-300 pl-2 pr-1 py-1 bg-white shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 					onClick={() => setIsExpanded(!isExpanded)}
 					onKeyDown={e => {

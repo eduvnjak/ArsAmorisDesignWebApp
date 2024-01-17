@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Button from '../components/Button';
 import { useAuth } from '../contexts/AuthContext';
+import StyledInput from '../components/StyledInput';
+import StyledFileInput from '../components/StyledFileInput';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState(null);
@@ -93,54 +95,46 @@ export default function EditProductDetails() {
 						alt={product.name + ' image'}
 						className='m-5 float-left w-96'
 					/>
-					<label>
-						Naziv proizvoda:{' '}
-						<input
-							type='text'
-							value={product.name}
-							onChange={e => {
-								setProduct({ ...product, name: e.target.value });
-							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						></input>
-					</label>{' '}
+					<StyledInput
+						type='text'
+						value={product.name}
+						onChange={e => {
+							setProduct({ ...product, name: e.target.value });
+						}}
+					>
+						Naziv proizvoda:
+					</StyledInput>
 					<br />
-					<label>
-						Opis proizvoda:{' '}
-						<input
-							type='text'
-							value={product.description}
-							onChange={e => {
-								setProduct({ ...product, description: e.target.value });
-							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						></input>
-					</label>{' '}
+					<StyledInput
+						type='text'
+						value={product.description}
+						onChange={e => {
+							setProduct({ ...product, description: e.target.value });
+						}}
+					>
+						Opis proizvoda:
+					</StyledInput>
 					<br />
-					<label>
-						Cijena:{' '}
-						<input
-							type='number'
-							value={product.price}
-							onChange={e => {
-								setProduct({ ...product, price: Number(e.target.value) });
-							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-							step={0.01}
-						></input>
-					</label>{' '}
+					<StyledInput
+						type='number'
+						value={product.price}
+						onChange={e => {
+							setProduct({ ...product, price: Number(e.target.value) });
+						}}
+						step={0.01}
+					>
+						Cijena:
+					</StyledInput>
 					<br />
-					<label>
-						Izdvoji proizvod:{' '}
-						<input
-							type='checkbox'
-							checked={product.featured}
-							onChange={e => {
-								setProduct({ ...product, featured: e.target.checked });
-							}}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						></input>
-					</label>{' '}
+					<StyledInput
+						type='checkbox'
+						checked={product.featured}
+						onChange={e => {
+							setProduct({ ...product, featured: e.target.checked });
+						}}
+					>
+						Izdvoji proizvod:
+					</StyledInput>
 					<br />
 					<label>
 						Odaberi postojeću kategoriju:{' '}
@@ -150,7 +144,7 @@ export default function EditProductDetails() {
 							}}
 							value={product.categoryId ?? 'null'}
 							disabled={newCategory !== ''}
-							className='transition-all duration-300 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+							className='transition-all duration-300 m-2 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
 						>
 							<option value='null'>Bez kategorije</option>
 							{productCategories.map(pc => (
@@ -159,34 +153,21 @@ export default function EditProductDetails() {
 								</option>
 							))}
 						</select>
-					</label>{' '}
+					</label>
 					<br />
-					<label>
-						Unesi novu kategoriju:{' '}
-						<input
-							type='text'
-							onChange={e => {
-								setNewCategory(e.target.value);
-							}}
-							value={newCategory}
-							className='transition-all duration-300 my-3 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-						></input>
-					</label>{' '}
+					<StyledInput
+						type='text'
+						onChange={e => {
+							setNewCategory(e.target.value);
+						}}
+						value={newCategory}
+					>
+						Unesi novu kategoriju:
+					</StyledInput>
 					<br />
-					<label>
-						Nova slika:{' '}
-						<input
-							type='file'
-							accept='image/png, image/jpeg'
-							onChange={e => setNewImage(e.target.files[0])}
-							className='file:transition-colors file:mt-2 file:cursor-pointer
-						 file:duration-300 file:hover:border-blue-500 file:hover:border-solid file:hover:border-4
-						  file:hover:p-3 file:p-4 file:font-medium file:hover:from-white
-						   file:hover:to-white file:hover:text-blue-500 file:text-white
-						    file:bg-gradient-to-l file:from-blue-400 file:to-blue-500
-							 file:shadow-md file:rounded-full file:border-0 file:border-blue-500'
-						></input>
-					</label>{' '}
+					<StyledFileInput onChange={e => setNewImage(e.target.files[0])} accept='image/png, image/jpeg'>
+						Nova slika:
+					</StyledFileInput>
 					<br />
 					<div className='p-3'>
 						<Button onClick={handleProductUpdate}>Potvrdi izmjene</Button>
