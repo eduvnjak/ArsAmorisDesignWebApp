@@ -43,7 +43,9 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 
 	return (
 		<div className='mx-8 mt-8 min-h-fit rounded-xl bg-white'>
-			<img src={imageSource} alt={name + ' image'} className='m-5 float-left w-96' />
+			<div className='float-left w-[500px] h-[500px] flex items-center justify-center'>
+				<img src={imageSource} alt={name + ' image'} className='p-3 mx-auto max-h-full max-w-full' />
+			</div>
 			<StyledInput type='text' value={name} name='name' onChange={handleChange}>
 				Naziv proizvoda:
 			</StyledInput>
