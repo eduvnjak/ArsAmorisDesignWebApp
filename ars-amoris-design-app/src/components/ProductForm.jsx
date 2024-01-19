@@ -9,6 +9,7 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 	const [productCategories, setProductCategories] = useState([]);
 	const { name, description, price, categoryId, imageUrl, featured, newCategory, image } = product;
 	const navigate = useNavigate();
+	const [newImageUrl, setNewImageUrl] = useState(null);
 
 	useEffect(() => {
 		const fetchProductCategories = async () => {
@@ -18,6 +19,14 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 		fetchProductCategories();
 	}, []);
 
+	useEffect(() => {
+		return () => {
+			if (newImageUrl !== null) {
+				URL.revokeObjectURL(newImageUrl);
+			}
+		};
+	}, [newImageUrl]);
+
 	function handleChange(e) {
 		let value;
 		switch (e.target.name) {
@@ -25,7 +34,11 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 				value = e.target.checked;
 				break;
 			case 'image':
+				if (newImageUrl !== null) {
+					URL.revokeObjectURL(newImageUrl);
+				}
 				value = e.target.files[0] ?? null;
+				value !== null ? setNewImageUrl(URL.createObjectURL(value)) : setNewImageUrl(null);
 				break;
 			default:
 				value = e.target.value;
@@ -36,7 +49,7 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 
 	const imageSource =
 		image !== null
-			? URL.createObjectURL(image)
+			? newImageUrl
 			: imageUrl !== undefined
 			? imageUrl
 			: 'https://fakeimg.pl/450x250?text=Image+preview&font=noto';
