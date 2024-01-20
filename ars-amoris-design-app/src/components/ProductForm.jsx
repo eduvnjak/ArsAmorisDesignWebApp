@@ -46,6 +46,10 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 		}
 		setProduct({ ...product, [e.target.name]: value });
 	}
+	function handleCancel() {
+		URL.revokeObjectURL(newImageUrl);
+		setProduct({ ...product, image: null });
+	}
 
 	const imageSource =
 		image !== null
@@ -103,8 +107,8 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 				Unesi novu kategoriju:
 			</StyledInput>
 			<br />
-			<StyledFileInput name='image' onChange={handleChange} accept='image/png, image/jpeg'>
-				Nova slika:
+			<StyledFileInput name='image' onChange={handleChange} onCancel={handleCancel} accept='image/png, image/jpeg'>
+				Odaberi novu sliku
 			</StyledFileInput>
 			<br />
 			<div className='p-3'>
