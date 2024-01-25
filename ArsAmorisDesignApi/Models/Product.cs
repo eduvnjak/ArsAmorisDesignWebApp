@@ -19,8 +19,8 @@ public class Product
     // public string ImageName { get; set; } // ovaj i sljedeci atribut potrebni zbog brisanja 
     // [Column("image_extension")]
     // public string ImageExtension { get; set; }
-    [Column("image_url")]
-    public string ImageUrl { get; set; } //omoguci vise slika
+    [Column("image_file_name")]
+    public string ImageFileName { get; set; } //omoguci vise slika
     [Column("category_id")]
     public Guid? ProductCategoryId { get; set; }
     public ProductCategory? ProductCategory { get; set; }

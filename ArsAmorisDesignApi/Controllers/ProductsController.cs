@@ -11,10 +11,13 @@ namespace ArsAmorisDesignApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, IHttpContextAccessor httpContextAccessor)
         {
             _productService = productService;
+            _httpContextAccessor = httpContextAccessor;
+
         }
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
@@ -99,7 +102,7 @@ namespace ArsAmorisDesignApi.Controllers
             }
             return Ok(productsDTO);
         }
-        private static ProductDTO MapDomainToDTO(Product product)
+        private ProductDTO MapDomainToDTO(Product product)
         {
             return new ProductDTO
             {
@@ -107,7 +110,7 @@ namespace ArsAmorisDesignApi.Controllers
                 Name = product.Name,
                 Price = product.Price,
                 Description = product.Description,
-                ImageUrl = product.ImageUrl,
+                ImageUrl = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{product.ImageFileName}",
                 CategoryId = product.ProductCategoryId,
                 CategoryName = product.ProductCategory?.Name,
                 Featured = product.Featured

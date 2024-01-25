@@ -9,13 +9,11 @@ namespace ArsAmorisDesignApi.Services.ProductService
     public class ProductService : IProductService
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppDbContext _dbContext;
 
-        public ProductService(IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor, AppDbContext dbContext)
+        public ProductService(IWebHostEnvironment webHostEnvironment, AppDbContext dbContext)
         {
             _webHostEnvironment = webHostEnvironment;
-            _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
         }
         public async Task<Product> AddProduct(ProductPostDTO productPostDTO)
@@ -29,14 +27,14 @@ namespace ArsAmorisDesignApi.Services.ProductService
             using var stream = new FileStream(localFilePath, FileMode.Create);
             await productPostDTO.Image.CopyToAsync(stream);
 
-            var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
+            // var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
 
             var product = new Product
             {
                 Name = productPostDTO.Name,
                 Price = productPostDTO.Price,
                 Description = productPostDTO.Description,
-                ImageUrl = urlImagePath,
+                ImageFileName = $"{imageName}{imageExtension}",
                 ProductCategoryId = productPostDTO.ProductCategoryId,
                 Featured = productPostDTO.Featured
             };
@@ -72,7 +70,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             _dbContext.Products.Remove(product);
             await _dbContext.SaveChangesAsync();
             // obrisi sliku
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{Path.GetFileName(product.ImageUrl)}");
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
             // kakvi ovdje izuzeci se mogu dogoditi?
             File.Delete(localFilePath);
 
@@ -102,7 +100,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
             {
                 ValidateImageUpload(productEditDTO.Image);
                 // obrisi sliku
-                var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{Path.GetFileName(product.ImageUrl)}");
+                var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
                 // kakvi ovdje izuzeci se mogu dogoditi?
                 File.Delete(oldLocalFilePath); // ne provjerava da li file postoji
                 // ovaj upload je ponavljanje koda
@@ -113,8 +111,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 using var stream = new FileStream(newLocalFilePath, FileMode.Create);
                 await productEditDTO.Image.CopyToAsync(stream);
 
-                var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
-                product.ImageUrl = urlImagePath;
+                product.ImageFileName = $"{imageName}{imageExtension}";
             }
             // ovdje bi dobro dosao mapper
             product.Name = productEditDTO.Name;
