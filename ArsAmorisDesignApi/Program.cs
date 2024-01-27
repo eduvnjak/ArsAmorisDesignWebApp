@@ -101,18 +101,24 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors(MyAllowSpecificOrigins);
-
-//app.UseAuthentication(); //treba li ovo ovdje
-app.UseAuthorization();
-app.UseRequestLocalization();
+app.UseDefaultFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
     RequestPath = "/Images"
 });
+app.UseStaticFiles();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(MyAllowSpecificOrigins);
+}
+
+//app.UseAuthentication(); //treba li ovo ovdje
+app.UseAuthorization();
+app.UseRequestLocalization();
+
 
 app.MapControllers();
-
+app.MapFallbackToController("Index", "Fallback");
 app.Run();
