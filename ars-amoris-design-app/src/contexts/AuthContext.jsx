@@ -41,7 +41,7 @@ function AuthProvider({ children }) {
 
 		try {
 			let response = await axios.post(
-				'https://localhost:7196/api/Auth/Login',
+				`${import.meta.env.VITE_API_URL}Auth/Login`,
 				{
 					username,
 					password,
@@ -59,7 +59,7 @@ function AuthProvider({ children }) {
 
 	async function logout() {
 		dispatch({ type: 'loading' });
-		await axios.post('https://localhost:7196/api/Auth/Token/logout', null, { withCredentials: true });
+		await axios.post(`${import.meta.env.VITE_API_URL}Auth/Token/logout`, null, { withCredentials: true });
 		dispatch({ type: 'logout' });
 		dispatch({ type: 'finished' });
 	}
@@ -68,7 +68,7 @@ function AuthProvider({ children }) {
 		try {
 			dispatch({ type: 'loading' });
 
-			let response = await axios.post('https://localhost:7196/api/Auth/Token/refresh', null, {
+			let response = await axios.post(`${import.meta.env.VITE_API_URL}Auth/Token/refresh`, null, {
 				withCredentials: true,
 			});
 			if (response.status === 200) {

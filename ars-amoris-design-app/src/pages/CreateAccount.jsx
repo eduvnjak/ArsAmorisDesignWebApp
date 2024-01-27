@@ -17,7 +17,7 @@ export default function CreateAccount() {
 		try {
 			setLoading(true);
 			if (username == '' || password == '' || password != confirmPassword) throw new Error('Invalid data');
-			let response = await axios.post('https://localhost:7196/api/User/Register', {
+			let response = await axios.post(`${import.meta.env.VITE_API_URL}User/Register`, {
 				username: username,
 				password: password,
 			});

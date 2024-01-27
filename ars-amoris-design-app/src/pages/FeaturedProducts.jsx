@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 
 export async function loader() {
-	let result = await axios.get('https://localhost:7196/api/Products/Featured');
+	let result = await axios.get(`${import.meta.env.VITE_API_URL}Products/Featured`);
 	return result.data;
 }
 

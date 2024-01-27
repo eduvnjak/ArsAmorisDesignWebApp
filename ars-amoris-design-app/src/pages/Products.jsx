@@ -22,12 +22,12 @@ export default function Products() {
 	useEffect(() => {
 		async function fetchProducts() {
 			setIsLoading(true);
-			let result = await axios.get(`https://localhost:7196/api/Products`);
+			let result = await axios.get(`${import.meta.env.VITE_API_URL}Products`);
 			setProducts(result.data);
 			setIsLoading(false);
 		}
 		async function fetchProductCategories() {
-			let result = await axios.get('https://localhost:7196/api/ProductCategories');
+			let result = await axios.get(`${import.meta.env.VITE_API_URL}ProductCategories`);
 			setCategories(result.data);
 		}
 		fetchProducts();
@@ -49,7 +49,7 @@ export default function Products() {
 		setSortValue(newSortValue);
 		setIsLoading(true);
 		let result = await axios.get(
-			`https://localhost:7196/api/Products?categories=${selectedCategories.join(',')}${
+			`${import.meta.env.VITE_API_URL}Products?categories=${selectedCategories.join(',')}${
 				newSortValue !== 'default' ? `&sortBy=${newSortValue}` : ''
 			}`
 		);
@@ -74,7 +74,7 @@ export default function Products() {
 		setSelectedCategories(newCategories);
 		setIsLoading(true);
 		let result = await axios.get(
-			`https://localhost:7196/api/Products?categories=${newCategories.join(',')}${
+			`${import.meta.env.VITE_API_URL}Products?categories=${newCategories.join(',')}${
 				sortValue !== 'default' ? `&sortBy=${sortValue}` : ''
 			}`
 		);

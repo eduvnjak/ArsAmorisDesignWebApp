@@ -4,7 +4,7 @@ import { useLoaderData, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 
 export async function loader() {
-	let result = await axios.get('https://localhost:7196/api/Products');
+	let result = await axios.get(`${import.meta.env.VITE_API_URL}Products`);
 	return result.data;
 }
 

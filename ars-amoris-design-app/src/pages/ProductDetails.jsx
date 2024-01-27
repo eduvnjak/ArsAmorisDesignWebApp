@@ -12,7 +12,7 @@ export default function ProductDetails() {
 	useEffect(() => {
 		const fetchProduct = async () => {
 			setIsLoading(true);
-			let result = await axios.get(`https://localhost:7196/api/Products/${productId}`);
+			let result = await axios.get(`${import.meta.env.VITE_API_URL}Products/${productId}`);
 			setProduct(result.data);
 			setIsLoading(false);
 		};

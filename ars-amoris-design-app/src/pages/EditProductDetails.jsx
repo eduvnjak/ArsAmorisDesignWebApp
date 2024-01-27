@@ -19,7 +19,7 @@ export default function EditProductDetails() {
 	useEffect(() => {
 		const fetchProduct = async () => {
 			setIsLoading(true);
-			let result = await axios.get(`https://localhost:7196/api/Products/${productId}`);
+			let result = await axios.get(`${import.meta.env.VITE_API_URL}Products/${productId}`);
 			setProduct({ newCategory: '', image: null, ...result.data });
 			setIsLoading(false);
 		};
@@ -37,7 +37,7 @@ export default function EditProductDetails() {
 		if (newCategory !== '') {
 			try {
 				let result = await axios.post(
-					'https://localhost:7196/api/ProductCategories',
+					`${import.meta.env.VITE_API_URL}ProductCategories`,
 					{ name: newCategory },
 					{
 						headers: {
@@ -64,7 +64,7 @@ export default function EditProductDetails() {
 		}
 
 		try {
-			await axios.put(`https://localhost:7196/api/Products/${productId}`, data, {
+			await axios.put(`${import.meta.env.VITE_API_URL}Products/${productId}`, data, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},

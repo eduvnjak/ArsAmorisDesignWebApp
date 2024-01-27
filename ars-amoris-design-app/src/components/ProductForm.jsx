@@ -13,7 +13,7 @@ export default function ProductForm({ product, setProduct, onAccept, acceptLabel
 
 	useEffect(() => {
 		const fetchProductCategories = async () => {
-			let result = await axios.get(`https://localhost:7196/api/ProductCategories`);
+			let result = await axios.get(`${import.meta.env.VITE_API_URL}ProductCategories`);
 			setProductCategories(result.data);
 		};
 		fetchProductCategories();

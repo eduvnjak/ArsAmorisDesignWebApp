@@ -30,7 +30,7 @@ export default function AddNewProduct() {
 		if (newCategory !== '') {
 			try {
 				let result = await axios.post(
-					'https://localhost:7196/api/ProductCategories',
+					`${import.meta.env.VITE_API_URL}ProductCategories`,
 					{ name: newCategory },
 					{
 						headers: {
@@ -57,7 +57,7 @@ export default function AddNewProduct() {
 		}
 
 		try {
-			await axios.post(`https://localhost:7196/api/Products/`, data, {
+			await axios.post(`${import.meta.env.VITE_API_URL}Products/`, data, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
