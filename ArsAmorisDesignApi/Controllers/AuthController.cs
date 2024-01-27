@@ -17,12 +17,14 @@ public class AuthController : ControllerBase
     private readonly IUserService _userService;
     private readonly IRefreshTokenService _refreshTokenService;
     private readonly IConfiguration _configuration;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public AuthController(IUserService userService, IRefreshTokenService refreshTokenService, IConfiguration configuration)
+    public AuthController(IUserService userService, IRefreshTokenService refreshTokenService, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         _userService = userService;
         _refreshTokenService = refreshTokenService;
         _configuration = configuration;
+        _webHostEnvironment = webHostEnvironment;
     }
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(UserDTO request)
@@ -75,7 +77,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Expires = DateTime.Now.AddDays(7),
             Path = "/api/Auth/Token",
-            SameSite = SameSiteMode.None,
+            SameSite = _webHostEnvironment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None,
             Secure = true
         };
         // postavi refreshToken u cookie
@@ -152,7 +154,7 @@ public class AuthController : ControllerBase
             HttpOnly = true,
             Expires = DateTime.Now.AddDays(-1),
             Path = "/api/Auth/Token",
-            SameSite = SameSiteMode.None,
+            SameSite = _webHostEnvironment.IsProduction() ? SameSiteMode.Strict : SameSiteMode.None,
             Secure = true
         };
         Response.Cookies.Append("refreshToken", "", cookieOptions);
