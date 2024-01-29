@@ -25,9 +25,17 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDbContext<AppDbContext>(opt =>
-opt.UseMySQL("server=localhost;database=ars_amoris_design_db;user=root;password=password"));
-//skloni ovo u appsettings
+
+string connectionString;
+if (builder.Environment.IsDevelopment())
+{
+    connectionString = builder.Configuration.GetConnectionString("Development");
+}
+else
+{
+    connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+}
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseMySQL(connectionString));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
