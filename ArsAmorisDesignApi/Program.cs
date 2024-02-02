@@ -35,7 +35,7 @@ else
 {
     connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 }
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseMySQL(connectionString));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseNpgsql(connectionString));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
