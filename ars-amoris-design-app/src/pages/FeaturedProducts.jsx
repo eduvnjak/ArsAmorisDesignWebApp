@@ -2,9 +2,12 @@ import ProductCard from '../components/ProductCard';
 import Button from '../components/Button';
 import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
+import ProductContainer from '../components/ProductContainer';
 
 export async function loader() {
-	let result = await axios.get(`${import.meta.env.VITE_API_URL}Products/Featured`);
+	let result = await axios.get(
+		`${import.meta.env.VITE_API_URL}Products/Featured`,
+	);
 	return result.data;
 }
 
@@ -15,8 +18,10 @@ export default function FeaturedProducts() {
 
 	return (
 		<>
-			<h1 className='text-center text-white py-3 font-medium text-4xl'>Izdvojeni proizvodi</h1>
-			<div className='flex flex-row flex-wrap px-2'>
+			<h1 className='py-3 text-center text-4xl font-medium text-white'>
+				Izdvojeni proizvodi
+			</h1>
+			<ProductContainer>
 				{products.map(product => (
 					<ProductCard
 						key={product.id}
@@ -34,7 +39,7 @@ export default function FeaturedProducts() {
 						</Button>
 					</ProductCard>
 				))}
-			</div>
+			</ProductContainer>
 		</>
 	);
 }

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import MultipleSelect from '../components/MultpleSelect';
 import Button from '../components/Button';
 import StyledInput from '../components/StyledInput';
+import ProductContainer from '../components/ProductContainer';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
@@ -27,7 +28,9 @@ export default function Products() {
 			setIsLoading(false);
 		}
 		async function fetchProductCategories() {
-			let result = await axios.get(`${import.meta.env.VITE_API_URL}ProductCategories`);
+			let result = await axios.get(
+				`${import.meta.env.VITE_API_URL}ProductCategories`,
+			);
 			setCategories(result.data);
 		}
 		fetchProducts();
@@ -41,7 +44,7 @@ export default function Products() {
 			matchSorter(products, newSearchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
-			})
+			}),
 		);
 	}
 
@@ -51,7 +54,7 @@ export default function Products() {
 		let result = await axios.get(
 			`${import.meta.env.VITE_API_URL}Products?categories=${selectedCategories.join(',')}${
 				newSortValue !== 'default' ? `&sortBy=${newSortValue}` : ''
-			}`
+			}`,
 		);
 		setProducts(result.data);
 		setIsLoading(false);
@@ -60,7 +63,7 @@ export default function Products() {
 			matchSorter(result.data, searchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
-			})
+			}),
 		);
 	}
 
@@ -76,7 +79,7 @@ export default function Products() {
 		let result = await axios.get(
 			`${import.meta.env.VITE_API_URL}Products?categories=${newCategories.join(',')}${
 				sortValue !== 'default' ? `&sortBy=${sortValue}` : ''
-			}`
+			}`,
 		);
 		setProducts(result.data);
 		setIsLoading(false);
@@ -85,14 +88,20 @@ export default function Products() {
 			matchSorter(result.data, searchQuery.trim(), {
 				keys: ['name'],
 				sorter: rankedItems => rankedItems,
-			})
+			}),
 		);
 	}
 	return (
 		<>
-			<h1 className='text-center text-white py-3 font-medium text-4xl'>Proizvodi</h1>
-			<div className='bg-slate-50 mx-auto w-fit rounded-xl shadow-2xl text-center p-3 font-medium'>
-				<StyledInput type='text' value={searchQuery} onChange={e => handleSearch(e.target.value)}>
+			<h1 className='py-3 text-center text-4xl font-medium text-white'>
+				Proizvodi
+			</h1>
+			<div className='mx-auto w-fit rounded-xl bg-slate-50 p-3 text-center font-medium shadow-2xl'>
+				<StyledInput
+					type='text'
+					value={searchQuery}
+					onChange={e => handleSearch(e.target.value)}
+				>
 					Pretraži proizvode:
 				</StyledInput>
 				<label>
@@ -100,7 +109,7 @@ export default function Products() {
 					<select
 						value={sortValue}
 						onChange={e => handleSort(e.target.value)}
-						className='transition-all duration-300 m-2 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
+						className='m-2 p-1 shadow-md transition-all duration-300 focus:outline-none focus:ring focus:ring-blue-600'
 					>
 						<option value='default'>Zadano</option>
 						<option value='nameAsc'>Po nazivu abecedno</option>
@@ -109,12 +118,16 @@ export default function Products() {
 						<option value='priceDesc'>Po cijeni od najveće</option>
 					</select>
 				</label>
-				<MultipleSelect options={categories} selectedOptions={selectedCategories} onChange={handleCategoryFilter} />
+				<MultipleSelect
+					options={categories}
+					selectedOptions={selectedCategories}
+					onChange={handleCategoryFilter}
+				/>
 			</div>
 			{isLoading ? (
 				<LoadingIndicator />
 			) : (
-				<div className='flex flex-row flex-wrap p-2'>
+				<ProductContainer>
 					{searchQuery.trim().length === 0
 						? products.map(product => (
 								<ProductCard
@@ -132,7 +145,7 @@ export default function Products() {
 										Pogledaj detalje
 									</Button>
 								</ProductCard>
-						  ))
+							))
 						: filteredProducts.map(product => (
 								<ProductCard
 									key={product.id}
@@ -149,8 +162,8 @@ export default function Products() {
 										Pogledaj detalje
 									</Button>
 								</ProductCard>
-						  ))}
-				</div>
+							))}
+				</ProductContainer>
 			)}
 		</>
 	);

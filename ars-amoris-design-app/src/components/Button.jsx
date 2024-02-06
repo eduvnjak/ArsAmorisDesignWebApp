@@ -1,10 +1,10 @@
-export default function Button({ onClick, children, type = 'button' }) {
+export default function Button({ children, type = 'button', ...rest }) {
 	// reusable styled button
 	return (
 		<button
-			className='transition-colors duration-300 hover:border-blue-500 hover:border-4 hover:p-3 p-4 font-medium hover:from-white hover:to-white hover:text-blue-500 text-white bg-gradient-to-l from-blue-400 to-blue-500 shadow-md rounded-full border-0'
-			onClick={onClick}
-            type={type}
+			className='w-[100%] rounded border-0 bg-gradient-to-l from-blue-400 to-blue-500 p-4 font-medium text-white shadow-md transition-colors duration-300 hover:border-4 hover:border-blue-500 hover:from-white hover:to-white hover:p-3 hover:text-blue-500'
+			type={type}
+			{...rest}
 		>
 			{children}
 		</button>
