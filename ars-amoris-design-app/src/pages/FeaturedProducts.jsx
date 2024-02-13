@@ -1,18 +1,20 @@
 import ProductCard from '../components/ProductCard';
 import Button from '../components/Button';
 import axios from 'axios';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Await, defer, useLoaderData, useNavigate } from 'react-router-dom';
 import ProductContainer from '../components/ProductContainer';
+import { Suspense } from 'react';
+import ProductCardSkeleton from '../components/ProductCardSkeleton';
 
 export async function loader() {
-	let result = await axios.get(
+	const productsPromise = axios.get(
 		`${import.meta.env.VITE_API_URL}Products/Featured`,
 	);
-	return result.data;
+	return defer({ products: productsPromise.then(res => res.data) });
 }
 
 export default function FeaturedProducts() {
-	const products = useLoaderData();
+	const loaderData = useLoaderData();
 
 	const navigate = useNavigate();
 
@@ -22,23 +24,42 @@ export default function FeaturedProducts() {
 				Izdvojeni proizvodi
 			</h1>
 			<ProductContainer>
-				{products.map(product => (
-					<ProductCard
-						key={product.id}
-						name={product.name}
-						price={product.price}
-						imageUrl={product.imageUrl}
-						categoryName={product.categoryName}
+				<Suspense
+					fallback={
+						<>
+							{Array.from({ length: 20 }, (v, i) => (
+								<ProductCardSkeleton key={i} />
+							))}
+						</>
+					}
+				>
+					<Await
+						resolve={loaderData.products}
+						errorElement={<p>Error loading data</p>}
 					>
-						<Button
-							onClick={() => {
-								navigate(`products/${product.id}`);
-							}}
-						>
-							Pogledaj detalje
-						</Button>
-					</ProductCard>
-				))}
+						{products => (
+							<>
+								{products.map(product => (
+									<ProductCard
+										key={product.id}
+										name={product.name}
+										price={product.price}
+										imageUrl={product.imageUrl}
+										categoryName={product.categoryName}
+									>
+										<Button
+											onClick={() => {
+												navigate(`products/${product.id}`);
+											}}
+										>
+											Pogledaj detalje
+										</Button>
+									</ProductCard>
+								))}
+							</>
+						)}
+					</Await>
+				</Suspense>
 			</ProductContainer>
 		</>
 	);
