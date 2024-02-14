@@ -45,7 +45,7 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 					<Chevron />
 				</span>
 				{isExpanded && (
-					<div className='absolute z-0' ref={dropdownRef}>
+					<div className='absolute z-10' ref={dropdownRef}>
 						{options.map(option => (
 							<DropDownElement
 								key={option.id}
