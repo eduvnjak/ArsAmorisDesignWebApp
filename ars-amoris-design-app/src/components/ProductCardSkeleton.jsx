@@ -1,6 +1,11 @@
 export default function ProductCardSkeleton() {
+	const delay = Math.random() * 300;
+
 	return (
-		<div className='skeleton m-2 flex animate-pulse flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'>
+		<div
+			className='skeleton m-2 flex animate-pulse flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'
+			style={{ animationDelay: `${delay}ms` }}
+		>
 			<div className='h-64 shrink-0 bg-slate-300 sm:w-64'></div>
 			<div className='flex grow flex-col justify-end gap-4 p-6'>
 				<h2 className='h-[32px] w-[60%] bg-slate-300 font-bold sm:w-[296px]'></h2>

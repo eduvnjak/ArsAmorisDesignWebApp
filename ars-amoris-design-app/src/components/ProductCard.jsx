@@ -7,8 +7,15 @@ export default function ProductCard({
 	imageUrl,
 	categoryName,
 }) {
+	const duration = Math.random() * 500 + 300;
 	return (
-		<div className='animate-pop-in m-2 flex flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'>
+		<div
+			className='m-2 flex animate-pop-in flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'
+			style={{
+				animationDuration: `${duration}ms`,
+				animationFillMode: 'backwards',
+			}}
+		>
 			<div className='h-64 shrink-0 sm:w-64'>
 				<img
 					src={imageUrl}
