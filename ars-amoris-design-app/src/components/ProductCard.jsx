@@ -24,7 +24,7 @@ export default function ProductCard({
 				/>
 			</div>
 			<div className='flex grow flex-col justify-end gap-4 p-6'>
-				<h2 className='truncate text-2xl font-bold text-slate-800 sm:w-[296px]'>
+				<h2 className='text-2xl font-bold text-slate-800 sm:w-[296px] sm:truncate'>
 					{name}
 				</h2>
 				<div className='flex items-baseline justify-between px-2 sm:flex-col'>
