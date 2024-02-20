@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import { matchSorter } from 'match-sorter';
@@ -20,6 +20,8 @@ export default function Products() {
 	const [categories, setCategories] = useState([]);
 	const navigate = useNavigate();
 
+	const searchBarRef = useRef(null);
+
 	useEffect(() => {
 		async function fetchProducts() {
 			setIsLoading(true);
@@ -35,6 +37,19 @@ export default function Products() {
 		}
 		fetchProducts();
 		fetchProductCategories();
+	}, []);
+
+	useEffect(() => {
+		function searchBarFocus(e) {
+			if (e.ctrlKey && e.code === 'KeyK') {
+				e.preventDefault();
+				if (searchBarRef.current !== null) {
+					searchBarRef.current.focus();
+				}
+			}
+		}
+		window.addEventListener('keydown', searchBarFocus);
+		return () => window.removeEventListener('keydown', searchBarFocus);
 	}, []);
 
 	function handleSearch(newSearchQuery) {
@@ -101,8 +116,25 @@ export default function Products() {
 					type='text'
 					value={searchQuery}
 					onChange={e => handleSearch(e.target.value)}
+					placeholder={'Ctrl + K '}
+					style={{ paddingLeft: '30px' }}
+					ref={searchBarRef}
 				>
-					Pretraži proizvode:
+					Pretraži proizvode:{' '}
+					<span className='absolute inset-y-0 left-[150px] flex items-center pl-1'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+							className='h-5 w-5'
+						>
+							<path
+								fillRule='evenodd'
+								d='M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z'
+								clipRule='evenodd'
+							/>
+						</svg>
+					</span>
 				</StyledInput>
 				<label>
 					Sortiraj proizvode:
