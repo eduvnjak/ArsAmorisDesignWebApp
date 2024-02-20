@@ -3,7 +3,7 @@ export default function ProductCardSkeleton() {
 
 	return (
 		<div
-			className='skeleton m-2 flex animate-pulse flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'
+			className='no-scroll m-2 flex animate-pulse flex-col rounded bg-slate-50 p-0.5 shadow-2xl sm:flex-row'
 			style={{ animationDelay: `${delay}ms` }}
 		>
 			<div className='h-64 shrink-0 bg-slate-300 sm:w-64'></div>

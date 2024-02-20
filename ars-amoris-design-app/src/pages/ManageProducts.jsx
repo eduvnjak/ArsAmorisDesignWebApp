@@ -3,6 +3,10 @@ import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import ProductContainer from '../components/ProductContainer.jsx';
+import { createPortal } from 'react-dom';
+import DeleteModal from '../components/DeleteModal.jsx';
+import { useLayoutEffect, useState } from 'react';
+import { useScrollbarWidth } from '../utils/useScrollbarWidth.jsx';
 
 export async function loader() {
 	let result = await axios.get(`${import.meta.env.VITE_API_URL}Products`);
@@ -38,13 +42,28 @@ function PlusIcon() {
 }
 
 export default function ManageProducts() {
+	const [showModal, setShowModal] = useState(false);
+	const [modalData, setModalData] = useState({ id: undefined, name: '' }); // ima li pametniji nacin da se ovo odradi
 	const products = useLoaderData();
 
 	const navigate = useNavigate();
+	const scrollbarWidth = useScrollbarWidth();
+
+	// ovo je moglo i bez effecta, postavljati i uklanjati u event handlerima
+	// da li treba layout effect ili obicni ?
+	useLayoutEffect(() => {
+		if (showModal) {
+			document.documentElement.style.paddingRight = `${scrollbarWidth}px`;
+			document.documentElement.style.backgroundColor = 'ghostwhite';
+		} else {
+			document.documentElement.style.paddingRight = 0;
+		}
+	}, [showModal, scrollbarWidth]);
 
 	function deleteHandler(productId) {
 		console.log('delete ' + productId);
 		// ovdje ono da li ste sigurni
+		setShowModal(false);
 	}
 
 	return (
@@ -70,12 +89,26 @@ export default function ManageProducts() {
 						<Button onClick={() => navigate(`${product.id}`)}>
 							Izmijeni <span className='sm:hidden'>proizvod ✏️</span>
 						</Button>
-						<Button onClick={() => deleteHandler(product.id)}>
+						<Button
+							onClick={() => {
+								setModalData({ id: product.id, name: product.name });
+								setShowModal(true);
+							}}
+						>
 							Obriši <span className='sm:hidden'>proizvod ❌</span>
 						</Button>
 					</ProductCard>
 				))}
 			</ProductContainer>
+			{showModal &&
+				createPortal(
+					<DeleteModal
+						name={modalData.name}
+						confirmOnClick={() => deleteHandler(modalData.id)}
+						declineOnClick={() => setShowModal(false)}
+					/>,
+					document.getElementById('root'),
+				)}
 		</>
 	);
 }
