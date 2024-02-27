@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using ArsAmorisDesignApi.Services.RefreshTokenService;
-using System.Security.Cryptography;
 
 namespace ArsAmorisDesignApi.Controllers;
 
@@ -64,7 +63,7 @@ public class AuthController : ControllerBase
         RefreshToken refreshToken = new()
         {
             Value = Guid.NewGuid(),
-            ExpirationDate = DateTime.Now.AddDays(7),
+            ExpirationDate = DateTime.UtcNow.AddDays(7),
             UserId = user.Id
         };
         // zapisi u bazu
@@ -106,7 +105,7 @@ public class AuthController : ControllerBase
                 return Unauthorized("Invalid token");
             }
             // da li je istekao 
-            if (DateTime.Now > token.ExpirationDate)
+            if (DateTime.UtcNow > token.ExpirationDate)
             {
                 //obrisi ga iz baze, ovo malo mozda malo traljavo jer svaki sljedeci req vraca invalid
                 await _refreshTokenService.DeleteRefreshToken(refreshTokenValue);
