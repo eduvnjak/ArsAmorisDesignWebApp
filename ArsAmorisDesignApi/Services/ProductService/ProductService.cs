@@ -132,5 +132,56 @@ namespace ArsAmorisDesignApi.Services.ProductService
         {
             return await _dbContext.Products.Where(product => product.Featured).Include(product => product.ProductCategory).ToListAsync();
         }
+
+        public async Task<bool> LikeProduct(long userId, Guid productId)
+        {
+            // da li da provjeravam usera uopste
+            // da li da provjerim product da li postoji? dodao fk!
+            try
+            {
+                await _dbContext.ProductLikes.AddAsync(new ProductLike { UserId = userId, ProductId = productId });
+                await _dbContext.SaveChangesAsync();
+
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        public async Task<bool> UnlikeProduct(long userId, Guid productId)
+        {
+            // da li da provjeravam usera uopste
+            // da li da provjerim product da li postoji? dodao fk!
+            try
+            {
+                var productLike = await _dbContext.ProductLikes.FindAsync(userId, productId);
+
+                if (productLike == null)
+                {
+                    return false;
+                }
+                _dbContext.ProductLikes.Remove(productLike);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                return false;
+            }
+            return true;
+        }
+        public async Task<int> GetLikeCountForProduct(Guid productId)
+        {
+            return await _dbContext.ProductLikes.CountAsync(pl => pl.ProductId == productId);
+        }
+        public async Task<IEnumerable<Guid>> GetLikedProductsForUser(long userId)
+        {
+            return await _dbContext.ProductLikes.Where(pl => pl.UserId == userId).Select(pl => pl.ProductId).ToListAsync();
+        }
+        public async Task<bool> IsProductLikedByUser(Guid productId, long userId)
+        {
+            return await _dbContext.ProductLikes.AnyAsync(pl => pl.ProductId == productId && pl.UserId == userId);
+        }
     }
 }
