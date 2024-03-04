@@ -175,13 +175,17 @@ namespace ArsAmorisDesignApi.Services.ProductService
         {
             return await _dbContext.ProductLikes.CountAsync(pl => pl.ProductId == productId);
         }
-        public async Task<IEnumerable<Guid>> GetLikedProductsForUser(long userId)
+        public ISet<Guid> GetLikedProductsForUser(long userId)
         {
-            return await _dbContext.ProductLikes.Where(pl => pl.UserId == userId).Select(pl => pl.ProductId).ToListAsync();
+            return _dbContext.ProductLikes.Where(pl => pl.UserId == userId).Select(pl => pl.ProductId).ToHashSet();
         }
         public async Task<bool> IsProductLikedByUser(Guid productId, long userId)
         {
             return await _dbContext.ProductLikes.AnyAsync(pl => pl.ProductId == productId && pl.UserId == userId);
+        }
+        public async Task<Dictionary<Guid, int>> GetLikeCountForProducts(ISet<Guid> products)
+        {
+            return await _dbContext.ProductLikes.Where(pl => products.Contains(pl.ProductId)).GroupBy(pl => pl.ProductId).Select(group => new { ProductId = group.Key, LikeCount = group.Count() }).ToDictionaryAsync(t => t.ProductId, t => t.LikeCount);
         }
     }
 }

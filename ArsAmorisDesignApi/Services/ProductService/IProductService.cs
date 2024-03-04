@@ -14,7 +14,8 @@ namespace ArsAmorisDesignApi.Services.ProductService
         Task<bool> LikeProduct(long userId, Guid productId);
         Task<bool> UnlikeProduct(long userId, Guid productId);
         Task<int> GetLikeCountForProduct(Guid productId);
-        Task<IEnumerable<Guid>> GetLikedProductsForUser(long userId); // da li ovo i ovaj ispod ide u ovaj service uopste
+        ISet<Guid> GetLikedProductsForUser(long userId); // da li ovo i ovaj ispod ide u ovaj service uopste
         Task<bool> IsProductLikedByUser(Guid productId, long userId);
+        Task<Dictionary<Guid, int>> GetLikeCountForProducts(ISet<Guid> products);
     }
 }

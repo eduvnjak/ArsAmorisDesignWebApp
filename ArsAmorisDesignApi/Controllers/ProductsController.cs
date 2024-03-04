@@ -76,7 +76,7 @@ namespace ArsAmorisDesignApi.Controllers
                 return BadRequest(e.Message);
             }
         }
-        [HttpGet("Category/{categoryIdRouteParam}")] 
+        [HttpGet("Category/{categoryIdRouteParam}")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsByCategory([FromQuery] string? sortBy, string categoryIdRouteParam)
         {
             try
@@ -110,23 +110,24 @@ namespace ArsAmorisDesignApi.Controllers
         }
         private async Task<ProductDTO> MapDomainToDTO(Product product)
         {
-            return await MappingHelper(product, await IsProductLiked(product.Id));
+            int likeCount = await _productService.GetLikeCountForProduct(product.Id);
+            return MappingHelper(product, likeCount, await IsProductLiked(product.Id));
         }
         private async Task<IEnumerable<ProductDTO>> MapDomainToDTO(IEnumerable<Product> products)
         {
-            var likedProducts = await GetLikedProducts();
+            var likedProducts = GetLikedProducts();
+            var productLikesDictionary = await _productService.GetLikeCountForProducts(products.Select(product => product.Id).ToHashSet());
             var productsDTO = new List<ProductDTO>();
 
             foreach (var product in products)
             {
-                productsDTO.Add(await MappingHelper(product, likedProducts != null && likedProducts.Contains(product.Id)));
+                productsDTO.Add(MappingHelper(product, productLikesDictionary[product.Id], likedProducts != null && likedProducts.Contains(product.Id)));
             }
             return productsDTO;
         }
         // kako nazvati ovo čudo
-        private async Task<ProductDTO> MappingHelper(Product product, bool liked)
+        private ProductDTO MappingHelper(Product product, int likeCount, bool liked)
         {
-            int likeCount = await _productService.GetLikeCountForProduct(product.Id);
             return new ProductDTO(
                     product,
                     $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{product.ImageFileName}",
@@ -134,11 +135,11 @@ namespace ArsAmorisDesignApi.Controllers
                     liked
             );
         }
-        private async Task<List<Guid>?> GetLikedProducts()
+        private ISet<Guid>? GetLikedProducts()
         {
             try
             {
-                return (List<Guid>?)await _productService.GetLikedProductsForUser(GetUserId());
+                return _productService.GetLikedProductsForUser(GetUserId());
             }
             catch (ArgumentNullException)
             {
