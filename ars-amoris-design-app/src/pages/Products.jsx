@@ -164,10 +164,7 @@ export default function Products() {
 						? products.map(product => (
 								<ProductCard
 									key={product.id}
-									name={product.name}
-									price={product.price}
-									imageUrl={product.imageUrl}
-									categoryName={product.categoryName}
+									product={product}
 								>
 									<Button
 										onClick={() => {
@@ -181,10 +178,7 @@ export default function Products() {
 						: filteredProducts.map(product => (
 								<ProductCard
 									key={product.id}
-									name={product.name}
-									price={product.price}
-									imageUrl={product.imageUrl}
-									categoryName={product.categoryName}
+									product={product}
 								>
 									<Button
 										onClick={() => {

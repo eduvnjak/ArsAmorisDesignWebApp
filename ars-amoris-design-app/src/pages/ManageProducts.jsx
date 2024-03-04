@@ -79,13 +79,7 @@ export default function ManageProducts() {
 					<PlusIcon />
 				</div>
 				{products.map(product => (
-					<ProductCard
-						key={product.id}
-						name={product.name}
-						price={product.price}
-						imageUrl={product.imageUrl}
-						categoryName={product.categoryName}
-					>
+					<ProductCard key={product.id} product={product}>
 						<Button onClick={() => navigate(`${product.id}`)}>
 							Izmijeni <span className='sm:hidden'>proizvod ✏️</span>
 						</Button>

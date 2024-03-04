@@ -40,13 +40,7 @@ export default function FeaturedProducts() {
 						{products => (
 							<>
 								{products.map(product => (
-									<ProductCard
-										key={product.id}
-										name={product.name}
-										price={product.price}
-										imageUrl={product.imageUrl}
-										categoryName={product.categoryName}
-									>
+									<ProductCard key={product.id} product={product}>
 										<Button
 											onClick={() => {
 												navigate(`products/${product.id}`);
