@@ -117,13 +117,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             var likedProducts = GetLikedProducts();
             var productLikesDictionary = await _productService.GetLikeCountForProducts(products.Select(product => product.Id).ToHashSet());
-            var productsDTO = new List<ProductDTO>();
-
-            foreach (var product in products)
-            {
-                productsDTO.Add(MappingHelper(product, productLikesDictionary[product.Id], likedProducts != null && likedProducts.Contains(product.Id)));
-            }
-            return productsDTO;
+            return products.Select(product => MappingHelper(product, productLikesDictionary[product.Id], likedProducts != null && likedProducts.Contains(product.Id))).ToList();
         }
         // kako nazvati ovo čudo
         private ProductDTO MappingHelper(Product product, int likeCount, bool liked)
