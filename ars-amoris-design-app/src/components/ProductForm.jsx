@@ -2,22 +2,23 @@ import StyledInput from './StyledInput';
 import StyledFileInput from './StyledFileInput';
 import { useState, useEffect } from 'react';
 import Button from './Button';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useAxios from '../api/useAxios';
 
 export default function ProductForm({ product, setProduct, onAccept, acceptLabel }) {
 	const [productCategories, setProductCategories] = useState([]);
 	const { name, description, price, categoryId, imageUrl, featured, newCategory, image } = product;
 	const navigate = useNavigate();
 	const [newImageUrl, setNewImageUrl] = useState(null);
+	const axiosInstance = useAxios();
 
 	useEffect(() => {
 		const fetchProductCategories = async () => {
-			let result = await axios.get(`${import.meta.env.VITE_API_URL}ProductCategories`);
+			let result = await axiosInstance.get(`ProductCategories`);
 			setProductCategories(result.data);
 		};
 		fetchProductCategories();
-	}, []);
+	}, [axiosInstance]);
 
 	useEffect(() => {
 		return () => {

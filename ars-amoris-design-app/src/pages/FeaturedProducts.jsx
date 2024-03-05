@@ -1,15 +1,12 @@
 import ProductCard from '../components/ProductCard';
 import Button from '../components/Button';
-import axios from 'axios';
 import { Await, defer, useLoaderData, useNavigate } from 'react-router-dom';
 import ProductContainer from '../components/ProductContainer';
 import { Suspense } from 'react';
 import ProductCardSkeleton from '../components/ProductCardSkeleton';
 
-export async function loader() {
-	const productsPromise = axios.get(
-		`${import.meta.env.VITE_API_URL}Products/Featured`,
-	);
+export async function loader(axiosInstance) {
+	const productsPromise = axiosInstance.get(`Products/Featured`);
 	return defer({ products: productsPromise.then(res => res.data) });
 }
 

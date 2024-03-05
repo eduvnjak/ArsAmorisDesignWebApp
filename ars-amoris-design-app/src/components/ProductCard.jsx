@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react';
 
 export default function ProductCard({ children, product }) {
-	const { name, price, imageUrl, categoryName, likeCount } = product;
+	const { name, price, imageUrl, categoryName, likeCount, liked } = product;
 	const nameRef = useRef(null);
 	useEffect(() => {
 		if (nameRef.current !== null && nameRef.current.scrollWidth > 296) {
@@ -41,7 +41,7 @@ export default function ProductCard({ children, product }) {
 					<span>{categoryName ?? 'Nekategorisan'}</span>
 					<span className='text-lg font-bold'>{price} BAM</span>
 				</div>
-				<span className='px-2 font-bold'>
+				<span data-liked={liked} className='px-2 font-bold'>
 					<HeartIcon /> {likeCount}
 				</span>
 				<div className='flex flex-col gap-4 sm:flex-row'>{children}</div>
@@ -57,7 +57,7 @@ function HeartIcon() {
 			fill='none'
 			viewBox='0 0 24 24'
 			strokeWidth={2}
-			className='inline-block h-6 w-6 stroke-red-600 '
+			className='inline-block h-6 w-6 stroke-red-600 [[data-liked="true"]_&]:fill-red-600'
 		>
 			<path
 				strokeLinecap='round'

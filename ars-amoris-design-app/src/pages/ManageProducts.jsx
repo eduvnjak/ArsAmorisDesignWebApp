@@ -1,5 +1,4 @@
 import ProductCard from '../components/ProductCard.jsx';
-import axios from 'axios';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import ProductContainer from '../components/ProductContainer.jsx';
@@ -8,8 +7,8 @@ import DeleteModal from '../components/DeleteModal.jsx';
 import { useLayoutEffect, useState } from 'react';
 import { useScrollbarWidth } from '../utils/useScrollbarWidth.jsx';
 
-export async function loader() {
-	let result = await axios.get(`${import.meta.env.VITE_API_URL}Products`);
+export async function loader(axiosInstance) {
+	let result = await axiosInstance.get(`Products`);
 	return result.data;
 }
 

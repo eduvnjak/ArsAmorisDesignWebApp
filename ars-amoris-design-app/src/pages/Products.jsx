@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import { matchSorter } from 'match-sorter';
 import LoadingIndicator from '../components/LoadingIndicator';
@@ -8,6 +7,7 @@ import MultipleSelect from '../components/MultpleSelect';
 import Button from '../components/Button';
 import StyledInput from '../components/StyledInput';
 import ProductContainer from '../components/ProductContainer';
+import useAxios from '../api/useAxios';
 
 export default function Products() {
 	const [products, setProducts] = useState([]);
@@ -19,25 +19,24 @@ export default function Products() {
 	const [selectedCategories, setSelectedCategories] = useState([]);
 	const [categories, setCategories] = useState([]);
 	const navigate = useNavigate();
+	const axiosInstance = useAxios();
 
 	const searchBarRef = useRef(null);
 
 	useEffect(() => {
 		async function fetchProducts() {
 			setIsLoading(true);
-			let result = await axios.get(`${import.meta.env.VITE_API_URL}Products`);
+			let result = await axiosInstance.get(`Products`);
 			setProducts(result.data);
 			setIsLoading(false);
 		}
 		async function fetchProductCategories() {
-			let result = await axios.get(
-				`${import.meta.env.VITE_API_URL}ProductCategories`,
-			);
+			let result = await axiosInstance.get(`ProductCategories`);
 			setCategories(result.data);
 		}
 		fetchProducts();
 		fetchProductCategories();
-	}, []);
+	}, [axiosInstance]);
 
 	useEffect(() => {
 		function searchBarFocus(e) {
@@ -66,8 +65,8 @@ export default function Products() {
 	async function handleSort(newSortValue) {
 		setSortValue(newSortValue);
 		setIsLoading(true);
-		let result = await axios.get(
-			`${import.meta.env.VITE_API_URL}Products?categories=${selectedCategories.join(',')}${
+		let result = await axiosInstance.get(
+			`Products?categories=${selectedCategories.join(',')}${
 				newSortValue !== 'default' ? `&sortBy=${newSortValue}` : ''
 			}`,
 		);
@@ -91,8 +90,8 @@ export default function Products() {
 		}
 		setSelectedCategories(newCategories);
 		setIsLoading(true);
-		let result = await axios.get(
-			`${import.meta.env.VITE_API_URL}Products?categories=${newCategories.join(',')}${
+		let result = await axiosInstance.get(
+			`Products?categories=${newCategories.join(',')}${
 				sortValue !== 'default' ? `&sortBy=${sortValue}` : ''
 			}`,
 		);

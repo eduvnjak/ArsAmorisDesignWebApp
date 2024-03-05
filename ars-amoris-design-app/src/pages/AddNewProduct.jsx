@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import ProductForm from '../components/ProductForm';
+import useAxios from '../api/useAxios';
 
 export default function AddNewProduct() {
 	const [product, setProduct] = useState({
@@ -14,10 +13,11 @@ export default function AddNewProduct() {
 		newCategory: '',
 		image: null,
 	});
-	const { name, description, price, categoryId, featured, newCategory, image } = product;
+	const { name, description, price, categoryId, featured, newCategory, image } =
+		product;
 
-	const { accessToken } = useAuth();
 	const navigate = useNavigate();
+	const axiosInstance = useAxios();
 
 	async function handleAddProduct() {
 		if (name == '' || price == '' || image === null) {
@@ -29,15 +29,9 @@ export default function AddNewProduct() {
 		var newCategoryId = null;
 		if (newCategory !== '') {
 			try {
-				let result = await axios.post(
-					`${import.meta.env.VITE_API_URL}ProductCategories`,
-					{ name: newCategory },
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-					}
-				);
+				let result = await axiosInstance.post(`ProductCategories`, {
+					name: newCategory,
+				});
 				newCategoryId = result.data.id;
 			} catch (error) {
 				console.log(error.message);
@@ -57,11 +51,7 @@ export default function AddNewProduct() {
 		}
 
 		try {
-			await axios.post(`${import.meta.env.VITE_API_URL}Products/`, data, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
+			await axiosInstance.post(`Products/`, data);
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku

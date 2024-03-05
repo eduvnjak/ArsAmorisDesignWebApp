@@ -1,30 +1,30 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { useAuth } from '../contexts/AuthContext';
 import ProductForm from '../components/ProductForm';
+import useAxios from '../api/useAxios';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState({});
-	const { name, description, price, categoryId, featured, newCategory, image } = product;
+	const { name, description, price, categoryId, featured, newCategory, image } =
+		product;
 
 	const [isLoading, setIsLoading] = useState(true);
 	const { productId } = useParams();
 	const navigate = useNavigate();
-	const { accessToken } = useAuth();
+	const axiosInstance = useAxios();
 
 	// da li fetch kroz api ili primiti objekat kroz properties
 	useEffect(() => {
 		const fetchProduct = async () => {
 			setIsLoading(true);
-			let result = await axios.get(`${import.meta.env.VITE_API_URL}Products/${productId}`);
+			let result = await axiosInstance.get(`Products/${productId}`);
 			setProduct({ newCategory: '', image: null, ...result.data });
 			setIsLoading(false);
 		};
 		fetchProduct();
-	}, [productId]); // treba li ovdje neki cleanup
+	}, [productId, axiosInstance]); // treba li ovdje neki cleanup
 
 	async function handleUpdateProduct() {
 		if (product.name == '' || product.price == '') {
@@ -36,15 +36,9 @@ export default function EditProductDetails() {
 		var newCategoryId = null;
 		if (newCategory !== '') {
 			try {
-				let result = await axios.post(
-					`${import.meta.env.VITE_API_URL}ProductCategories`,
-					{ name: newCategory },
-					{
-						headers: {
-							Authorization: `Bearer ${accessToken}`,
-						},
-					}
-				);
+				let result = await axiosInstance.post(`ProductCategories`, {
+					name: newCategory,
+				});
 				newCategoryId = result.data.id;
 			} catch (error) {
 				console.log(error.message);
@@ -64,11 +58,7 @@ export default function EditProductDetails() {
 		}
 
 		try {
-			await axios.put(`${import.meta.env.VITE_API_URL}Products/${productId}`, data, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
+			await axiosInstance.put(`Products/${productId}`, data);
 			navigate('/manage-products');
 		} catch (error) {
 			console.log(error.message); // prikazi neku gresku
