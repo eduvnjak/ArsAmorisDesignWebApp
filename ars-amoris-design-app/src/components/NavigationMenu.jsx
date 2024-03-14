@@ -9,8 +9,8 @@ function NavigationMenuElement({ children, to }) {
 			<NavLink
 				className={({ isActive, isPending }) =>
 					isPending || isActive
-						? 'transition-colors duration-500 text-blue-600 bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
-						: 'transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+						? 'block text-nowrap border-b-4 border-blue-600 p-3 text-blue-700 transition-colors duration-300'
+						: 'relative block text-nowrap p-3 text-slate-500 transition-colors duration-300 before:absolute before:-bottom-1 before:left-[50%] before:h-1 before:w-0 before:bg-blue-600 before:transition-all before:duration-300 hover:text-slate-700 hover:before:left-0 hover:before:w-[100%] hover:after:right-0 hover:after:w-[100%]'
 				}
 				to={to}
 			>
@@ -36,10 +36,14 @@ export default function NavigationMenu() {
 			to: '/about',
 			text: 'About',
 		},
+		{
+			to: '/test',
+			text: 'Test',
+		},
 	];
 
 	return (
-		<nav className='flex text-2xl font-medium text-white p-2 w-fit justify-start'>
+		<nav className='col-start-2 flex justify-center font-medium'>
 			{navMenuRoutes.map((route, i) => {
 				return (
 					<NavigationMenuElement key={i} to={route.to}>
@@ -47,7 +51,11 @@ export default function NavigationMenu() {
 					</NavigationMenuElement>
 				);
 			})}
-			{isAdmin && <NavigationMenuElement to='/manage-products'>Upravljaj proizvodima</NavigationMenuElement>}
+			{isAdmin && (
+				<NavigationMenuElement to='/manage-products'>
+					Upravljaj proizvodima
+				</NavigationMenuElement>
+			)}
 		</nav>
 	);
 }

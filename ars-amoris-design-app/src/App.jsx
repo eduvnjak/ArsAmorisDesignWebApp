@@ -17,6 +17,7 @@ import EditProductDetails from './pages/EditProductDetails.jsx';
 import AddNewProduct from './pages/AddNewProduct.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import useAxios from './api/useAxios.jsx';
+import ReorderingTest from './pages/ReorderingTest.jsx';
 
 export default function App() {
 	const axiosInstance = useAxios();
@@ -31,6 +32,7 @@ export default function App() {
 					element: <FeaturedProducts />,
 					loader: () => featuredProductsLoader(axiosInstance),
 				},
+				{ path: 'test', element: <ReorderingTest /> },
 				{ path: 'about', element: <About /> },
 				{ path: 'products', element: <Products /> },
 				{ path: 'products/:productId', element: <ProductDetails /> },

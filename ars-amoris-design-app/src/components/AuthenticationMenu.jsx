@@ -10,12 +10,18 @@ function AuthenticationMenuElement({ children, to }) {
 			<Link
 				to={to}
 				className={
-					'transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+					'block rounded-md p-3 transition-colors duration-300 hover:text-blue-600'
 				}
 			>
 				{children}
 			</Link>
 		</div>
+	);
+}
+
+function Divider() {
+	return (
+		<span className='mx-2 h-[1.5rem] w-[1px] translate-y-3 bg-slate-300'></span>
 	);
 }
 
@@ -30,17 +36,23 @@ export default function AuthenticationMenu() {
 	// console.log('auth menu render'); memo?
 
 	return (
-		<nav className='text-white font-medium p-2 flex justify-end w-fit'>
+		<nav className='ml-auto flex justify-center font-medium'>
 			{!isAuthenticated ? (
 				<>
-					<AuthenticationMenuElement to='/login'>Log in</AuthenticationMenuElement>
-					<AuthenticationMenuElement to='/createaccount'>Create account</AuthenticationMenuElement>
+					<AuthenticationMenuElement to='/login'>
+						Log in
+					</AuthenticationMenuElement>
+					<Divider />
+					<AuthenticationMenuElement to='/createaccount'>
+						Create your account
+					</AuthenticationMenuElement>
 				</>
 			) : (
 				<>
-					<div className='from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'>{text}</div>
+					<div className='inline-block rounded-md p-3'>{text}</div>
+					<Divider />
 					<div
-						className='transition-colors duration-500 hover:text-blue-600 hover:bg-gradient-to-r hover:cursor-pointer from-slate-50  to-slate-100 m-5 p-3 rounded-md inline-block'
+						className='inline-block rounded-md p-3 transition-colors duration-300 hover:cursor-pointer hover:text-blue-600'
 						onClick={() => {
 							logout();
 						}}
