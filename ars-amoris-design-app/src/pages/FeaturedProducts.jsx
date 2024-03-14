@@ -17,7 +17,7 @@ export default function FeaturedProducts() {
 
 	return (
 		<>
-			<h1 className='py-3 text-center text-4xl font-medium text-white'>
+			<h1 className='py-3 text-center text-4xl font-medium text-slate-800'>
 				Izdvojeni proizvodi
 			</h1>
 			<ProductContainer>

@@ -8,7 +8,7 @@ function Root() {
 
 	return (
 		<>
-			<div className='grid grid-cols-3 overflow-auto bg-white px-4 pt-1 text-slate-700 shadow-lg'>
+			<div className='grid grid-cols-3 overflow-visible bg-white px-4 pt-1 text-slate-700 outline outline-1 outline-slate-300 shadow-md'>
 				<ReactIcon />
 				<NavigationMenu />
 				<AuthenticationMenu />
@@ -26,7 +26,7 @@ function ReactIcon() {
 			viewBox='0 0 16 16'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
-			className='w-12 fill-slate-700 drop-shadow-lg'
+			className='w-12 fill-slate-700 drop-shadow-md'
 		>
 			<path
 				fillRule='nonzero'
@@ -46,4 +46,15 @@ function ReactIcon() {
 			<path d='M9.45925 8.06618C9.45925 8.81694 8.85063 9.42556 8.09987 9.42556C7.34911 9.42556 6.7405 8.81694 6.7405 8.06618C6.7405 7.31542 7.34911 6.70681 8.09987 6.70681C8.85063 6.70681 9.45925 7.31542 9.45925 8.06618Z' />
 		</svg>
 	);
+}
+
+{
+	/* Alternativni meni 
+<div className=''>
+<div className='mx-auto grid w-[98%] grid-cols-3 overflow-visible border-b border-slate-300 bg-white pt-1 text-slate-700 '>
+	<ReactIcon />
+	<NavigationMenu />
+	<AuthenticationMenu />
+</div>
+</div> */
 }
