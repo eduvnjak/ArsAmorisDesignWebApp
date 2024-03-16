@@ -8,12 +8,14 @@ function Root() {
 
 	return (
 		<>
-			<div className='grid grid-cols-3 bg-white px-4 pb-1 pt-1 text-slate-700 shadow-md outline outline-1 outline-slate-300 lg:pb-0'>
+			<div className='peer grid grid-cols-3 bg-white px-4 pb-1 pt-1 text-slate-700 shadow-md outline outline-1 outline-slate-300 lg:pb-0'>
 				<ReactIcon />
 				<NavigationMenu />
 				<AuthenticationMenu />
 			</div>
-			{state === 'loading' ? <LoadingIndicator /> : <Outlet />}
+			<div className='transition-brightness bg-white duration-300 peer-has-[.nav-menu-open]:brightness-50'>
+				{state === 'loading' ? <LoadingIndicator /> : <Outlet />}
+			</div>
 		</>
 	);
 }
