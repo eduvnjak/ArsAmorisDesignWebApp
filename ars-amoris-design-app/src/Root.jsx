@@ -8,7 +8,7 @@ function Root() {
 
 	return (
 		<>
-			<div className='grid grid-cols-3 overflow-visible bg-white px-4 pt-1 text-slate-700 outline outline-1 outline-slate-300 shadow-md'>
+			<div className='grid grid-cols-3 bg-white px-4 pb-1 pt-1 text-slate-700 shadow-md outline outline-1 outline-slate-300 lg:pb-0'>
 				<ReactIcon />
 				<NavigationMenu />
 				<AuthenticationMenu />
@@ -26,7 +26,7 @@ function ReactIcon() {
 			viewBox='0 0 16 16'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
-			className='w-12 fill-slate-700 drop-shadow-md'
+			className='order-2 mx-auto w-12 fill-slate-700 drop-shadow-md lg:order-1 lg:mx-0'
 		>
 			<path
 				fillRule='nonzero'

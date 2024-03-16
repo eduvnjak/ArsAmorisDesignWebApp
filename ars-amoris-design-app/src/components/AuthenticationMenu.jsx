@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { jwtDecode } from 'jwt-decode';
 import { useAuth } from '../contexts/AuthContext';
 // import { memo } from 'react';
@@ -36,7 +37,7 @@ export default function AuthenticationMenu() {
 	// console.log('auth menu render'); memo?
 
 	return (
-		<nav className='ml-auto flex justify-center font-medium'>
+		<nav className='ml-auto flex justify-center font-medium order-3'>
 			{!isAuthenticated ? (
 				<>
 					<AuthenticationMenuElement to='/login'>
