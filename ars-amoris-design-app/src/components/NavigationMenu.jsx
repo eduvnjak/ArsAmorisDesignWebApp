@@ -54,7 +54,7 @@ export default function NavigationMenu() {
 				<MenuIcon></MenuIcon>
 			</div>
 			<nav
-				className={`${isOpen ? '-translate-x-[100%] lg:translate-x-0' : ''} absolute -left-4 z-50 h-screen w-[250px] bg-white font-medium transition-transform duration-300 lg:static lg:flex lg:h-fit lg:w-auto lg:justify-center`}
+				className={`${isOpen ? 'no-scroll' : '-translate-x-[100%] lg:translate-x-0'} absolute -left-4 z-50 h-screen w-[250px] bg-white font-medium transition-transform duration-300 lg:static lg:flex lg:h-fit lg:w-auto lg:justify-center`}
 			>
 				{navMenuRoutes.map((route, i) => {
 					return (
