@@ -13,7 +13,7 @@ function Root() {
 				<NavigationMenu />
 				<AuthenticationMenu />
 			</div>
-			<div className='transition-brightness bg-white duration-300 peer-has-[.nav-menu-open]:brightness-50'>
+			<div className='transition-brightness bg-blue-100 duration-300 peer-has-[.nav-menu-open]:brightness-50'>
 				{state === 'loading' ? <LoadingIndicator /> : <Outlet />}
 			</div>
 		</>
