@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { useAuth } from '../contexts/AuthContext';
 // import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 // ova komponenta se nigdje drugo ne koristi stoga je ostavljena u ovom fajlu; izdvojena radi preglednosti
 function AuthenticationMenuElement({ children, to }) {
@@ -38,8 +38,25 @@ export default function AuthenticationMenu() {
 	// console.log('auth menu render'); memo?
 	const [isOpen, setIsOpen] = useState(false);
 
+	const menuRef = useRef(null);
+	useEffect(() => {
+		function handleClickOutsideMenu(event) {
+			if (
+				isOpen &&
+				menuRef.current &&
+				!menuRef.current.contains(event.target)
+			) {
+				setIsOpen(false);
+			}
+		}
+		document.addEventListener('click', handleClickOutsideMenu, true);
+		return () => {
+			document.removeEventListener('click', handleClickOutsideMenu, true);
+		};
+	}, [menuRef, isOpen]);
+
 	return (
-		<div className='relative order-3 ml-auto'>
+		<div className='relative order-3 ml-auto' ref={menuRef}>
 			<div
 				className='grid h-full w-12 place-content-center hover:cursor-pointer hover:rounded-full hover:bg-slate-100 md:hidden'
 				onClick={() => setIsOpen(!isOpen)}

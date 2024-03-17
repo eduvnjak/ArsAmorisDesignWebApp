@@ -2,7 +2,7 @@
 import { useAuth } from '../contexts/AuthContext';
 // import { memo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // ova komponenta se nigdje drugo ne koristi stoga je ostavljena u ovom fajlu; izdvojena radi preglednosti
 function NavigationMenuElement({ children, to }) {
@@ -45,8 +45,25 @@ export default function NavigationMenu() {
 		},
 	];
 
+	const menuRef = useRef(null);
+	useEffect(() => {
+		function handleClickOutsideMenu(event) {
+			if (
+				isOpen &&
+				menuRef.current &&
+				!menuRef.current.contains(event.target)
+			) {
+				setIsOpen(false);
+			}
+		}
+		document.addEventListener('click', handleClickOutsideMenu, true);
+		return () => {
+			document.removeEventListener('click', handleClickOutsideMenu, true);
+		};
+	}, [menuRef, isOpen]);
+
 	return (
-		<div className='relative order-1 lg:order-2'>
+		<div className='relative order-1 mr-auto lg:order-2 lg:mr-0' ref={menuRef}>
 			<div
 				className='grid h-full w-12 place-content-center hover:cursor-pointer hover:rounded-full hover:bg-slate-100 lg:hidden'
 				onClick={() => setIsOpen(!isOpen)}
