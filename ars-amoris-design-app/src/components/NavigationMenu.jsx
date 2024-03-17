@@ -46,7 +46,7 @@ export default function NavigationMenu() {
 	];
 
 	return (
-		<div className={`relative order-1 lg:order-2 ${isOpen ? 'menu-open' : ''}`}>
+		<div className='relative order-1 lg:order-2'>
 			<div
 				className='grid h-full w-12 place-content-center hover:cursor-pointer hover:rounded-full hover:bg-slate-100 lg:hidden'
 				onClick={() => setIsOpen(!isOpen)}
