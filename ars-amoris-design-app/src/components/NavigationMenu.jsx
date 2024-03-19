@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 
 // ova komponenta se nigdje drugo ne koristi stoga je ostavljena u ovom fajlu; izdvojena radi preglednosti
-function NavigationMenuElement({ children, to }) {
+function NavigationMenuElement({ children, to, onClickCapture }) {
 	return (
 		<div>
 			<NavLink
@@ -15,6 +15,7 @@ function NavigationMenuElement({ children, to }) {
 						: 'relative block text-nowrap p-3 text-slate-500 transition-colors duration-300 before:absolute before:-bottom-1 before:left-[50%] before:h-1 before:w-0 before:bg-blue-600 before:transition-all before:duration-300 hover:text-slate-700 hover:before:left-0 hover:before:w-[100%] hover:after:right-0 hover:after:w-[100%]'
 				}
 				to={to}
+				onClickCapture={onClickCapture}
 			>
 				{children}
 			</NavLink>
@@ -62,6 +63,10 @@ export default function NavigationMenu() {
 		};
 	}, [menuRef, isOpen]);
 
+	function handleNavLinkClickCapture() {
+		setIsOpen(false);
+	}
+
 	return (
 		<div className='relative order-1 mr-auto lg:order-2 lg:mr-0' ref={menuRef}>
 			<div
@@ -84,13 +89,13 @@ export default function NavigationMenu() {
 			>
 				{navMenuRoutes.map((route, i) => {
 					return (
-						<NavigationMenuElement key={i} to={route.to}>
+						<NavigationMenuElement key={i} to={route.to} onClickCapture={handleNavLinkClickCapture}>
 							{route.text}
 						</NavigationMenuElement>
 					);
 				})}
 				{isAdmin && (
-					<NavigationMenuElement to='/manage-products'>
+					<NavigationMenuElement to='/manage-products' onClickCapture={handleNavLinkClickCapture}>
 						Upravljaj proizvodima
 					</NavigationMenuElement>
 				)}
