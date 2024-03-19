@@ -71,7 +71,16 @@ export default function NavigationMenu() {
 				<MenuIcon></MenuIcon>
 			</div>
 			<nav
-				className={`${isOpen ? 'no-scroll nav-menu-open' : '-translate-x-[100%] lg:translate-x-0'} absolute -left-4 z-50 h-screen w-[250px] bg-white font-medium transition-transform duration-300 lg:static lg:flex lg:h-fit lg:w-auto lg:justify-center`}
+				className={`${isOpen ? 'no-scroll nav-menu-open' : '-translate-x-[100%]'} absolute -left-4 z-50 h-screen w-[250px] translate-y-1 bg-white font-medium transition-transform duration-300 lg:static lg:flex lg:h-fit lg:w-auto lg:translate-x-0 lg:translate-y-0 lg:justify-center`}
+				ref={node => {
+					if (node != null) {
+						if (document.body.scrollHeight - document.body.clientHeight === 56 ) {
+							node.style.height = `${node.clientHeight - 56}px`;
+						} else {
+							node.style.height = ''
+						}
+					}
+				}}
 			>
 				{navMenuRoutes.map((route, i) => {
 					return (
