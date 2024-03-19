@@ -64,7 +64,7 @@ export default function AuthenticationMenu() {
 				<MenuIcon></MenuIcon>
 			</div>
 			<nav
-				className={`${isOpen ? 'opacity-100' : 'opacity-0 invisible'} absolute right-0 translate-y-1 justify-center divide-y text-nowrap rounded bg-slate-50 text-center font-medium shadow-md transition-all duration-300 md:static md:right-0 md:flex md:translate-y-0 md:divide-y-0 md:rounded-none md:bg-white md:opacity-100 md:shadow-none`}
+				className={`${isOpen ? 'opacity-100' : 'opacity-0 invisible'} absolute right-0 translate-y-1 justify-center divide-y text-nowrap rounded bg-slate-50 text-center font-medium shadow-md transition-all duration-300 md:visible md:static md:right-0 md:flex md:translate-y-0 md:divide-y-0 md:rounded-none md:bg-white md:opacity-100 md:shadow-none`}
 			>
 				{!isAuthenticated ? (
 					<>
