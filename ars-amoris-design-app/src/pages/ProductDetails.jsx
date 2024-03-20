@@ -89,9 +89,9 @@ export default function ProductDetails() {
 			{isLoading ? (
 				<LoadingIndicator />
 			) : (
-				<div className='h-full w-full bg-white md:px-[15%] md:py-5'>
+				<div className='h-full w-full bg-white md:px-[15%] md:py-4'>
 					{/* stavi da su ovo linkovi ispod */}
-					<div className='px-4 py-2 font-normal text-slate-800'>
+					<div className='px-4 py-2 font-normal text-slate-800 md:mb-2'>
 						Proizvodi &nbsp; / &nbsp;{' '}
 						<span className='font-medium'>
 							{categoryName ?? 'Nekategorisani'}
