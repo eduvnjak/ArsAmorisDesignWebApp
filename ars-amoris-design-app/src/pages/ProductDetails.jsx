@@ -89,16 +89,20 @@ export default function ProductDetails() {
 			{isLoading ? (
 				<LoadingIndicator />
 			) : (
-				<div className='h-full w-full bg-white md:px-[15%] md:py-4'>
+				<div className='h-full w-full bg-white md:px-[15%] md:py-4 lg:grid lg:auto-rows-min lg:grid-cols-2'>
 					{/* stavi da su ovo linkovi ispod */}
-					<div className='px-4 py-2 font-normal text-slate-800 md:mb-2'>
+					<div className='px-4 py-2 font-normal text-slate-800 md:mb-2 lg:col-span-2'>
 						Proizvodi &nbsp; / &nbsp;{' '}
 						<span className='font-medium'>
 							{categoryName ?? 'Nekategorisani'}
 						</span>
 					</div>
-					<img src={imageUrl} alt={name + ' image'} className='mx-auto' />
-					<div className='mt-8 space-y-3 px-4 text-slate-800'>
+					<img
+						src={imageUrl}
+						alt={name + ' image'}
+						className='mx-auto lg:col-start-2 lg:mt-8 '
+					/>
+					<div className='mt-8 space-y-3 px-4 text-slate-800 lg:col-start-1 lg:row-start-2'>
 						<h1 className='text-3xl font-bold'>{name}</h1>
 						<div className='text-2xl font-normal'>{price} BAM</div>
 						<div className='font-bold'>
@@ -121,7 +125,7 @@ export default function ProductDetails() {
 						</p>
 					</div>
 					{relatedProducts.length !== 0 && (
-						<div className='mt-8'>
+						<div className='mt-8 lg:col-span-2'>
 							<span className='px-4 font-bold'>
 								Još proizvoda iz iste kategorije
 							</span>
