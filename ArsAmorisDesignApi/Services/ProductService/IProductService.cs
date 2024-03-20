@@ -17,5 +17,6 @@ namespace ArsAmorisDesignApi.Services.ProductService
         ISet<Guid> GetLikedProductsForUser(long userId); // da li ovo i ovaj ispod ide u ovaj service uopste
         Task<bool> IsProductLikedByUser(Guid productId, long userId);
         Task<Dictionary<Guid, int>> GetLikeCountForProducts(ISet<Guid> products);
+        Task<IEnumerable<Product>> GetRandomByCategory(Guid? categoryId, int count);
     }
 }

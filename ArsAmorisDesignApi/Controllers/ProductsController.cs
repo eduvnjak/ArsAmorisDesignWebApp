@@ -90,6 +90,20 @@ namespace ArsAmorisDesignApi.Controllers
                 return BadRequest();
             }
         }
+        [HttpGet("Category/{categoryIdRouteParam}/Random/{count}")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetRandomProductsFromCategory(string categoryIdRouteParam, int count)
+        {
+            try
+            {
+                Guid? categoryId = (categoryIdRouteParam == "null") ? null : Guid.Parse(categoryIdRouteParam);
+                var products = await _productService.GetRandomByCategory(categoryId, count);
+                return Ok(await MapDomainToDTO(products));
+            }
+            catch (FormatException)
+            {
+                return BadRequest();
+            }
+        }
         [HttpGet("Featured")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetFeaturedProducts() // za sada ne trebaju nikakvi parametri
         {

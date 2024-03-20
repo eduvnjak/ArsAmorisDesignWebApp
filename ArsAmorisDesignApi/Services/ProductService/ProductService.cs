@@ -187,5 +187,11 @@ namespace ArsAmorisDesignApi.Services.ProductService
         {
             return await _dbContext.ProductLikes.Where(pl => products.Contains(pl.ProductId)).GroupBy(pl => pl.ProductId).Select(group => new { ProductId = group.Key, LikeCount = group.Count() }).ToDictionaryAsync(t => t.ProductId, t => t.LikeCount);
         }
+        public async Task<IEnumerable<Product>> GetRandomByCategory(Guid? categoryId, int count)
+        {
+            // order by Guid.NewGuid() ne radi 
+            var products = await _dbContext.Products.Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+            return products.OrderBy(x => Guid.NewGuid()).Take(count).ToList();
+        }
     }
 }
