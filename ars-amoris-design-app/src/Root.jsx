@@ -8,7 +8,7 @@ function Root() {
 
 	return (
 		<>
-			<div className='peer grid grid-cols-3 bg-white px-4 pb-1 pt-1 text-slate-700 shadow-md outline outline-1 outline-slate-300 lg:pb-0'>
+			<div className='peer grid grid-cols-3 bg-white px-4 pb-1 pt-1 text-slate-700 shadow-md z-10 outline outline-1 outline-slate-300 lg:pb-0'>
 				<ReactIcon />
 				<NavigationMenu />
 				<AuthenticationMenu />
