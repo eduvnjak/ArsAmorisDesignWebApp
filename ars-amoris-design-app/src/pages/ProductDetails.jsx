@@ -97,7 +97,7 @@ export default function ProductDetails() {
 							{categoryName ?? 'Nekategorisani'}
 						</span>
 					</div>
-					<img src={imageUrl} alt={name + ' image'} className='' />
+					<img src={imageUrl} alt={name + ' image'} className='mx-auto' />
 					<div className='mt-8 space-y-3 px-4 text-slate-800'>
 						<h1 className='text-3xl font-bold'>{name}</h1>
 						<div className='text-2xl font-normal'>{price} BAM</div>
@@ -165,8 +165,11 @@ function HeartIcon() {
 function RelatedProduct({ id, name, price, imageUrl }) {
 	return (
 		<div className='p-2'>
-			<div className='relative mx-auto w-fit'>
-				<img src={imageUrl} className='rounded-sm'></img>
+			<div className='relative mx-auto aspect-[16/8] '>
+				<img
+					src={imageUrl}
+					className='h-full w-full rounded-sm object-cover'
+				></img>
 				<div className='bg-grad absolute bottom-2 right-2 z-40 text-lg font-medium text-white'>
 					{price} BAM
 				</div>
