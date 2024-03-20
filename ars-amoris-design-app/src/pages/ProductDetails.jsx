@@ -129,7 +129,7 @@ export default function ProductDetails() {
 							<span className='px-4 font-bold'>
 								Još proizvoda iz iste kategorije
 							</span>
-							<div className='flex flex-col'>
+							<div className='flex flex-col lg:flex-row lg:justify-between'>
 								{relatedProducts.map(product => (
 									<RelatedProduct
 										key={product.id}
@@ -168,7 +168,7 @@ function HeartIcon() {
 
 function RelatedProduct({ id, name, price, imageUrl }) {
 	return (
-		<div className='p-2'>
+		<div className='p-2 lg:w-96'>
 			<div className='relative mx-auto aspect-[16/8] '>
 				<img
 					src={imageUrl}
@@ -177,7 +177,7 @@ function RelatedProduct({ id, name, price, imageUrl }) {
 				<div className='bg-grad absolute bottom-2 right-2 z-40 text-lg font-medium text-white'>
 					{price} BAM
 				</div>
-				<div className='to-black-950/1 absolute bottom-0 z-30 h-[100px] w-full  bg-gradient-to-t from-black/85'></div>
+				<div className='to-black-950/1 absolute bottom-0 z-30 h-[100px] w-full bg-gradient-to-t from-black/85'></div>
 			</div>
 			<div className='mt-2 flex justify-between px-2'>
 				<div className='text-sm'>{name}</div>
