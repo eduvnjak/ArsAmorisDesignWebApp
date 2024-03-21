@@ -177,7 +177,7 @@ function RelatedProduct({ id, name, price, imageUrl }) {
 				<div className='bg-grad absolute bottom-2 right-2 z-40 text-lg font-medium text-white'>
 					{price} BAM
 				</div>
-				<div className='to-black-950/1 absolute bottom-0 z-30 h-[100px] w-full bg-gradient-to-t from-black/85'></div>
+				<div className='absolute bottom-0 z-30 h-[100px] w-full bg-gradient-to-t from-black/85 to-black/0'></div>
 			</div>
 			<div className='mt-2 flex justify-between px-2'>
 				<div className='text-sm'>{name}</div>
