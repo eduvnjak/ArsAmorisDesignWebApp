@@ -129,7 +129,7 @@ export default function ProductDetails() {
 							<span className='px-4 font-bold'>
 								Još proizvoda iz iste kategorije
 							</span>
-							<div className='flex flex-col lg:flex-row lg:justify-between'>
+							<div className='flex flex-col lg:grid lg:auto-cols-fr lg:grid-flow-col'>
 								{relatedProducts.map(product => (
 									<RelatedProduct
 										key={product.id}
@@ -168,7 +168,7 @@ function HeartIcon() {
 
 function RelatedProduct({ id, name, price, imageUrl }) {
 	return (
-		<div className='p-2 lg:w-96'>
+		<div className='p-2'>
 			<div className='relative mx-auto aspect-[16/8] '>
 				<img
 					src={imageUrl}
