@@ -4,7 +4,7 @@ import Button from './Button';
 export default function DeleteModal({ name, confirmOnClick, declineOnClick }) {
 	return (
 		<div
-			className='no-scroll fixed top-0 z-50 grid h-screen w-screen place-items-center overflow-y-auto backdrop-blur-sm'
+			className='no-scroll fixed top-0 z-50 grid h-screen w-screen place-items-center overflow-y-auto backdrop-blur-sm backdrop-brightness-50'
 			onClick={declineOnClick}
 		>
 			<div
