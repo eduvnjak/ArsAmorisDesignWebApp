@@ -4,7 +4,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
 {
     public interface IProductService
     {
-        // Task<Product> AddProduct(ProductPostDTO productPostDTO);
+        Task<Product> AddProduct(Product product);
         Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categoryId);
         Task<Product?> GetProduct(Guid id);
         // Task<bool> DeleteProduct(Guid id);

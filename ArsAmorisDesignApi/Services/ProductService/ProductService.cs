@@ -8,43 +8,23 @@ namespace ArsAmorisDesignApi.Services.ProductService
 {
     public class ProductService : IProductService
     {
-        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly AppDbContext _dbContext;
 
-        public ProductService(IWebHostEnvironment webHostEnvironment, AppDbContext dbContext)
+        public ProductService(AppDbContext dbContext)
         {
-            _webHostEnvironment = webHostEnvironment;
             _dbContext = dbContext;
         }
-        // public async Task<Product> AddProduct(ProductPostDTO productPostDTO)
-        // {
-        //     ValidateImageUpload(productPostDTO.Image);
+        public async Task<Product> AddProduct(Product product)
+        {
 
-        //     string imageExtension = Path.GetExtension(productPostDTO.Image.FileName);
-        //     string imageName = Path.GetRandomFileName().Replace(".", "-");
-        //     // provjeriti da li ima neka vec slika sa istim imenom
-        //     var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
-        //     using var stream = new FileStream(localFilePath, FileMode.Create);
-        //     await productPostDTO.Image.CopyToAsync(stream);
 
-        //     // var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
+            await _dbContext.Products.AddAsync(product);
+            await _dbContext.SaveChangesAsync();
+            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
+            await _dbContext.Entry(product).Collection(p => p.Images).LoadAsync();
 
-        //     var product = new Product
-        //     {
-        //         Name = productPostDTO.Name,
-        //         Price = productPostDTO.Price,
-        //         Description = productPostDTO.Description,
-        //         ImageFileName = $"{imageName}{imageExtension}",
-        //         ProductCategoryId = productPostDTO.ProductCategoryId,
-        //         Featured = productPostDTO.Featured
-        //     };
-
-        //     await _dbContext.Products.AddAsync(product);
-        //     await _dbContext.SaveChangesAsync();
-        //     await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
-
-        //     return product;
-        // }
+            return product;
+        }
 
         public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categories)
         {
@@ -76,18 +56,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
 
         //     return true;
         // }
-        private static void ValidateImageUpload(IFormFile imageFile)
-        {
-            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
-            if (!allowedExtensions.Contains(Path.GetExtension(imageFile.FileName)))
-            {
-                throw new Exception("Unsupported image extension");
-            }
-            if (imageFile.Length > 5242880)  // 5MB limit
-            {
-                throw new Exception("Image too large");
-            }
-        }
+
         // public async Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO)
         // {
         //     var product = await _dbContext.Products.FindAsync(id);

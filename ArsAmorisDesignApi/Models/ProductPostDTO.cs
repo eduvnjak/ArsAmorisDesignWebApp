@@ -5,7 +5,7 @@ namespace ArsAmorisDesignApi.Models
     public class ProductPostDTO
     {
         [Required]
-        public IFormFile Image { get; set; }
+        public List<IFormFile> Images { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using ArsAmorisDesignApi.Models;
 using ArsAmorisDesignApi.Services.ProductService;
 using Microsoft.AspNetCore.Authorization;
@@ -8,31 +9,61 @@ namespace ArsAmorisDesignApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public partial class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductsController(IProductService productService, IHttpContextAccessor httpContextAccessor)
+        public ProductsController(IProductService productService, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
         {
             _productService = productService;
             _httpContextAccessor = httpContextAccessor;
+            _webHostEnvironment = webHostEnvironment;
+
 
         }
-        // [Authorize(Policy = "AdminPolicy")]
-        // [HttpPost]
-        // public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
-        // {
-        //     try
-        //     {
-        //         var product = await _productService.AddProduct(productPostDTO);
-        //         return Ok(await MapDomainToDTO(product));
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return BadRequest(e.Message);
-        //     }
-        // }
+        [Authorize(Policy = "AdminPolicy")]
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
+        {
+            try
+            {
+                if (productPostDTO.Images.Count > 5) return BadRequest("Too many images"); // max 5 images
+                productPostDTO.Images.ForEach(ValidateImageUpload);
+                List<ProductImage> productImageList = new();
+                Regex sWhitespace = MyRegex();
+                var productNameNoWhitespace = sWhitespace.Replace(productPostDTO.Name, "");
+                for (int i = 0; i < productPostDTO.Images.Count; i++)
+                {
+                    var image = productPostDTO.Images[i];
+                    string imageExtension = Path.GetExtension(image.FileName);
+                    //string imageName = Path.GetRandomFileName().Replace(".", "-");
+                    string imageName = $"{productNameNoWhitespace}{i + 1}";
+                    // provjeriti da li ima neka vec slika sa istim imenom
+                    var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
+                    using var stream = new FileStream(localFilePath, FileMode.Create);
+                    await image.CopyToAsync(stream);
+                    // trebao bih staviti neki error handling
+                    productImageList.Add(new ProductImage { ImageName = $"{imageName}{imageExtension}" });
+                }
+                var product = new Product
+                {
+                    Name = productPostDTO.Name,
+                    Price = productPostDTO.Price,
+                    Description = productPostDTO.Description,
+                    Images = productImageList,
+                    ProductCategoryId = productPostDTO.ProductCategoryId,
+                    Featured = productPostDTO.Featured
+                };
+                product = await _productService.AddProduct(product);
+                return Ok(await MapDomainToDTO(product));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
         // [Authorize(Policy = "AdminPolicy")]
         // [HttpDelete("{id}")]
         // public async Task<IActionResult> DeleteProduct(Guid id)
@@ -81,7 +112,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             try
             {
-                Guid? categoryId = (categoryIdRouteParam == "null") ? null : Guid.Parse(categoryIdRouteParam);
+                Guid? categoryId = categoryIdRouteParam == "null" ? null : Guid.Parse(categoryIdRouteParam);
                 var products = await _productService.GetProductsByCategory(categoryId, sortBy);
                 return Ok(await MapDomainToDTO(products));
             }
@@ -95,7 +126,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             try
             {
-                Guid? categoryId = (categoryIdRouteParam == "null") ? null : Guid.Parse(categoryIdRouteParam);
+                Guid? categoryId = categoryIdRouteParam == "null" ? null : Guid.Parse(categoryIdRouteParam);
                 var products = await _productService.GetRandomByCategory(categoryId, count);
                 return Ok(await MapDomainToDTO(products));
             }
@@ -172,5 +203,20 @@ namespace ArsAmorisDesignApi.Controllers
             var userIdString = identity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             return long.Parse(userIdString!);
         }
+        private static void ValidateImageUpload(IFormFile imageFile)
+        {
+            var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
+            if (!allowedExtensions.Contains(Path.GetExtension(imageFile.FileName)))
+            {
+                throw new Exception($"{imageFile.FileName} has unsupported image extension");
+            }
+            if (imageFile.Length > 5242880)  // 5MB limit
+            {
+                throw new Exception($"Image {imageFile.FileName} too large");
+            }
+        }
+
+        [GeneratedRegex("\\s+")]
+        private static partial Regex MyRegex();
     }
 }
