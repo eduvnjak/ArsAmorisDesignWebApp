@@ -19,34 +19,34 @@ namespace ArsAmorisDesignApi.Controllers
             _httpContextAccessor = httpContextAccessor;
 
         }
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
-        {
-            try
-            {
-                var product = await _productService.AddProduct(productPostDTO);
-                return Ok(await MapDomainToDTO(product));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(Guid id)
-        {
-            bool deleted = await _productService.DeleteProduct(id);
-            if (deleted)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        // [Authorize(Policy = "AdminPolicy")]
+        // [HttpPost]
+        // public async Task<ActionResult<Product>> PostProduct([FromForm] ProductPostDTO productPostDTO)
+        // {
+        //     try
+        //     {
+        //         var product = await _productService.AddProduct(productPostDTO);
+        //         return Ok(await MapDomainToDTO(product));
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
+        // [Authorize(Policy = "AdminPolicy")]
+        // [HttpDelete("{id}")]
+        // public async Task<IActionResult> DeleteProduct(Guid id)
+        // {
+        //     bool deleted = await _productService.DeleteProduct(id);
+        //     if (deleted)
+        //     {
+        //         return NoContent();
+        //     }
+        //     else
+        //     {
+        //         return NotFound();
+        //     }
+        // }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts([FromQuery] string? sortBy, [FromQuery] string? categories) // mozda razdvoji na sort column i sort order
         {
@@ -60,22 +60,22 @@ namespace ArsAmorisDesignApi.Controllers
             if (product == null) return NotFound();
             return await MapDomainToDTO(product); // treba li ovo umotati u Ok ???
         }
-        [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("{id}")] // ovaj put odstupa od HTTP standarda 
-        public async Task<ActionResult<ProductDTO>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
-        {
-            try
-            {
-                var product = await _productService.EditProduct(id, productEditDTO);
-                if (product == null) return NotFound();
+        // [Authorize(Policy = "AdminPolicy")]
+        // [HttpPut("{id}")] // ovaj put odstupa od HTTP standarda 
+        // public async Task<ActionResult<ProductDTO>> EditProduct(Guid id, [FromForm] ProductEditDTO productEditDTO)
+        // {
+        //     try
+        //     {
+        //         var product = await _productService.EditProduct(id, productEditDTO);
+        //         if (product == null) return NotFound();
 
-                return Ok(await MapDomainToDTO(product)); // da li ovo ili no content;
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
+        //         return Ok(await MapDomainToDTO(product)); // da li ovo ili no content;
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         return BadRequest(e.Message);
+        //     }
+        // }
         [HttpGet("Category/{categoryIdRouteParam}")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProductsByCategory([FromQuery] string? sortBy, string categoryIdRouteParam)
         {
@@ -138,7 +138,7 @@ namespace ArsAmorisDesignApi.Controllers
         {
             return new ProductDTO(
                     product,
-                    $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{product.ImageFileName}",
+                    product.Images.Select(productImage => $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{productImage.ImageName}").ToList(),
                     likeCount,
                     liked
             );

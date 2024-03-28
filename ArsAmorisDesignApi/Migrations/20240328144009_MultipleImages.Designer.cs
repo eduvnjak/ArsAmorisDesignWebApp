@@ -3,6 +3,7 @@ using System;
 using ArsAmorisDesignApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ArsAmorisDesignApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240328144009_MultipleImages")]
+    partial class MultipleImages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,11 +85,11 @@ namespace ArsAmorisDesignApi.Migrations
 
                     b.Property<string>("ImageName")
                         .HasColumnType("text")
-                        .HasColumnName("image_name");
+                        .HasColumnName("name");
 
                     b.HasKey("ProductId", "ImageName");
 
-                    b.ToTable("product_images");
+                    b.ToTable("product_image");
                 });
 
             modelBuilder.Entity("ArsAmorisDesignApi.Models.ProductLike", b =>

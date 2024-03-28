@@ -15,12 +15,7 @@ public class Product
     public decimal Price { get; set; }
     [Column("description")]
     public string? Description { get; set; }
-    // [Column("image_name")]
-    // public string ImageName { get; set; } // ovaj i sljedeci atribut potrebni zbog brisanja 
-    // [Column("image_extension")]
-    // public string ImageExtension { get; set; }
-    [Column("image_file_name")]
-    public string ImageFileName { get; set; } //omoguci vise slika
+    public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     [Column("category_id")]
     public Guid? ProductCategoryId { get; set; }
     public ProductCategory? ProductCategory { get; set; }

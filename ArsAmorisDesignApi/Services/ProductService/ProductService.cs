@@ -16,66 +16,66 @@ namespace ArsAmorisDesignApi.Services.ProductService
             _webHostEnvironment = webHostEnvironment;
             _dbContext = dbContext;
         }
-        public async Task<Product> AddProduct(ProductPostDTO productPostDTO)
-        {
-            ValidateImageUpload(productPostDTO.Image);
+        // public async Task<Product> AddProduct(ProductPostDTO productPostDTO)
+        // {
+        //     ValidateImageUpload(productPostDTO.Image);
 
-            string imageExtension = Path.GetExtension(productPostDTO.Image.FileName);
-            string imageName = Path.GetRandomFileName().Replace(".", "-");
-            // provjeriti da li ima neka vec slika sa istim imenom
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
-            using var stream = new FileStream(localFilePath, FileMode.Create);
-            await productPostDTO.Image.CopyToAsync(stream);
+        //     string imageExtension = Path.GetExtension(productPostDTO.Image.FileName);
+        //     string imageName = Path.GetRandomFileName().Replace(".", "-");
+        //     // provjeriti da li ima neka vec slika sa istim imenom
+        //     var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
+        //     using var stream = new FileStream(localFilePath, FileMode.Create);
+        //     await productPostDTO.Image.CopyToAsync(stream);
 
-            // var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
+        //     // var urlImagePath = $"{_httpContextAccessor.HttpContext.Request.Scheme}://{_httpContextAccessor.HttpContext.Request.Host}{_httpContextAccessor.HttpContext.Request.PathBase}/Images/{imageName}{imageExtension}";
 
-            var product = new Product
-            {
-                Name = productPostDTO.Name,
-                Price = productPostDTO.Price,
-                Description = productPostDTO.Description,
-                ImageFileName = $"{imageName}{imageExtension}",
-                ProductCategoryId = productPostDTO.ProductCategoryId,
-                Featured = productPostDTO.Featured
-            };
+        //     var product = new Product
+        //     {
+        //         Name = productPostDTO.Name,
+        //         Price = productPostDTO.Price,
+        //         Description = productPostDTO.Description,
+        //         ImageFileName = $"{imageName}{imageExtension}",
+        //         ProductCategoryId = productPostDTO.ProductCategoryId,
+        //         Featured = productPostDTO.Featured
+        //     };
 
-            await _dbContext.Products.AddAsync(product);
-            await _dbContext.SaveChangesAsync();
-            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
+        //     await _dbContext.Products.AddAsync(product);
+        //     await _dbContext.SaveChangesAsync();
+        //     await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
-            return product;
-        }
+        //     return product;
+        // }
 
         public async Task<IEnumerable<Product>> GetAllProducts(string? sortBy, string? categories)
         {
             var products = _dbContext.Products.Sort(sortBy).FilterCategories(categories).AsQueryable();
-            return await products.Include(p => p.ProductCategory).ToListAsync();
+            return await products.Include(p => p.ProductCategory).Include(p => p.Images).ToListAsync();
         }
         // da li ovdje treba Product ? upitnik da označui nullable 
         public async Task<Product?> GetProduct(Guid id)
         {
-            var product = await _dbContext.Products.Include(p => p.ProductCategory).FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _dbContext.Products.Include(p => p.ProductCategory).Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == id);
 
             return product;
         }
         // da li je prihvatljivo bool vratiti
-        public async Task<bool> DeleteProduct(Guid id)
-        {
-            var product = await _dbContext.Products.FindAsync(id);
+        // public async Task<bool> DeleteProduct(Guid id)
+        // {
+        //     var product = await _dbContext.Products.FindAsync(id);
 
-            if (product == null)
-            {
-                return false;
-            }
-            _dbContext.Products.Remove(product);
-            await _dbContext.SaveChangesAsync();
-            // obrisi sliku
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
-            // kakvi ovdje izuzeci se mogu dogoditi?
-            File.Delete(localFilePath);
+        //     if (product == null)
+        //     {
+        //         return false;
+        //     }
+        //     _dbContext.Products.Remove(product);
+        //     await _dbContext.SaveChangesAsync();
+        //     // obrisi sliku
+        //     var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
+        //     // kakvi ovdje izuzeci se mogu dogoditi?
+        //     File.Delete(localFilePath);
 
-            return true;
-        }
+        //     return true;
+        // }
         private static void ValidateImageUpload(IFormFile imageFile)
         {
             var allowedExtensions = new string[] { ".jpg", ".jpeg", ".png" };
@@ -88,49 +88,49 @@ namespace ArsAmorisDesignApi.Services.ProductService
                 throw new Exception("Image too large");
             }
         }
-        public async Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO)
-        {
-            var product = await _dbContext.Products.FindAsync(id);
+        // public async Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO)
+        // {
+        //     var product = await _dbContext.Products.FindAsync(id);
 
-            if (product == null)
-            {
-                return null;
-            }
-            if (productEditDTO.Image != null)
-            {
-                ValidateImageUpload(productEditDTO.Image);
-                // obrisi sliku
-                var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
-                // kakvi ovdje izuzeci se mogu dogoditi?
-                File.Delete(oldLocalFilePath); // ne provjerava da li file postoji
-                // ovaj upload je ponavljanje koda
-                string imageExtension = Path.GetExtension(productEditDTO.Image.FileName);
-                string imageName = Path.GetRandomFileName().Replace(".", "-");
-                // provjeriti da li ima neka vec slika sa istim imenom
-                var newLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
-                using var stream = new FileStream(newLocalFilePath, FileMode.Create);
-                await productEditDTO.Image.CopyToAsync(stream);
+        //     if (product == null)
+        //     {
+        //         return null;
+        //     }
+        //     if (productEditDTO.Image != null)
+        //     {
+        //         ValidateImageUpload(productEditDTO.Image);
+        //         // obrisi sliku
+        //         var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
+        //         // kakvi ovdje izuzeci se mogu dogoditi?
+        //         File.Delete(oldLocalFilePath); // ne provjerava da li file postoji
+        //         // ovaj upload je ponavljanje koda
+        //         string imageExtension = Path.GetExtension(productEditDTO.Image.FileName);
+        //         string imageName = Path.GetRandomFileName().Replace(".", "-");
+        //         // provjeriti da li ima neka vec slika sa istim imenom
+        //         var newLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
+        //         using var stream = new FileStream(newLocalFilePath, FileMode.Create);
+        //         await productEditDTO.Image.CopyToAsync(stream);
 
-                product.ImageFileName = $"{imageName}{imageExtension}";
-            }
-            // ovdje bi dobro dosao mapper
-            product.Name = productEditDTO.Name;
-            product.Description = productEditDTO.Description;
-            product.Price = productEditDTO.Price;
-            product.ProductCategoryId = productEditDTO.ProductCategoryId;
-            product.Featured = productEditDTO.Featured;
-            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
+        //         product.ImageFileName = $"{imageName}{imageExtension}";
+        //     }
+        //     // ovdje bi dobro dosao mapper
+        //     product.Name = productEditDTO.Name;
+        //     product.Description = productEditDTO.Description;
+        //     product.Price = productEditDTO.Price;
+        //     product.ProductCategoryId = productEditDTO.ProductCategoryId;
+        //     product.Featured = productEditDTO.Featured;
+        //     await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
-            await _dbContext.SaveChangesAsync();
-            return product;
-        }
+        //     await _dbContext.SaveChangesAsync();
+        //     return product;
+        // }
         public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId, string? sortBy)
         {
-            return await _dbContext.Products.Sort(sortBy).Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+            return await _dbContext.Products.Sort(sortBy).Include(p => p.ProductCategory).Include(p => p.Images).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
         }
         public async Task<IEnumerable<Product>> GetFeaturedProducts()
         {
-            return await _dbContext.Products.Where(product => product.Featured).Include(product => product.ProductCategory).ToListAsync();
+            return await _dbContext.Products.Where(product => product.Featured).Include(product => product.ProductCategory).Include(p => p.Images).ToListAsync();
         }
 
         public async Task<bool> LikeProduct(long userId, Guid productId)
@@ -190,7 +190,7 @@ namespace ArsAmorisDesignApi.Services.ProductService
         public async Task<IEnumerable<Product>> GetRandomByCategory(Guid? categoryId, int count)
         {
             // order by Guid.NewGuid() ne radi 
-            var products = await _dbContext.Products.Include(p => p.ProductCategory).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
+            var products = await _dbContext.Products.Include(p => p.ProductCategory).Include(p => p.Images).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
             return products.OrderBy(x => Guid.NewGuid()).Take(count).ToList();
         }
     }
