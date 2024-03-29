@@ -154,7 +154,13 @@ namespace ArsAmorisDesignApi.Services.ProductService
         }
         public async Task<Dictionary<Guid, int>> GetLikeCountForProducts(ISet<Guid> products)
         {
-            return await _dbContext.ProductLikes.Where(pl => products.Contains(pl.ProductId)).GroupBy(pl => pl.ProductId).Select(group => new { ProductId = group.Key, LikeCount = group.Count() }).ToDictionaryAsync(t => t.ProductId, t => t.LikeCount);
+            var dictionary = await _dbContext.ProductLikes.Where(pl => products.Contains(pl.ProductId)).GroupBy(pl => pl.ProductId).Select(group => new { ProductId = group.Key, LikeCount = group.Count() }).ToDictionaryAsync(t => t.ProductId, t => t.LikeCount);
+            var productsWithZeroLikes = products.Except(dictionary.Keys);
+            foreach (var key in productsWithZeroLikes)
+            {
+                dictionary[key] = 0;
+            }
+            return dictionary;
         }
         public async Task<IEnumerable<Product>> GetRandomByCategory(Guid? categoryId, int count)
         {
