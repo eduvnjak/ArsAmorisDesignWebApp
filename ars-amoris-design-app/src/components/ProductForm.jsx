@@ -74,6 +74,45 @@ export default function ProductForm({
 				? imageUrl
 				: 'https://fakeimg.pl/450x250?text=Image+preview&font=noto';
 
+	const [images, setImages] = useState([]);
+
+	function handleImageChange(event) {
+		if (images.length === 5) {
+			console.log('pun');
+			return;
+		}
+		if (event.target.files.length > 5) {
+			console.log('odaberi maksimalno 5 slika');
+			return;
+		}
+		if (event.target.files.length + images.length > 5) {
+			console.log(`mozes odabrati jos ${5 - images.length} slika`);
+			return;
+		}
+		console.log(event.target.files);
+		const fileList = [...event.target.files];
+		fileList.forEach(file => (file.key = crypto.randomUUID()));
+		setImages([...images, ...fileList]);
+	}
+	function handleDelete(key) {
+		setImages(images.filter(img => img.key !== key));
+	}
+	function moveDown(index) {
+		if (index === images.length - 1) return;
+		const newArray = [...images];
+		const temp = newArray[index];
+		newArray[index] = newArray[index + 1];
+		newArray[index + 1] = temp;
+		setImages(newArray);
+	}
+	function moveUp(index) {
+		if (index === 0) return;
+		const newArray = [...images];
+		const temp = newArray[index];
+		newArray[index] = newArray[index - 1];
+		newArray[index - 1] = temp;
+		setImages(newArray);
+	}
 	return (
 		<div className='h-full w-full bg-white'>
 			<div className='mx-auto h-full max-w-2xl px-7 py-8 text-slate-900'>
@@ -213,6 +252,47 @@ export default function ProductForm({
 							</div>
 						</div>
 					</div>
+					<div className='space-y-2'>
+						<span className='text-sm font-medium text-slate-900'>
+							Slike proizvoda
+						</span>
+						<div>
+							<label
+								htmlFor='image'
+								className='inline-block cursor-pointer rounded px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-100'
+							>
+								Dodaj slike
+							</label>
+							<input
+								type='file'
+								id='image'
+								className='hidden'
+								multiple
+								accept='image/png, image/jpeg'
+								onChange={handleImageChange}
+							></input>
+						</div>
+						<div className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'>
+							{images.length === 0 ? (
+								<div className='grid h-20 w-full place-content-center text-center text-sm text-slate-600'>
+									Dodane slike će biti prikazane ovdje
+								</div>
+							) : (
+								images.map((file, index) => (
+									<FileListElement
+										key={file.key}
+										file={file}
+										onDelete={handleDelete}
+										moveUp={() => moveUp(index)}
+										moveDown={() => moveDown(index)}
+									></FileListElement>
+								))
+							)}
+						</div>
+						<p className='text-sm text-slate-600'>
+							Dodaj jednu do pet slika proizvoda.
+						</p>
+					</div>
 					<div className='flex justify-end gap-2 border-t py-4'>
 						<button className='rounded px-4 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>
 							Odustani
@@ -299,5 +379,92 @@ function StyledInput({ ...rest }) {
 			{...rest}
 			className='mt-2 w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 focus:outline-2 focus:outline-blue-500'
 		></input>
+	);
+}
+
+function FileListElement({ file, onDelete, moveUp, moveDown }) {
+	const imageUrl = URL.createObjectURL(file);
+
+	useEffect(() => {
+		return () => {
+			// URL.revokeObjectURL(imageUrl);
+		};
+	}, []);
+
+	return (
+		<div className='flex flex-row items-center justify-between'>
+			<div className='flex flex-col'>
+				<div onClick={moveUp}>
+					<ChevronUp></ChevronUp>
+				</div>
+				<div onClick={moveDown}>
+					<ChevronDown></ChevronDown>
+				</div>
+			</div>
+			<div className='size-20'>
+				<img src={imageUrl}></img>
+			</div>
+			<div className='text-xs text-slate-600 sm:text-sm'>{file.name}</div>
+			<div onClick={() => onDelete(file.key)}>
+				<DeleteIcon></DeleteIcon>
+			</div>
+		</div>
+	);
+}
+
+function DeleteIcon() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6 stroke-slate-500 hover:cursor-pointer hover:stroke-slate-900'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='M6 18 18 6M6 6l12 12'
+			/>
+		</svg>
+	);
+}
+
+function ChevronUp() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='m4.5 15.75 7.5-7.5 7.5 7.5'
+			/>
+		</svg>
+	);
+}
+
+function ChevronDown() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='m19.5 8.25-7.5 7.5-7.5-7.5'
+			/>
+		</svg>
 	);
 }
