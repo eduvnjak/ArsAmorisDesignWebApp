@@ -74,6 +74,47 @@ export default function ProductForm({
 				? imageUrl
 				: 'https://fakeimg.pl/450x250?text=Image+preview&font=noto';
 
+	const [images, setImages] = useState([]);
+
+	function handleImageChange(event) {
+		if (images.length === 5) {
+			console.log('pun');
+			return;
+		}
+		if (event.target.files.length > 5) {
+			console.log('odaberi maksimalno 5 slika');
+			return;
+		}
+		if (event.target.files.length + images.length > 5) {
+			console.log(`mozes odabrati jos ${5 - images.length} slika`);
+			return;
+		}
+		console.log(event.target.files);
+		const fileList = [...event.target.files];
+		// fileList.forEach(file => (file.key = crypto.randomUUID()));
+		// ovo ispod za mob
+		fileList.forEach(file => (file.key = uuid()));
+		setImages([...images, ...fileList]);
+	}
+	function handleDelete(key) {
+		setImages(images.filter(img => img.key !== key));
+	}
+	function moveDown(index) {
+		if (index === images.length - 1) return;
+		const newArray = [...images];
+		const temp = newArray[index];
+		newArray[index] = newArray[index + 1];
+		newArray[index + 1] = temp;
+		setImages(newArray);
+	}
+	function moveUp(index) {
+		if (index === 0) return;
+		const newArray = [...images];
+		const temp = newArray[index];
+		newArray[index] = newArray[index - 1];
+		newArray[index - 1] = temp;
+		setImages(newArray);
+	}
 	return (
 		<div className='h-full w-full bg-white'>
 			<div className='mx-auto h-full max-w-2xl px-7 py-8 text-slate-900'>
@@ -176,7 +217,7 @@ export default function ProductForm({
 									name='categoryId'
 									id='categoryId'
 									disabled={newCategory !== ''}
-									className='mt-2 w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 ring-inset focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500'
+									className='mt-2 w-full rounded-sm border-0 bg-white px-2 py-1 shadow-sm outline outline-1 outline-slate-300 ring-inset focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500'
 								>
 									<option value='null'>Bez kategorije</option>
 									{productCategories.map(pc => (
@@ -213,8 +254,54 @@ export default function ProductForm({
 							</div>
 						</div>
 					</div>
+					<div className='space-y-2'>
+						<span className='text-sm font-medium text-slate-900'>
+							Slike proizvoda
+						</span>
+						<div>
+							<label
+								htmlFor='image'
+								className='inline-block cursor-pointer rounded px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-100'
+							>
+								Dodaj slike
+							</label>
+							<input
+								type='file'
+								id='image'
+								className='hidden'
+								multiple
+								accept='image/png, image/jpeg'
+								onChange={handleImageChange}
+							></input>
+						</div>
+						<div className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'>
+							{images.length === 0 ? (
+								<div className='grid h-20 w-full place-content-center text-center text-sm text-slate-600'>
+									Dodane slike će biti prikazane ovdje
+								</div>
+							) : (
+								images.map((file, index) => (
+									<FileListElement
+										key={file.key}
+										file={file}
+										onDelete={handleDelete}
+										moveUp={() => moveUp(index)}
+										moveDown={() => moveDown(index)}
+										first={index === 0}
+										last={index === images.length - 1}
+									></FileListElement>
+								))
+							)}
+						</div>
+						<p className='text-sm text-slate-600'>
+							Dodaj jednu do pet slika proizvoda.
+						</p>
+					</div>
 					<div className='flex justify-end gap-2 border-t py-4'>
-						<button className='rounded px-4 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'>
+						<button
+							onClick={() => navigate('/manage-products')}
+							className='rounded px-4 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+						>
 							Odustani
 						</button>
 						<button
@@ -228,69 +315,6 @@ export default function ProductForm({
 			</div>
 		</div>
 	);
-	// return (
-	// 	<div className='mx-8 mt-8 min-h-fit rounded-xl bg-white'>
-	// 		<div className='float-left w-[500px] h-[500px] flex items-center justify-center'>
-	// 			<img src={imageSource} alt={name + ' image'} className='p-3 mx-auto max-h-full max-w-full' />
-	// 		</div>
-	// 		<StyledInput type='text' value={name} name='name' onChange={handleChange}>
-	// 			Naziv proizvoda:
-	// 		</StyledInput>
-	// 		<br />
-	// 		<StyledInput type='text' value={description} name='description' onChange={handleChange}>
-	// 			Opis proizvoda:
-	// 		</StyledInput>
-	// 		<br />
-	// 		<StyledInput
-	// 			type='number'
-	// 			value={price} //pazi ovdje
-	// 			name='price'
-	// 			onChange={handleChange}
-	// 			step={0.01}
-	// 		>
-	// 			Cijena:
-	// 		</StyledInput>
-	// 		<br />
-	// 		<StyledInput type='checkbox' checked={featured} name='featured' onChange={handleChange}>
-	// 			Izdvoji proizvod:
-	// 		</StyledInput>
-	// 		<br />
-	// 		<label>
-	// 			Odaberi postojeću kategoriju:{' '}
-	// 			<select
-	// 				onChange={handleChange}
-	// 				value={categoryId ?? 'null'}
-	// 				name='categoryId'
-	// 				disabled={newCategory !== ''}
-	// 				className='transition-all duration-300 m-2 p-1 shadow-md focus:outline-none focus:ring focus:ring-blue-600'
-	// 			>
-	// 				<option value='null'>Bez kategorije</option>
-	// 				{productCategories.map(pc => (
-	// 					<option key={pc.id} value={pc.id}>
-	// 						{pc.name}
-	// 					</option>
-	// 				))}
-	// 			</select>
-	// 		</label>
-	// 		<br />
-	// 		<StyledInput type='text' onChange={handleChange} value={newCategory} name='newCategory'>
-	// 			Unesi novu kategoriju:
-	// 		</StyledInput>
-	// 		<br />
-	// 		<StyledFileInput name='image' onChange={handleChange} onCancel={handleCancel} accept='image/png, image/jpeg'>
-	// 			Odaberi novu sliku
-	// 		</StyledFileInput>
-	// 		<br />
-	// 		<div className='p-3'>
-	// 			{/* <Button onClick={onAccept}>{acceptLabel}</Button>  dugme trenutno isključeno */}
-	// 			<Button>{acceptLabel}</Button>
-	// 		</div>
-	// 		<div className='p-3'>
-	// 			<Button onClick={() => navigate('/manage-products')}>Odustani</Button>
-	// 		</div>
-	// 		<div className='clear-both'></div>
-	// 	</div>
-	// );
 }
 
 function StyledInput({ ...rest }) {
@@ -300,4 +324,102 @@ function StyledInput({ ...rest }) {
 			className='mt-2 w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 focus:outline-2 focus:outline-blue-500'
 		></input>
 	);
+}
+
+function FileListElement({ file, onDelete, moveUp, moveDown, first, last }) {
+	const [imageUrl, setImageUrl] = useState(null);
+
+	// URL.createObjectURL(file);
+	useEffect(() => {
+		const url = URL.createObjectURL(file);
+		setImageUrl(url);
+		return () => {
+			URL.revokeObjectURL(url);
+		};
+	}, [file]);
+
+	return (
+		<div className='group flex flex-row items-center justify-between gap-2'>
+			<div className='flex h-32 flex-col justify-between px-1 py-2'>
+				<button type='button' onClick={moveUp} disabled={first === true}>
+					<ChevronUp></ChevronUp>
+				</button>
+				<button type='button' onClick={moveDown} disabled={last === true}>
+					<ChevronDown></ChevronDown>
+				</button>
+			</div>
+			<img src={imageUrl} className='size-28 object-contain sm:size-64'></img>
+			<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
+				{file.name}
+			</span>
+			<div onClick={() => onDelete(file.key)}>
+				<DeleteIcon></DeleteIcon>
+			</div>
+		</div>
+	);
+}
+
+function DeleteIcon() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6 cursor-pointer stroke-slate-500 hover:stroke-slate-900'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='M6 18 18 6M6 6l12 12'
+			/>
+		</svg>
+	);
+}
+
+function ChevronUp() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6 stroke-slate-500 hover:stroke-slate-900 group-first:hover:stroke-slate-500'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='m4.5 15.75 7.5-7.5 7.5 7.5'
+			/>
+		</svg>
+	);
+}
+
+function ChevronDown() {
+	return (
+		<svg
+			xmlns='http://www.w3.org/2000/svg'
+			fill='none'
+			viewBox='0 0 24 24'
+			strokeWidth={1.5}
+			stroke='currentColor'
+			className='h-6 w-6 stroke-slate-500 hover:stroke-slate-900 group-last:hover:stroke-slate-500'
+		>
+			<path
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				d='m19.5 8.25-7.5 7.5-7.5-7.5'
+			/>
+		</svg>
+	);
+}
+
+function uuid() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		var r = (Math.random() * 16) | 0,
+			v = c == 'x' ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
+	});
 }
