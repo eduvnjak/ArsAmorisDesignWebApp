@@ -128,15 +128,19 @@ export default function ProductForm({
 						>
 							Naziv
 						</label>
-						<div>
+						<div className='peer'>
 							<StyledInput
 								value={name}
 								onChange={handleChange}
 								id='name'
 								name='name'
 								type='text'
+								pattern='\s*\S.{3,}\S\s*'
 							></StyledInput>
 						</div>
+						<ValidationMessage>
+							Naziv mora imati bar 5 karaktera
+						</ValidationMessage>
 					</div>
 					<div>
 						<label
@@ -158,14 +162,14 @@ export default function ProductForm({
 							Opiši proizvod u nekoliko rečenica.
 						</p>
 					</div>
-					<div className='sm:max-w-40'>
+					<div>
 						<label
 							htmlFor='price'
 							className='block text-sm font-medium text-slate-900'
 						>
 							Cijena
 						</label>
-						<div className='relative mt-2'>
+						<div className='peer relative mt-2 sm:max-w-40'>
 							<input
 								placeholder='0.00'
 								value={price}
@@ -173,13 +177,15 @@ export default function ProductForm({
 								id='price'
 								name='price'
 								step={0.01}
+								min={0}
 								type='number'
-								className='w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 focus:outline-2 focus:outline-blue-500'
+								className='w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 invalid:outline-red-500 focus:outline-2 focus:outline-blue-500 focus:invalid:outline-red-500 focus:invalid:ring-red-500 '
 							></input>
 							<div className='absolute bottom-0 right-8 top-0 flex items-center'>
 								<span className='text-sm text-slate-600'>BAM</span>
 							</div>
 						</div>
+						<ValidationMessage>Cijena mora biti nenegativna.</ValidationMessage>
 					</div>
 					<div className='flex items-start gap-2'>
 						<input
@@ -202,7 +208,7 @@ export default function ProductForm({
 							</p>
 						</div>
 					</div>
-					<div className='space-y-2 sm:flex sm:justify-center sm:space-y-0'>
+					<div className='space-y-2 sm:flex sm:items-start sm:justify-center sm:space-y-0'>
 						<div className='flex-1'>
 							<label
 								htmlFor='categoryId'
@@ -228,7 +234,7 @@ export default function ProductForm({
 								</select>
 							</div>
 						</div>
-						<div className='relative flex justify-center sm:items-end '>
+						<div className='relative flex justify-center sm:top-8'>
 							<div className='absolute inset-0 flex items-center sm:hidden'>
 								<div className='w-full border-t'></div>
 							</div>
@@ -243,15 +249,19 @@ export default function ProductForm({
 							>
 								Unesi novu kategoriju
 							</label>
-							<div>
+							<div className='peer'>
 								<StyledInput
 									value={newCategory}
 									onChange={handleChange}
 									id='newCategory'
 									name='newCategory'
 									type='text'
+									pattern='\s*\S.{3,}\S\s*'
 								></StyledInput>
 							</div>
+							<ValidationMessage>
+								Naziv mora imati bar 5 karaktera
+							</ValidationMessage>
 						</div>
 					</div>
 					<div className='space-y-2'>
@@ -321,7 +331,7 @@ function StyledInput({ ...rest }) {
 	return (
 		<input
 			{...rest}
-			className='mt-2 w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 focus:outline-2 focus:outline-blue-500'
+			className='mt-2 w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 invalid:outline-red-500 focus:outline-2 focus:outline-blue-500 focus:invalid:outline-red-500 focus:invalid:ring-red-500'
 		></input>
 	);
 }
@@ -422,4 +432,12 @@ function uuid() {
 			v = c == 'x' ? r : (r & 0x3) | 0x8;
 		return v.toString(16);
 	});
+}
+
+function ValidationMessage({ children }) {
+	return (
+		<div className='mt-2 hidden text-sm font-semibold text-red-500 peer-has-[:invalid]:block'>
+			{children}
+		</div>
+	);
 }
