@@ -171,12 +171,12 @@ export default function ProductForm({
 						</label>
 						<div className='peer relative mt-2 sm:max-w-40'>
 							<input
-								placeholder='0.00'
+								placeholder='0.0'
 								value={price}
 								onChange={handleChange}
 								id='price'
 								name='price'
-								step={0.01}
+								step={0.1}
 								min={0}
 								type='number'
 								className='w-full rounded-sm border-0 px-2 py-1 shadow-sm outline outline-1 outline-slate-300 invalid:outline-red-500 focus:outline-2 focus:outline-blue-500 focus:invalid:outline-red-500 focus:invalid:ring-red-500 '
