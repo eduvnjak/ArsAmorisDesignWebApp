@@ -11,16 +11,28 @@ export default function AddNewProduct() {
 		categoryId: null,
 		featured: false,
 		newCategory: '',
-		image: null,
+		images: [],
 	});
-	const { name, description, price, categoryId, featured, newCategory, image } =
-		product;
+	const {
+		name,
+		description,
+		price,
+		categoryId,
+		featured,
+		newCategory,
+		images,
+	} = product;
 
 	const navigate = useNavigate();
 	const axiosInstance = useAxios();
 
 	async function handleAddProduct() {
-		if (name == '' || price == '' || image === null) {
+		if (
+			name.trim() === '' ||
+			price == '' ||
+			images.length === 0 ||
+			images.length > 5
+		) {
 			//ovo sredi
 			console.log('propala validacija');
 			return;
@@ -39,10 +51,12 @@ export default function AddNewProduct() {
 			}
 		}
 		const data = new FormData();
-		data.append('Name', name);
+		data.append('Name', name.trim());
 		data.append('Price', Number(price));
 		data.append('Description', description);
-		data.append('Image', image);
+		images.forEach(image => {
+			data.append('Images', image);
+		});
 		data.append('Featured', featured);
 		if (newCategoryId !== null) {
 			data.append('ProductCategoryId', newCategoryId);
@@ -62,8 +76,7 @@ export default function AddNewProduct() {
 		<ProductForm
 			product={product}
 			setProduct={setProduct}
-			onAccept={handleAddProduct}
-			acceptLabel='Dodaj novi proizvod'
+			onSave={handleAddProduct}
 		/>
 	);
 }

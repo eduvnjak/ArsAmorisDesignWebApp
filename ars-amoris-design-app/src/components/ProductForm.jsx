@@ -1,28 +1,20 @@
-import StyledFileInput from './StyledFileInput';
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
-import Button from './Button';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../api/useAxios';
 
-export default function ProductForm({
-	product,
-	setProduct,
-	onAccept,
-	acceptLabel,
-}) {
+export default function ProductForm({ product, setProduct, onSave }) {
 	const [productCategories, setProductCategories] = useState([]);
 	const {
 		name,
 		description,
 		price,
 		categoryId,
-		imageUrl,
 		featured,
 		newCategory,
-		image,
+		images,
 	} = product;
 	const navigate = useNavigate();
-	const [newImageUrl, setNewImageUrl] = useState(null);
 	const axiosInstance = useAxios();
 
 	useEffect(() => {
@@ -33,28 +25,11 @@ export default function ProductForm({
 		fetchProductCategories();
 	}, [axiosInstance]);
 
-	useEffect(() => {
-		return () => {
-			if (newImageUrl !== null) {
-				URL.revokeObjectURL(newImageUrl);
-			}
-		};
-	}, [newImageUrl]);
-
 	function handleChange(e) {
 		let value;
 		switch (e.target.name) {
 			case 'featured':
 				value = e.target.checked;
-				break;
-			case 'image':
-				if (newImageUrl !== null) {
-					URL.revokeObjectURL(newImageUrl);
-				}
-				value = e.target.files[0] ?? null;
-				value !== null
-					? setNewImageUrl(URL.createObjectURL(value))
-					: setNewImageUrl(null);
 				break;
 			default:
 				value = e.target.value;
@@ -62,19 +37,6 @@ export default function ProductForm({
 		}
 		setProduct({ ...product, [e.target.name]: value });
 	}
-	function handleCancel() {
-		URL.revokeObjectURL(newImageUrl);
-		setProduct({ ...product, image: null });
-	}
-
-	const imageSource =
-		image !== null
-			? newImageUrl
-			: imageUrl !== undefined
-				? imageUrl
-				: 'https://fakeimg.pl/450x250?text=Image+preview&font=noto';
-
-	const [images, setImages] = useState([]);
 
 	function handleImageChange(event) {
 		if (images.length === 5) {
@@ -94,10 +56,10 @@ export default function ProductForm({
 		// fileList.forEach(file => (file.key = crypto.randomUUID()));
 		// ovo ispod za mob
 		fileList.forEach(file => (file.key = uuid()));
-		setImages([...images, ...fileList]);
+		setProduct({ ...product, images: [...images, ...fileList] });
 	}
 	function handleDelete(key) {
-		setImages(images.filter(img => img.key !== key));
+		setProduct({ ...product, images: images.filter(img => img.key !== key) });
 	}
 	function moveDown(index) {
 		if (index === images.length - 1) return;
@@ -105,7 +67,7 @@ export default function ProductForm({
 		const temp = newArray[index];
 		newArray[index] = newArray[index + 1];
 		newArray[index + 1] = temp;
-		setImages(newArray);
+		setProduct({ ...product, images: newArray });
 	}
 	function moveUp(index) {
 		if (index === 0) return;
@@ -113,7 +75,7 @@ export default function ProductForm({
 		const temp = newArray[index];
 		newArray[index] = newArray[index - 1];
 		newArray[index - 1] = temp;
-		setImages(newArray);
+		setProduct({ ...product, images: newArray });
 	}
 	return (
 		<div className='h-full w-full bg-white'>
@@ -315,7 +277,8 @@ export default function ProductForm({
 							Odustani
 						</button>
 						<button
-							type='submit'
+							type='button'
+							onClick={onSave}
 							className='rounded bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
 						>
 							Sačuvaj
