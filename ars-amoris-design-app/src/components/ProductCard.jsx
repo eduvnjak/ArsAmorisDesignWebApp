@@ -2,9 +2,10 @@
 import { useEffect, useRef } from 'react';
 import useAxios from '../api/useAxios';
 import { useAuth } from '../contexts/AuthContext';
+import Gallery from './Gallery';
 
 export default function ProductCard({ children, product }) {
-	const { id, name, price, imageUrl, categoryName, likeCount, liked } = product;
+	const { id, name, price, images, categoryName, likeCount, liked } = product;
 	// if (liked != isLiked) setIsLiked(liked); // mirroring prop in state - oprez ! ovo je zeznuto totalno
 	const nameRef = useRef(null);
 	const heartParentRef = useRef(null);
@@ -61,11 +62,7 @@ export default function ProductCard({ children, product }) {
 			}}
 		>
 			<div className='h-64 shrink-0 sm:w-64'>
-				<img
-					src={imageUrl}
-					alt={name + ' image'}
-					className='h-full w-full rounded object-cover'
-				/>
+				<Gallery images={images} objectFit='cover'></Gallery>
 			</div>
 			<div className='relative flex grow flex-col justify-end gap-3 p-6'>
 				<h2
