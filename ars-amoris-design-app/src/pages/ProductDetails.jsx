@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import LoadingIndicator from '../components/LoadingIndicator';
 import useAxios from '../api/useAxios';
 import { useAuth } from '../contexts/AuthContext';
+import Gallery from '../components/Gallery';
 
 export default function ProductDetails() {
 	const [
 		{
-			imageUrl,
+			images,
 			name,
 			price,
 			liked,
@@ -97,11 +98,9 @@ export default function ProductDetails() {
 							{categoryName ?? 'Nekategorisani'}
 						</span>
 					</div>
-					<img
-						src={imageUrl}
-						alt={name + ' image'}
-						className='mx-auto lg:col-start-2 lg:mt-8 '
-					/>
+					<div className='mx-auto lg:col-start-2 lg:mt-8'>
+						<Gallery images={images}></Gallery>
+					</div>
 					<div className='mt-8 space-y-3 px-4 text-slate-800 lg:col-start-1 lg:row-start-2'>
 						<h1 className='text-3xl font-bold'>{name}</h1>
 						<div className='text-2xl font-normal'>{price} BAM</div>
@@ -135,7 +134,7 @@ export default function ProductDetails() {
 										key={product.id}
 										id={product.id}
 										name={product.name}
-										imageUrl={product.imageUrl}
+										imageUrl={product.images[0]} // ili jednu random ?
 										price={product.price}
 									/>
 								))}
