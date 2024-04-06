@@ -12,7 +12,7 @@ export default function Gallery({ images, objectFit = 'scale-down' }) {
 		currentImageRef.current.scrollIntoView({
 			behavior: 'smooth',
 			inline: 'center',
-			block: 'center',
+			block: 'nearest',
 		});
 	}
 	function showNext() {
@@ -21,7 +21,7 @@ export default function Gallery({ images, objectFit = 'scale-down' }) {
 		currentImageRef.current.scrollIntoView({
 			behavior: 'smooth',
 			inline: 'center',
-			block: 'center',
+			block: 'nearest',
 		});
 	}
 	return (
