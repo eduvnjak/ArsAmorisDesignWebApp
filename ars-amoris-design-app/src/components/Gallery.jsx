@@ -25,7 +25,7 @@ export default function Gallery({ images, objectFit = 'scale-down' }) {
 		});
 	}
 	return (
-		<div className='relative h-full w-full'>
+		<div className='group relative h-full w-full'>
 			<div className='h-full overflow-hidden whitespace-nowrap'>
 				{images.map((image, index) => (
 					<img
@@ -73,7 +73,7 @@ function ChevronLeft() {
 			viewBox='0 0 24 24'
 			strokeWidth={1.5}
 			stroke='currentColor'
-			className='h-6 w-6 rounded-full bg-white/65 stroke-slate-900 pr-0.5 hover:stroke-slate-600'
+			className='opacity-0 h-6 w-6 rounded-full bg-white/65 stroke-slate-900 pr-0.5 hover:stroke-slate-600 group-hover:opacity-100 transition-all duration-200'
 		>
 			<path
 				strokeLinecap='round'
@@ -91,7 +91,7 @@ function ChevronRight() {
 			viewBox='0 0 24 24'
 			strokeWidth={1.5}
 			stroke='currentColor'
-			className='h-6 w-6 rounded-full bg-white/65 stroke-slate-900 pl-0.5 hover:stroke-slate-600'
+			className='opacity-0 h-6 w-6 rounded-full bg-white/65 stroke-slate-900 pl-0.5 hover:stroke-slate-600 group-hover:opacity-100 transition-all duration-200'
 		>
 			<path
 				strokeLinecap='round'
