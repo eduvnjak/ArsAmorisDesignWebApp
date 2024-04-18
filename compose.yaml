@@ -13,7 +13,7 @@ services:
     build: 
       context: .
     volumes:
-      - ./ArsAmorisDesignApi/Images:/app/Images
+      - ./container_images:/app/Images
     environment:
       DATABASE_URL: Host=db;Port=5432;Database=ars_amoris_design_dev;Username=postgres;Password=postgrespass
       TOKEN__SECRET: EZn9KTHFCRQYJLhp3BxDdXH47bxFfyKM
