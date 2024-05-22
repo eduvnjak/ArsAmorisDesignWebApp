@@ -12,4 +12,6 @@ public class ProductImage
     public Product Product { get; set; } = null!;
     [Column("image_name")]
     public required string ImageName { get; set; }
+    [Column("order")]
+    public int? Order { get; set; }
 }

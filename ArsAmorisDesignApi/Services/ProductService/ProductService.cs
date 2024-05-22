@@ -57,42 +57,30 @@ namespace ArsAmorisDesignApi.Services.ProductService
         //     return true;
         // }
 
-        // public async Task<Product?> EditProduct(Guid id, ProductEditDTO productEditDTO)
-        // {
-        //     var product = await _dbContext.Products.FindAsync(id);
+        public async Task<Product?> EditProduct(Guid id, Product updatedProduct)
+        {
+            var product = await _dbContext.Products.FindAsync(id);
 
-        //     if (product == null)
-        //     {
-        //         return null;
-        //     }
-        //     if (productEditDTO.Image != null)
-        //     {
-        //         ValidateImageUpload(productEditDTO.Image);
-        //         // obrisi sliku
-        //         var oldLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{product.ImageFileName}");
-        //         // kakvi ovdje izuzeci se mogu dogoditi?
-        //         File.Delete(oldLocalFilePath); // ne provjerava da li file postoji
-        //         // ovaj upload je ponavljanje koda
-        //         string imageExtension = Path.GetExtension(productEditDTO.Image.FileName);
-        //         string imageName = Path.GetRandomFileName().Replace(".", "-");
-        //         // provjeriti da li ima neka vec slika sa istim imenom
-        //         var newLocalFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", $"{imageName}{imageExtension}");
-        //         using var stream = new FileStream(newLocalFilePath, FileMode.Create);
-        //         await productEditDTO.Image.CopyToAsync(stream);
+            if (product == null)
+            {
+                return null;
+            }
 
-        //         product.ImageFileName = $"{imageName}{imageExtension}";
-        //     }
-        //     // ovdje bi dobro dosao mapper
-        //     product.Name = productEditDTO.Name;
-        //     product.Description = productEditDTO.Description;
-        //     product.Price = productEditDTO.Price;
-        //     product.ProductCategoryId = productEditDTO.ProductCategoryId;
-        //     product.Featured = productEditDTO.Featured;
-        //     await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
 
-        //     await _dbContext.SaveChangesAsync();
-        //     return product;
-        // }
+            product.Name = updatedProduct.Name;
+            product.Description = updatedProduct.Description;
+            product.Price = updatedProduct.Price;
+            product.ProductCategoryId = updatedProduct.ProductCategoryId;
+            product.Featured = updatedProduct.Featured;
+            foreach (var image in updatedProduct.Images)
+            {
+                product.Images.Add(image);
+            }
+            await _dbContext.SaveChangesAsync();
+            await _dbContext.Entry(product).Reference(p => p.ProductCategory).LoadAsync(); // explicit loading
+            await _dbContext.Entry(product).Collection(p => p.Images).LoadAsync();
+            return product;
+        }
         public async Task<IEnumerable<Product>> GetProductsByCategory(Guid? categoryId, string? sortBy)
         {
             return await _dbContext.Products.Sort(sortBy).Include(p => p.ProductCategory).Include(p => p.Images).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
@@ -167,6 +155,36 @@ namespace ArsAmorisDesignApi.Services.ProductService
             // order by Guid.NewGuid() ne radi 
             var products = await _dbContext.Products.Include(p => p.ProductCategory).Include(p => p.Images).Where(p => p.ProductCategoryId == categoryId).ToListAsync();
             return products.OrderBy(x => Guid.NewGuid()).Take(count).ToList();
+        }
+        public async Task<IEnumerable<string>> GetImagesForProduct(Guid productId)
+        {
+            // ne provjeravam da li proizvod postoji
+            var productImages = await _dbContext.ProductImages.Where(productImage => productImage.ProductId == productId).Select(productImage => productImage.ImageName).ToListAsync(); // ovo bi na set promijenit
+            return productImages;
+        }
+        public async Task<bool> DeleteImages(Guid productId, IEnumerable<string> images)
+        {
+            var toDelete = await _dbContext.ProductImages.Where(pi => pi.ProductId == productId && images.Contains(pi.ImageName)).ToListAsync();
+            if (toDelete.Any())
+            {
+                _dbContext.ProductImages.RemoveRange(toDelete);
+                await _dbContext.SaveChangesAsync();
+            }
+            return true; // false u slucaju izuzetka???
+        }
+        public async Task<bool> ReorderImages(Dictionary<string, int> keyValues)
+        {
+            // pretpostavljam da su primljeni podaci ispravni
+            var toReorder = await _dbContext.ProductImages.Where(pi => keyValues.Keys.Contains(pi.ImageName)).ToListAsync();
+            if (toReorder.Any())
+            {
+                foreach (var image in toReorder)
+                {
+                    image.Order = keyValues[image.ImageName];
+                }
+                await _dbContext.SaveChangesAsync();
+            }
+            return true; // ista primjedba ??
         }
     }
 }
