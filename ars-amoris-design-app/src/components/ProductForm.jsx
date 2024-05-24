@@ -252,16 +252,16 @@ export default function ProductForm({ product, setProduct, onSave }) {
 									Dodane slike će biti prikazane ovdje
 								</div>
 							) : (
-								images.map((file, index) => (
-									<FileListElement
-										key={file.key}
-										file={file}
+								images.map((image, index) => (
+									<ImageListElement
+										key={image.key ?? image.match(/([^/]+)\/?$/)[0]}
+										image={image}
 										onDelete={handleDelete}
 										moveUp={() => moveUp(index)}
 										moveDown={() => moveDown(index)}
 										first={index === 0}
 										last={index === images.length - 1}
-									></FileListElement>
+									></ImageListElement>
 								))
 							)}
 						</div>
@@ -299,17 +299,19 @@ function StyledInput({ ...rest }) {
 	);
 }
 
-function FileListElement({ file, onDelete, moveUp, moveDown, first, last }) {
+function ImageListElement({ image, onDelete, moveUp, moveDown, first, last }) {
 	const [imageUrl, setImageUrl] = useState(null);
-
+	const imageName =
+		image instanceof File ? image.name : image.match(/([^/]+)\/?$/)[0];
 	// URL.createObjectURL(file);
 	useEffect(() => {
-		const url = URL.createObjectURL(file);
+		if (!(image instanceof File)) return;
+		const url = URL.createObjectURL(image);
 		setImageUrl(url);
 		return () => {
 			URL.revokeObjectURL(url);
 		};
-	}, [file]);
+	}, [image]);
 
 	return (
 		<div className='group flex flex-row items-center justify-between gap-2'>
@@ -321,11 +323,14 @@ function FileListElement({ file, onDelete, moveUp, moveDown, first, last }) {
 					<ChevronDown></ChevronDown>
 				</button>
 			</div>
-			<img src={imageUrl} className='size-28 object-contain sm:size-64'></img>
+			<img
+				src={image instanceof File ? imageUrl : image}
+				className='size-28 object-contain sm:size-64'
+			></img>
 			<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
-				{file.name}
+				{imageName}
 			</span>
-			<div onClick={() => onDelete(file.key)}>
+			<div onClick={() => onDelete(image.key)}>
 				<DeleteIcon></DeleteIcon>
 			</div>
 		</div>

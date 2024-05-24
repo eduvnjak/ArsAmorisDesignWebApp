@@ -7,8 +7,15 @@ import useAxios from '../api/useAxios';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState({});
-	const { name, description, price, categoryId, featured, newCategory, image } =
-		product;
+	const {
+		name,
+		description,
+		price,
+		categoryId,
+		featured,
+		newCategory,
+		images,
+	} = product;
 
 	const [isLoading, setIsLoading] = useState(true);
 	const { productId } = useParams();
@@ -20,7 +27,7 @@ export default function EditProductDetails() {
 		const fetchProduct = async () => {
 			setIsLoading(true);
 			let result = await axiosInstance.get(`Products/${productId}`);
-			setProduct({ newCategory: '', image: null, ...result.data });
+			setProduct({ newCategory: '', ...result.data });
 			setIsLoading(false);
 		};
 		fetchProduct();
@@ -49,7 +56,24 @@ export default function EditProductDetails() {
 		data.append('Name', name);
 		data.append('Price', Number(price));
 		data.append('Description', description);
-		data.append('Image', image);
+		let newCount = 0;
+		let existingCount = 0;
+		images.forEach((image, index) => {
+			if (image instanceof File) {
+				// console.log('File ' + index);
+				data.append(`NewImages[${newCount}].Index`, index);
+				data.append(`NewImages[${newCount}].File`, image);
+				newCount++;
+			} else if (typeof image == 'string') {
+				// console.log('String ' + index);
+				data.append(`ExistingImages[${existingCount}].Index`, index);
+				data.append(
+					`ExistingImages[${existingCount}].ImageName`,
+					image.match(/([^/]+)\/?$/)[0],
+				);
+				existingCount++;
+			}
+		});
 		data.append('Featured', featured);
 		if (newCategoryId !== null) {
 			data.append('ProductCategoryId', newCategoryId);
@@ -58,6 +82,7 @@ export default function EditProductDetails() {
 		}
 
 		try {
+			// console.log('PUT');
 			await axiosInstance.put(`Products/${productId}`, data);
 			navigate('/manage-products');
 		} catch (error) {
@@ -73,8 +98,7 @@ export default function EditProductDetails() {
 				<ProductForm
 					product={product}
 					setProduct={setProduct}
-					onAccept={handleUpdateProduct}
-					acceptLabel={'Potvrdi izmjene'}
+					onSave={handleUpdateProduct}
 				/>
 			)}
 		</>
