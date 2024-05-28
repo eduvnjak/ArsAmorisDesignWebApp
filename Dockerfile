@@ -20,11 +20,19 @@ RUN dotnet restore
 COPY ArsAmorisDesignApi ./
 RUN dotnet publish -c Release -o out
 
+# Copy and seed images
+COPY images.sh /usr/local/bin/copy_images.sh
+COPY ./container_images/ ./source_images
+RUN mkdir -p target_directory
+RUN chmod +x /usr/local/bin/copy_images.sh
+RUN /usr/local/bin/copy_images.sh
+
 # Stage 3: Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 COPY --from=backend-build /app/backend/out .
 RUN mkdir Images
+COPY --from=backend-build /app/backend/target_directory ./Images
 
 # Copy frontend build output to wwwroot folder
 WORKDIR /app/wwwroot

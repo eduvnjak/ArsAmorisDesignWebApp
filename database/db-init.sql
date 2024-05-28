@@ -5,7 +5,7 @@
 -- Dumped from database version 16.1
 -- Dumped by pg_dump version 16.1
 
--- Started on 2024-04-13 15:05:00
+-- Started on 2024-05-28 17:12:37
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -55,7 +55,8 @@ ALTER TABLE public.product_categories OWNER TO postgres;
 
 CREATE TABLE public.product_images (
     product_id uuid NOT NULL,
-    image_name text NOT NULL
+    image_name text NOT NULL,
+    "order" integer
 );
 
 
@@ -145,6 +146,7 @@ INSERT INTO public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") VAL
 INSERT INTO public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") VALUES ('20240222120909_AddProductLike', '7.0.14');
 INSERT INTO public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") VALUES ('20240328144009_MultipleImages', '7.0.14');
 INSERT INTO public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") VALUES ('20240328152654_MultipleImagesNamingFixes', '7.0.14');
+INSERT INTO public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") VALUES ('20240520163233_AddImageOrder', '7.0.14');
 
 
 --
@@ -174,86 +176,86 @@ INSERT INTO public.product_categories (id, name) VALUES ('f915fdbc-029d-4df6-ea0
 -- Data for Name: product_images; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5d0e15b7-880b-43a5-6f2b-08dbabc56143', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5d0e15b7-880b-43a5-6f2b-08dbabc56143', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test5.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('6cf33825-191d-4dce-7b53-08dbeb8b0133', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('788696c6-3d72-4f08-7b54-08dbeb8b0133', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('788696c6-3d72-4f08-7b54-08dbeb8b0133', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('15e0793a-8adf-11ee-863a-3065ec946484', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('15e0793a-8adf-11ee-863a-3065ec946484', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test5.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5bdb581e-5323-4bd2-7c05-08dbef9a4d1c', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test5.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('0b7d15c5-e252-445e-a01c-08dbf58f8e2e', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test5.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('ed2b5682-e7ce-4c82-983f-08dc16b0c56d', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test1.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('a22d79e6-d929-4f4f-c9dc-08dc18615529', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('a22d79e6-d929-4f4f-c9dc-08dc18615529', 'test5.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test1.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('755e02ac-2116-4fcb-8dfc-08dc1c0fb283', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('755e02ac-2116-4fcb-8dfc-08dc1c0fb283', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test1.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test9.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('3e56f565-e1e4-4ac7-4964-08dbdbce04bc', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('3e56f565-e1e4-4ac7-4964-08dbdbce04bc', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('cdc692d2-663a-454f-acf7-08dbe39b9b87', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test8.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test2.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test3.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('545611ca-d9f8-45d5-a113-2ff23c6359a6', 'test10.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test4.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test6.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test7.jpg');
-INSERT INTO public.product_images (product_id, image_name) VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test9.jpg');
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5d0e15b7-880b-43a5-6f2b-08dbabc56143', 'test6-ootg2syxb1a.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5d0e15b7-880b-43a5-6f2b-08dbabc56143', 'test8-prfhrncyezx.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test6-3ax1rarufdt.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test5-wwofxym3vl4.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test2-am45fe54azo.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('03f6ae02-0bf7-4ded-4965-08dbdbce04bc', 'test7-wl3jpkdkdsm.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('6cf33825-191d-4dce-7b53-08dbeb8b0133', 'test6-w5cfjmqjuw2.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('788696c6-3d72-4f08-7b54-08dbeb8b0133', 'test6-ddsh4w0zfl5.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('788696c6-3d72-4f08-7b54-08dbeb8b0133', 'test2-uinncxur2wg.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test4-4cme3hxsmmq.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test2-eextxnvdyfe.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('02aa8939-8adf-11ee-863a-3065ec946484', 'test3-g4usyvrd5b3.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('15e0793a-8adf-11ee-863a-3065ec946484', 'test4-rqrdq2f44ve.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('15e0793a-8adf-11ee-863a-3065ec946484', 'test10-f1fkducp5it.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test4-zrmcbo2q1te.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test8-r40lmd044ke.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test10-5bj2tz5o2gt.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test2-mrhlfl5sprz.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('4ae94d47-8adf-11ee-863a-3065ec946484', 'test9-jz4v3it3imn.jpg', 4);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test7-x2gpcu2wy53.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test4-pg5b20jpahq.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5ded7dd8-8adf-11ee-863a-3065ec946484', 'test3-aqtuypjkjjp.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test3-zfcqswxpwdg.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test9-dvkbnthv3nt.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test10-4fmscla2nfm.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('f3014b1b-1a0f-4ccc-b7f8-08dbf1f234fa', 'test4-r4earlutju5.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test5-0qcobrfu05i.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test3-ptqzghyk01m.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('edf56b4e-ce13-4688-d13f-08dbf01ff258', 'test8-alnbkecbieu.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test10-gpdjitkazrv.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test8-gri0dvoctth.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('fab0df3f-b0d9-4a29-7c04-08dbef9a4d1c', 'test4-5jgwxw5gpjo.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5bdb581e-5323-4bd2-7c05-08dbef9a4d1c', 'test4-ncg2j0w5wcl.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test7-rxhn13nfkyc.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test6-5sx4crkig3u.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test2-rrfskayc12p.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('59d759a1-8dc5-4c33-b7f9-08dbf1f234fa', 'test5-t0bfywrvzyc.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('0b7d15c5-e252-445e-a01c-08dbf58f8e2e', 'test10-5yk0nbzdmxe.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test10-vwhqbgkcssy.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test5-ogz2cmox3iz.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test8-i1cn0nprexh.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('ea91d973-293d-4a07-a01d-08dbf58f8e2e', 'test7-q4pcw1ubpsb.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test2-oc0ndre0pos.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test4-njitf3v0gen.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test3-tdajm33mrok.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('81dafe6e-0632-43d8-a01e-08dbf58f8e2e', 'test6-te53zt0n0hd.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('ed2b5682-e7ce-4c82-983f-08dc16b0c56d', 'test9-zlduf0gbi3f.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test8-usgwpzrrz1b.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test7-pyzqqfja4vf.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test3-lfbzih3hc0j.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test10-ezcrlfwpmvd.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('aae38655-1cc8-463a-9840-08dc16b0c56d', 'test1-wun3iqudrec.jpg', 4);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('a22d79e6-d929-4f4f-c9dc-08dc18615529', 'test9-tvl51ifwyeq.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('a22d79e6-d929-4f4f-c9dc-08dc18615529', 'test5-5cfnrw3qut5.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test3-vj3y15103x2.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test9-bueyuewoie0.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test7-3xphn3mcqir.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test6-3x4lesid4hd.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('44012a2b-1922-4787-c9dd-08dc18615529', 'test1-3kmxzzqjfsc.jpg', 4);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('755e02ac-2116-4fcb-8dfc-08dc1c0fb283', 'test7-z3kx0venvua.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('755e02ac-2116-4fcb-8dfc-08dc1c0fb283', 'test4-0ansqw1ogni.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test4-bfgmdhqsqln.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test7-on5mh0jjoen.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test9-i4gpfw5gik1.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('691faf4b-b085-4816-8055-08dc1db0f974', 'test1-mwrgvu0n5sf.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test10-kxb3ufnubs5.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test2-xoiimstlok4.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('5d0e15b7-880b-44a5-6f2b-08dbdbc56143', 'test9-o4c2ka3pf0d.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('3e56f565-e1e4-4ac7-4964-08dbdbce04bc', 'test3-fiji2z243ng.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('3e56f565-e1e4-4ac7-4964-08dbdbce04bc', 'test8-cvk4sygn0t0.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('cdc692d2-663a-454f-acf7-08dbe39b9b87', 'test8-ywqg4bs55zf.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test10-qzk5dyl4ze2.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test8-x4s0xorwfmi.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test2-xj13prhsi2g.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('46208233-f4a7-4db0-93e1-97e516cd4acd', 'test3-ktnuanhzer5.jpg', 3);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('545611ca-d9f8-45d5-a113-2ff23c6359a6', 'test10-j4lkufzlb2b.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test4-3wx0zgprbtm.jpg', 0);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test6-c3qdlpu21hs.jpg', 1);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test7-vn0is1fcerx.jpg', 2);
+INSERT INTO public.product_images (product_id, image_name, "order") VALUES ('e4101236-1250-4705-a29f-efdfec0f3a0e', 'test9-3sezvx53lgp.jpg', 3);
 
 
 --
@@ -916,7 +918,7 @@ ALTER TABLE ONLY public.refresh_tokens
     ADD CONSTRAINT "FK_refresh_tokens_users_user_id" FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2024-04-13 15:05:04
+-- Completed on 2024-05-28 17:12:38
 
 --
 -- PostgreSQL database dump complete
