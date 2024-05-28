@@ -58,8 +58,12 @@ export default function ProductForm({ product, setProduct, onSave }) {
 		fileList.forEach(file => (file.key = uuid()));
 		setProduct({ ...product, images: [...images, ...fileList] });
 	}
-	function handleDelete(key) {
-		setProduct({ ...product, images: images.filter(img => img.key !== key) });
+	function handleDelete(imageToDelete) {
+		if (imageToDelete instanceof File) {
+			setProduct({ ...product, images: images.filter(img => !(img instanceof File) || img.key !== imageToDelete.key) });
+		} else {
+			setProduct({ ...product, images: images.filter(img => (img instanceof File) || img !== imageToDelete) });
+		}
 	}
 	function moveDown(index) {
 		if (index === images.length - 1) return;
@@ -330,7 +334,7 @@ function ImageListElement({ image, onDelete, moveUp, moveDown, first, last }) {
 			<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
 				{imageName}
 			</span>
-			<div onClick={() => onDelete(image.key)}>
+			<div onClick={() => onDelete(image)}>
 				<DeleteIcon></DeleteIcon>
 			</div>
 		</div>
