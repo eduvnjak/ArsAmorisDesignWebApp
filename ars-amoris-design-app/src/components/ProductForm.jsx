@@ -2,9 +2,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../api/useAxios';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export default function ProductForm({ product, setProduct, onSave }) {
 	const [productCategories, setProductCategories] = useState([]);
+	const [parent, enableAnimations] = useAutoAnimate({ duration: 400 });
 	const {
 		name,
 		description,
@@ -250,7 +252,10 @@ export default function ProductForm({ product, setProduct, onSave }) {
 								onChange={handleImageChange}
 							></input>
 						</div>
-						<div className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'>
+						<div
+							ref={parent}
+							className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'
+						>
 							{images.length === 0 ? (
 								<div className='grid h-20 w-full place-content-center text-center text-sm text-slate-600'>
 									Dodane slike će biti prikazane ovdje
