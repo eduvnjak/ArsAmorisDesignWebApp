@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ProductForm from '../components/ProductForm';
 import useAxios from '../api/useAxios';
+import uuid from '../utils/uuid';
 
 export default function EditProductDetails() {
 	const [product, setProduct] = useState({});
@@ -27,7 +28,12 @@ export default function EditProductDetails() {
 		const fetchProduct = async () => {
 			setIsLoading(true);
 			let result = await axiosInstance.get(`Products/${productId}`);
-			setProduct({ newCategory: '', ...result.data });
+			let imagesModified = result.data.images.map(image => ({
+				url: image,
+				key: uuid(),
+				name: image.match(/([^/]+)\/?$/)[0],
+			}));
+			setProduct({ newCategory: '', ...result.data, images: imagesModified });
 			setIsLoading(false);
 		};
 		fetchProduct();
@@ -64,12 +70,12 @@ export default function EditProductDetails() {
 				data.append(`NewImages[${newCount}].Index`, index);
 				data.append(`NewImages[${newCount}].File`, image);
 				newCount++;
-			} else if (typeof image == 'string') {
+			} else {
 				// console.log('String ' + index);
 				data.append(`ExistingImages[${existingCount}].Index`, index);
 				data.append(
 					`ExistingImages[${existingCount}].ImageName`,
-					image.match(/([^/]+)\/?$/)[0],
+					image.name,
 				);
 				existingCount++;
 			}

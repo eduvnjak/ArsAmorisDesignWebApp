@@ -3,10 +3,27 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../api/useAxios';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import {
+	DndContext,
+	closestCenter,
+	useSensors,
+	useSensor,
+	PointerSensor,
+	KeyboardSensor,
+} from '@dnd-kit/core';
+import {
+	arrayMove,
+	SortableContext,
+	useSortable,
+	verticalListSortingStrategy,
+	sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import uuid from '../utils/uuid';
 
 export default function ProductForm({ product, setProduct, onSave }) {
 	const [productCategories, setProductCategories] = useState([]);
-	const [parent, enableAnimations] = useAutoAnimate({ duration: 400 });
+	// const [parent, enableAnimations] = useAutoAnimate({ duration: 400 });
 	const {
 		name,
 		description,
@@ -53,19 +70,17 @@ export default function ProductForm({ product, setProduct, onSave }) {
 			console.log(`mozes odabrati jos ${5 - images.length} slika`);
 			return;
 		}
-		console.log(event.target.files);
 		const fileList = [...event.target.files];
 		// fileList.forEach(file => (file.key = crypto.randomUUID()));
 		// ovo ispod za mob
 		fileList.forEach(file => (file.key = uuid()));
 		setProduct({ ...product, images: [...images, ...fileList] });
 	}
-	function handleDelete(imageToDelete) {
-		if (imageToDelete instanceof File) {
-			setProduct({ ...product, images: images.filter(img => !(img instanceof File) || img.key !== imageToDelete.key) });
-		} else {
-			setProduct({ ...product, images: images.filter(img => (img instanceof File) || img !== imageToDelete) });
-		}
+	function handleDelete(key) {
+		setProduct({
+			...product,
+			images: images.filter(img => img.key !== key),
+		});
 	}
 	function moveDown(index) {
 		if (index === images.length - 1) return;
@@ -83,6 +98,33 @@ export default function ProductForm({ product, setProduct, onSave }) {
 		newArray[index - 1] = temp;
 		setProduct({ ...product, images: newArray });
 	}
+
+	function handleDragEnd(event) {
+		//setIsDragging(false);
+		const { active, over } = event;
+		const getImageIndex = key => images.findIndex(image => image.key === key);
+
+		if (active.id !== over.id) {
+			setProduct(product => {
+				const oldIndex = getImageIndex(active.id);
+				const newIndex = getImageIndex(over.id);
+
+				const newImages = arrayMove(images, oldIndex, newIndex);
+				return { ...product, images: newImages };
+			});
+		}
+		//enableAnimations(true);
+	}
+	function handleDragStart() {
+		//enableAnimations(false);
+	}
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	);
+
 	return (
 		<div className='h-full w-full bg-white'>
 			<div className='mx-auto h-full max-w-2xl px-7 py-8 text-slate-900'>
@@ -252,28 +294,41 @@ export default function ProductForm({ product, setProduct, onSave }) {
 								onChange={handleImageChange}
 							></input>
 						</div>
-						<div
-							ref={parent}
-							className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'
+						<DndContext
+							collisionDetection={closestCenter}
+							onDragEnd={handleDragEnd}
+							onDragStart={handleDragStart}
+							sensors={sensors}
 						>
-							{images.length === 0 ? (
-								<div className='grid h-20 w-full place-content-center text-center text-sm text-slate-600'>
-									Dodane slike će biti prikazane ovdje
-								</div>
-							) : (
-								images.map((image, index) => (
-									<ImageListElement
-										key={image.key ?? image.match(/([^/]+)\/?$/)[0]}
-										image={image}
-										onDelete={handleDelete}
-										moveUp={() => moveUp(index)}
-										moveDown={() => moveDown(index)}
-										first={index === 0}
-										last={index === images.length - 1}
-									></ImageListElement>
-								))
-							)}
-						</div>
+							<div
+								//ref={parent}
+								className='flex min-h-20 flex-col gap-2 rounded-sm px-2 py-1 outline-dashed outline-1 outline-slate-300'
+							>
+								{images.length === 0 ? (
+									<div className='grid h-20 w-full place-content-center text-center text-sm text-slate-600'>
+										Dodane slike će biti prikazane ovdje
+									</div>
+								) : (
+									<SortableContext
+										items={images.map(image => image.key)}
+										strategy={verticalListSortingStrategy}
+									>
+										{images.map((image, index) => (
+											<ImageListElement
+												id={image.key}
+												key={image.key}
+												image={image}
+												onDelete={handleDelete}
+												moveUp={() => moveUp(index)}
+												moveDown={() => moveDown(index)}
+												first={index === 0}
+												last={index === images.length - 1}
+											></ImageListElement>
+										))}
+									</SortableContext>
+								)}
+							</div>
+						</DndContext>
 						<p className='text-sm text-slate-600'>
 							Dodaj jednu do pet slika proizvoda.
 						</p>
@@ -308,10 +363,26 @@ function StyledInput({ ...rest }) {
 	);
 }
 
-function ImageListElement({ image, onDelete, moveUp, moveDown, first, last }) {
-	const [imageUrl, setImageUrl] = useState(null);
-	const imageName =
-		image instanceof File ? image.name : image.match(/([^/]+)\/?$/)[0];
+function ImageListElement({
+	id,
+	image,
+	onDelete,
+	moveUp,
+	moveDown,
+	first,
+	last,
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id });
+
+	const [imageUrl, setImageUrl] = useState(image.url);
+	const { name } = image;
 	// URL.createObjectURL(file);
 	useEffect(() => {
 		if (!(image instanceof File)) return;
@@ -322,24 +393,34 @@ function ImageListElement({ image, onDelete, moveUp, moveDown, first, last }) {
 		};
 	}, [image]);
 
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	};
+
 	return (
-		<div className='group flex flex-row items-center justify-between gap-2'>
+		<div
+			style={style}
+			ref={setNodeRef}
+			{...attributes}
+			className={`group flex flex-row items-center justify-between gap-2 ${isDragging && 'z-50 bg-slate-100 '}`}
+		>
 			<div className='flex h-32 flex-col justify-between px-1 py-2'>
 				<button type='button' onClick={moveUp} disabled={first === true}>
 					<ChevronUp></ChevronUp>
+				</button>
+				<button className='touch-none' type='button' {...listeners}>
+					<GripDotsIcon />
 				</button>
 				<button type='button' onClick={moveDown} disabled={last === true}>
 					<ChevronDown></ChevronDown>
 				</button>
 			</div>
-			<img
-				src={image instanceof File ? imageUrl : image}
-				className='size-28 object-contain sm:size-64'
-			></img>
+			<img src={imageUrl} className='size-28 object-contain sm:size-64'></img>
 			<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
-				{imageName}
+				{name}
 			</span>
-			<div onClick={() => onDelete(image)}>
+			<div onClick={() => onDelete(image.key)}>
 				<DeleteIcon></DeleteIcon>
 			</div>
 		</div>
@@ -403,12 +484,22 @@ function ChevronDown() {
 	);
 }
 
-function uuid() {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-		var r = (Math.random() * 16) | 0,
-			v = c == 'x' ? r : (r & 0x3) | 0x8;
-		return v.toString(16);
-	});
+function GripDotsIcon() {
+	return (
+		<svg
+			viewBox='0 0 24 24'
+			fill='none'
+			xmlns='http://www.w3.org/2000/svg'
+			className='h-6 w-6 stroke-slate-500 hover:cursor-grab'
+		>
+			<path
+				d='M9 6H9.01M15 6H15.01M15 12H15.01M9 12H9.01M9 18H9.01M15 18H15.01M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6ZM16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6ZM10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12ZM16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12ZM10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18ZM16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z'
+				strokeWidth='2'
+				strokeLinecap='round'
+				strokeLinejoin='round'
+			/>
+		</svg>
+	);
 }
 
 function ValidationMessage({ children }) {
