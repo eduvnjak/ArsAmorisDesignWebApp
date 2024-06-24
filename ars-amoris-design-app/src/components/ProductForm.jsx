@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAxios from '../api/useAxios';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import {
 	DndContext,
 	closestCenter,
@@ -23,7 +22,6 @@ import uuid from '../utils/uuid';
 
 export default function ProductForm({ product, setProduct, onSave }) {
 	const [productCategories, setProductCategories] = useState([]);
-	// const [parent, enableAnimations] = useAutoAnimate({ duration: 400 });
 	const {
 		name,
 		description,
@@ -100,7 +98,6 @@ export default function ProductForm({ product, setProduct, onSave }) {
 	}
 
 	function handleDragEnd(event) {
-		//setIsDragging(false);
 		const { active, over } = event;
 		const getImageIndex = key => images.findIndex(image => image.key === key);
 
@@ -113,10 +110,6 @@ export default function ProductForm({ product, setProduct, onSave }) {
 				return { ...product, images: newImages };
 			});
 		}
-		//enableAnimations(true);
-	}
-	function handleDragStart() {
-		//enableAnimations(false);
 	}
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -297,7 +290,6 @@ export default function ProductForm({ product, setProduct, onSave }) {
 						<DndContext
 							collisionDetection={closestCenter}
 							onDragEnd={handleDragEnd}
-							onDragStart={handleDragStart}
 							sensors={sensors}
 						>
 							<div
@@ -393,6 +385,14 @@ function ImageListElement({
 		};
 	}, [image]);
 
+	useEffect(() => {
+		if (isDragging) document.body.style.cursor = 'grabbing';
+
+		return () => {
+			document.body.style.cursor = '';
+		};
+	}, [isDragging]);
+
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
@@ -402,26 +402,34 @@ function ImageListElement({
 		<div
 			style={style}
 			ref={setNodeRef}
-			{...attributes}
-			className={`group flex flex-row items-center justify-between gap-2 ${isDragging && 'z-50 bg-slate-100 '}`}
+			className={`${isDragging ? 'z-50' : ''}`}
 		>
-			<div className='flex h-32 flex-col justify-between px-1 py-2'>
-				<button type='button' onClick={moveUp} disabled={first === true}>
-					<ChevronUp></ChevronUp>
-				</button>
-				<button className='touch-none' type='button' {...listeners}>
-					<GripDotsIcon />
-				</button>
-				<button type='button' onClick={moveDown} disabled={last === true}>
-					<ChevronDown></ChevronDown>
-				</button>
-			</div>
-			<img src={imageUrl} className='size-28 object-contain sm:size-64'></img>
-			<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
-				{name}
-			</span>
-			<div onClick={() => onDelete(image.key)}>
-				<DeleteIcon></DeleteIcon>
+			<div
+				className={`group flex flex-row items-center justify-between gap-2 ${isDragging ? 'scale-110 bg-slate-100 shadow-2xl transition-all duration-300' : ''}`}
+			>
+				<div className='flex h-32 flex-col justify-between px-1 py-2'>
+					<button type='button' onClick={moveUp} disabled={first === true}>
+						<ChevronUp></ChevronUp>
+					</button>
+					<button
+						type='button'
+						className={`${!isDragging ? 'cursor-grab' : 'cursor-grabbing'} touch-none`}
+						{...attributes}
+						{...listeners}
+					>
+						<GripDotsIcon />
+					</button>
+					<button type='button' onClick={moveDown} disabled={last === true}>
+						<ChevronDown></ChevronDown>
+					</button>
+				</div>
+				<img src={imageUrl} className='size-28 object-contain sm:size-64'></img>
+				<span className='w-12 break-words text-xs text-slate-600 sm:w-36 sm:text-sm'>
+					{name}
+				</span>
+				<div onClick={() => onDelete(image.key)}>
+					<DeleteIcon></DeleteIcon>
+				</div>
 			</div>
 		</div>
 	);
@@ -490,7 +498,7 @@ function GripDotsIcon() {
 			viewBox='0 0 24 24'
 			fill='none'
 			xmlns='http://www.w3.org/2000/svg'
-			className='h-6 w-6 stroke-slate-500 hover:cursor-grab'
+			className='h-6 w-6 stroke-slate-500 hover:stroke-slate-900'
 		>
 			<path
 				d='M9 6H9.01M15 6H15.01M15 12H15.01M9 12H9.01M9 18H9.01M15 18H15.01M10 6C10 6.55228 9.55228 7 9 7C8.44772 7 8 6.55228 8 6C8 5.44772 8.44772 5 9 5C9.55228 5 10 5.44772 10 6ZM16 6C16 6.55228 15.5523 7 15 7C14.4477 7 14 6.55228 14 6C14 5.44772 14.4477 5 15 5C15.5523 5 16 5.44772 16 6ZM10 12C10 12.5523 9.55228 13 9 13C8.44772 13 8 12.5523 8 12C8 11.4477 8.44772 11 9 11C9.55228 11 10 11.4477 10 12ZM16 12C16 12.5523 15.5523 13 15 13C14.4477 13 14 12.5523 14 12C14 11.4477 14.4477 11 15 11C15.5523 11 16 11.4477 16 12ZM10 18C10 18.5523 9.55228 19 9 19C8.44772 19 8 18.5523 8 18C8 17.4477 8.44772 17 9 17C9.55228 17 10 17.4477 10 18ZM16 18C16 18.5523 15.5523 19 15 19C14.4477 19 14 18.5523 14 18C14 17.4477 14.4477 17 15 17C15.5523 17 16 17.4477 16 18Z'
