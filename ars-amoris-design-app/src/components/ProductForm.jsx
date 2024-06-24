@@ -19,6 +19,10 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import uuid from '../utils/uuid';
+import {
+	restrictToVerticalAxis,
+	restrictToParentElement,
+} from '@dnd-kit/modifiers';
 
 export default function ProductForm({ product, setProduct, onSave }) {
 	const [productCategories, setProductCategories] = useState([]);
@@ -291,6 +295,7 @@ export default function ProductForm({ product, setProduct, onSave }) {
 							collisionDetection={closestCenter}
 							onDragEnd={handleDragEnd}
 							sensors={sensors}
+							modifiers={[restrictToParentElement, restrictToVerticalAxis]}
 						>
 							<div
 								//ref={parent}
