@@ -12,7 +12,7 @@ function NavigationMenuElement({ children, to, onClickCapture }) {
 				className={({ isActive, isPending }) =>
 					isPending || isActive
 						? 'block text-nowrap border-b-4 border-blue-600 p-3 text-blue-700 transition-colors duration-300'
-						: 'relative block text-nowrap p-3 text-slate-500 transition-colors duration-300 before:absolute before:-bottom-1 before:left-[50%] before:h-1 before:w-0 before:bg-blue-600 before:transition-all before:duration-300 hover:text-slate-700 hover:before:left-0 hover:before:w-[100%] hover:after:right-0 hover:after:w-[100%]'
+						: 'relative block text-nowrap p-3 text-slate-500 transition-colors duration-300 before:absolute before:-bottom-1 before:right-[100%] before:h-1 before:w-0 before:bg-blue-600 before:transition-all before:duration-300 hover:text-slate-700 hover:before:left-0 hover:before:right-0 hover:before:w-[100%] lg:before:left-[50%]'
 				}
 				to={to}
 				onClickCapture={onClickCapture}
@@ -82,7 +82,7 @@ export default function NavigationMenu() {
 						if (document.body.scrollHeight - document.body.clientHeight === 56 ) {
 							node.style.height = `${node.clientHeight - 56}px`;
 						} else {
-							node.style.height = ''
+							node.style.height = '';
 						}
 					}
 				}}
