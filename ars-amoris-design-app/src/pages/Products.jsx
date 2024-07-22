@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import ProductCard from '../components/ProductCard';
 import { matchSorter } from 'match-sorter';
 import LoadingIndicator from '../components/LoadingIndicator';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import MultipleSelect from '../components/MultpleSelect';
 import Button from '../components/Button';
 import StyledInput from '../components/StyledInput';
@@ -22,11 +22,20 @@ export default function Products() {
 	const axiosInstance = useAxios();
 
 	const searchBarRef = useRef(null);
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	useEffect(() => {
 		async function fetchProducts() {
 			setIsLoading(true);
-			let result = await axiosInstance.get(`Products`);
+			const searchParamCategory = searchParams.get('category');
+			if (searchParamCategory !== null) {
+				setSelectedCategories([...searchParamCategory.split(',')]);
+			}
+			const getUrl =
+				searchParamCategory === null
+					? 'Products'
+					: `Products?categories=${searchParamCategory}`;
+			let result = await axiosInstance.get(getUrl);
 			setProducts(result.data);
 			setIsLoading(false);
 		}
@@ -36,7 +45,7 @@ export default function Products() {
 		}
 		fetchProducts();
 		fetchProductCategories();
-	}, [axiosInstance]);
+	}, [axiosInstance, searchParams]);
 
 	useEffect(() => {
 		function searchBarFocus(e) {
@@ -161,10 +170,7 @@ export default function Products() {
 				<ProductContainer>
 					{searchQuery.trim().length === 0
 						? products.map(product => (
-								<ProductCard
-									key={product.id}
-									product={product}
-								>
+								<ProductCard key={product.id} product={product}>
 									<Button
 										onClick={() => {
 											navigate(`${product.id}`);
@@ -175,10 +181,7 @@ export default function Products() {
 								</ProductCard>
 							))
 						: filteredProducts.map(product => (
-								<ProductCard
-									key={product.id}
-									product={product}
-								>
+								<ProductCard key={product.id} product={product}>
 									<Button
 										onClick={() => {
 											navigate(`${product.id}`);

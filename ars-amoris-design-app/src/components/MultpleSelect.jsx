@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 export default function MultipleSelect({ options, selectedOptions, onChange }) {
-	const spanRef = useRef(null);
+	const divRef = useRef(null);
 	const dropdownRef = useRef(null);
 	const hoveredRef = useRef(false);
 
@@ -9,13 +9,17 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 
 	useEffect(() => {
 		if (dropdownRef.current != null) {
-			dropdownRef.current.style.width = `${spanRef.current.offsetWidth}px`;
+			dropdownRef.current.style.width = `${divRef.current.offsetWidth}px`;
 		}
 	}, [isExpanded]);
 
+	let selectedCounter = 0;
+	selectedOptions.forEach(option => {
+		options.some(o => o.id === option) && selectedCounter++;
+	});
 	return (
 		<>
-			<span className='cursor-default' onClick={() => spanRef.current.focus()}>
+			<span className='cursor-default' onClick={() => divRef.current.focus()}>
 				Filtriraj po kategorijama:
 			</span>
 			<div
@@ -30,20 +34,24 @@ export default function MultipleSelect({ options, selectedOptions, onChange }) {
 					if (!hoveredRef.current) setIsExpanded(false);
 				}}
 			>
-				<span
+				<div
 					tabIndex={0} // ovaj span srediti
-					className='bg-white py-1 pl-2 pr-1 shadow-md transition-all duration-300 focus:outline-none focus:ring focus:ring-blue-600'
+					className='flex w-48 items-end justify-between bg-white py-1 pl-2 pr-1 shadow-md transition-all duration-300 focus:outline-none focus:ring focus:ring-blue-600'
 					onClick={() => setIsExpanded(!isExpanded)}
 					onKeyDown={e => {
 						e.preventDefault();
 						if (e.code === 'Space') setIsExpanded(true);
 						else if (e.key === 'Enter') setIsExpanded(!isExpanded);
 					}}
-					ref={spanRef}
+					ref={divRef}
 				>
-					Odaberi kategorije &nbsp;&nbsp;
+					<span>
+						{selectedCounter === 0
+							? 'Odaberi kategorije'
+							: `Odabrano: ${selectedCounter}`}
+					</span>
 					<Chevron />
-				</span>
+				</div>
 				{isExpanded && (
 					<div className='absolute z-10' ref={dropdownRef}>
 						{options.map(option => (
