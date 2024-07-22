@@ -91,12 +91,19 @@ export default function ProductDetails() {
 				<LoadingIndicator />
 			) : (
 				<div className='h-full w-full bg-white md:px-[15%] md:py-4 lg:grid lg:auto-rows-min lg:grid-cols-2'>
-					{/* stavi da su ovo linkovi ispod */}
-					<div className='px-4 py-2 font-normal text-slate-800 md:mb-2 lg:col-span-2'>
-						Proizvodi &nbsp; / &nbsp;{' '}
-						<span className='font-medium'>
+					<div className='px-4 py-2 font-medium text-slate-500 md:mb-2 lg:col-span-2'>
+						<Link
+							to='..'
+							relative='path'
+							className='hover:cursor-pointer hover:text-slate-600'
+						>
+							Proizvodi
+						</Link>{' '}
+						&nbsp;
+						<span className='text-slate-300'>/</span> &nbsp;
+						<Link to={`../products?category=${categoryId}`} className='hover:cursor-pointer hover:text-slate-600'>
 							{categoryName ?? 'Nekategorisani'}
-						</span>
+						</Link>
 					</div>
 					<div className='mx-auto lg:col-start-2 lg:mt-8'>
 						<Gallery images={images}></Gallery>
